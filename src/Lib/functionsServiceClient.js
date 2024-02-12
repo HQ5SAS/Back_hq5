@@ -3,8 +3,8 @@ import { createErrorResponse } from '../Tools/utils.js';
 
 export async function consultPermissionClient(cel, customer) {
     try {
-        const results = await queryPermit.permitRecordExistsByClient(cel, customer);
-        return results;
+        const response = await queryPermit.permitRecordExistsByClient(cel, customer);
+        return response;
         
     } catch (error) {
         console.error('Error al obtener permisos por cliente y número de celular:', error);

@@ -1,7 +1,7 @@
 import { dbConnection } from './connection.js';
 
 // Función para realizar la inserción de registros en la tabla wz (Woztell)
-export const wzRecordInsert = (id, externalId, app) => {
+export const wzRecordInsert = (memberId, externalId, app) => {
     return new Promise(async (resolve, reject) => {
         const sqlQuery = `
             INSERT IGNORE INTO 
@@ -10,7 +10,7 @@ export const wzRecordInsert = (id, externalId, app) => {
                 (?, ?, ?)
         `;
 
-        dbConnection.query(sqlQuery, [id, externalId, app, ], (result, error) => {
+        dbConnection.query(sqlQuery, [memberId, externalId, app ], (result, error) => {
             if (result && result.insertId !== undefined) {
                 console.log(`Se insertó en la tabla wz con ID: ${result.insertId}`);
                 resolve({ id: result.insertId});
@@ -22,19 +22,19 @@ export const wzRecordInsert = (id, externalId, app) => {
     });
 };
 
-// Función para verificar si existe un registro en la tabla wz por member_id (woztell)
-export const wzRecordExistsByMemberId = (wz_miembro_id) => {
+// Función para verificar si existe un registro en la tabla wz por wz_miembro_id (woztell)
+export const wzRecordExistsByMemberId = (memberId) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = 'SELECT id, wz_externo_id, wz_miembro_id FROM wz WHERE wz_miembro_id = ? LIMIT 1';
+        const sqlQuery = 'SELECT id, wz_miembro_id, wz_externo_id FROM wz WHERE wz_miembro_id = ? LIMIT 1';
   
-        dbConnection.query(sqlQuery, [wz_miembro_id], (results, fields) => {
+        dbConnection.query(sqlQuery, [memberId], (results, fields) => {
             if (results.length === 0) {
-                resolve({ exists: false, id: null, externalId: null });
+                resolve({ exists: false, id: null, memberId: null, externalId: null });
             } else {
                 const recordId = results[0].id;
-                const recordExternalId = results[0].wz_externo_id;
                 const recordMemberId = results[0].wz_miembro_id;
-                resolve({ exists: true, id: recordId, externalId: recordExternalId, memberId: recordMemberId});
+                const recordExternalId = results[0].wz_externo_id;
+                resolve({ exists: true, id: recordId, memberId: recordMemberId, externalId: recordExternalId });
             }
         });
     });
@@ -43,16 +43,16 @@ export const wzRecordExistsByMemberId = (wz_miembro_id) => {
 // Función para verificar si existe un registro en la tabla wz por id (woztell)
 export const wzRecordExistsById = (id) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = 'SELECT id, wz_externo_id, wz_miembro_id FROM wz WHERE id = ? LIMIT 1';
+        const sqlQuery = 'SELECT id, wz_miembro_id, wz_externo_id FROM wz WHERE id = ? LIMIT 1';
   
         dbConnection.query(sqlQuery, [id], (results, fields) => {
             if (results.length === 0) {
-                resolve({ exists: false, id: null, externalId: null });
+                resolve({ exists: false, id: null, memberId: null, externalId: null });
             } else {
                 const recordId = results[0].id;
-                const recordExternalId = results[0].wz_externo_id;
                 const recordMemberId = results[0].wz_miembro_id;
-                resolve({ exists: true, id: recordId, externalId: recordExternalId, memberId: recordMemberId});
+                const recordExternalId = results[0].wz_externo_id;
+                resolve({ exists: true, id: recordId, memberId: recordMemberId, externalId: recordExternalId });
             }
         });
     });

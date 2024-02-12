@@ -23,8 +23,8 @@ async function validateContact(req, res) {
 
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
         
-        const { _id: id, externalId, app } = member;
-        const wz_id = await functionsWoztell.consultRecordWz(id, externalId, app);
+        const { _id: memberId, externalId, app } = member;
+        const wz_id = await functionsWoztell.consultRecordWz(memberId, externalId, app);
         const cel = parseInt(wz_id.externalId.substring(2));
         const contact = await functionsContact.consultContact(cel);
 
@@ -72,7 +72,7 @@ async function validateContact(req, res) {
         const message = [...optionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
         
         redirectMemberToNode(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, null, {
-            customer: contactRecord.id_cliente,
+            customer: contactRecord.zh_id_cliente,
             task: { ...mapData },
             message: message
         });

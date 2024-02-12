@@ -1,15 +1,15 @@
 import { dbConnection } from '../Database/connection.js';
 
 // Función para verificar si existe un registro en la tabla cliente
-export const customerRecordExistsById = (id) => {
+export const customerRecordExistsById = (customerId) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = 'SELECT id, cliente FROM cliente WHERE id = ? LIMIT 1';
+        const sqlQuery = 'SELECT id, zh_id, cliente FROM cliente WHERE zh_id = ? LIMIT 1';
   
-        dbConnection.query(sqlQuery, [id], (results, fields) => {
+        dbConnection.query(sqlQuery, [customerId], (results, fields) => {
             if (results.length === 0) {
                 resolve({ exists: false, id: null, customer: null });
             } else {
-                const recordId = results[0].id;
+                const recordId = results[0].zh_id;
                 const recordCustomer = results[0].cliente;
                 resolve({ exists: true, id: recordId, customer: recordCustomer});
             }

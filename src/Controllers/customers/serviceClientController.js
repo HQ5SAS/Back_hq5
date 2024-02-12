@@ -43,7 +43,7 @@ async function consultServiceClient(req, res) {
         const optionsMap = new Map(permissionActive.map(permit => [permit.tarea_bot_id, permit.nombre_tarea_bot]));
         const mapData = Object.fromEntries([...optionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
         const message = [...optionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
-
+        
         redirectMemberToNode(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, null, {
             customer: customer,
             task: { ...mapData },

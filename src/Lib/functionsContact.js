@@ -4,8 +4,8 @@ import { createErrorResponse } from '../Tools/utils.js';
 
 export async function consultContact(cel) {
     try {
-        const results = await queryContact.contactRecordExistsByCel(cel);
-        return results;
+        const response = await queryContact.contactRecordExistsByCel(cel);
+        return response;
 
     } catch (error) {
         console.error('Error al obtener contacto por número de celular:', error);
@@ -13,10 +13,10 @@ export async function consultContact(cel) {
     }
 }
 
-export async function consultPermission(contact) {
+export async function consultPermission(contactId) {
     try {
-        const results = await queryPermit.permitRecordExistsByContact(contact);
-        return results;
+        const response = await queryPermit.permitRecordExistsByContact(contactId);
+        return response;
         
     } catch (error) {
         console.error('Error al obtener permisos por contacto:', error);

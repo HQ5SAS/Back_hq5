@@ -29,8 +29,8 @@ export async function createRequestWz(wzId, customerId, taskId) {
 
 export async function consultRequestWz(idWzRecord) {
     try {
-        const results = await queryRequestWz.requestWzRecordExistsById(idWzRecord);
-        return results;
+        const response = await queryRequestWz.requestWzRecordExistsById(idWzRecord);
+        return response;
 
     } catch (error) {
         console.error('Error al obtener solicitud_wz por el id:', error);

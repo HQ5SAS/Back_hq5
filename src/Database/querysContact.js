@@ -6,14 +6,16 @@ export const contactRecordExistsByCel = (cel) => {
     return new Promise((resolve, reject) => {
         const sqlQuery = `
             SELECT 
-                contacto.id,
-                contacto.nombre,
-                contacto.celular,
-                contacto.estado,
-                cliente.cliente,
-                cliente.id AS id_cliente
+                contacto.id AS id2,
+                contacto.zh_id AS id,
+                contacto.nombre AS nombre,
+                contacto.celular AS celular,
+                contacto.estado AS estado,
+                cliente.id AS id_cliente,
+                cliente.zh_id AS zh_id_cliente,
+                cliente.cliente AS cliente
             FROM contacto
-            JOIN cliente ON contacto.fk_cliente_id = cliente.id
+            JOIN cliente ON contacto.zh_cliente = cliente.zh_id
             WHERE contacto.celular = ? AND cliente.estado = '${CLI_STATE_ACT}';
         `;
 

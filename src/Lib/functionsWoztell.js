@@ -1,19 +1,19 @@
 import * as queryWz from '../Database/querysWz.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
-export async function consultRecordWz(id, externalId, app) {
+export async function consultRecordWz(memberId, externalId, app) {
     try {
-        const response = await queryWz.wzRecordExistsByMemberId(id);
+        const response = await queryWz.wzRecordExistsByMemberId(memberId);
 
         if (!response.exists) {
 
             try {
-                const insert = await queryWz.wzRecordInsert(id, externalId, app);
+                const insert = await queryWz.wzRecordInsert(memberId, externalId, app);
                 if (!insert || !insert.id) {
                     throw new Error('Error en la inserción de registros en wz');
                 }
-                const consult = await queryWz.wzRecordExistsById(insert.id);
-                return consult;
+                const response = await queryWz.wzRecordExistsById(insert.id);
+                return response;
 
             } catch (error) {
                 throw error;
