@@ -1,6 +1,10 @@
 import * as functionsTask from '../../Lib/functionsTask.js';
-import { createErrorResponse, createURLWithIdTaskIdCustomer, createCustomersResponse, shortenUrl } from '../../Tools/utils.js';
-import { REQ_SUCESS } from '../../Tools/process.js';
+import * as functionsWoztell from '../../Lib/functionsWoztell.js';
+import { createErrorResponse, createCustomersResponse, createURLWithIdCustomerIdTask, shortenUrl } from '../../Tools/utils.js';
+import { redirectMemberToNode } from '../../Tools/woztell.js';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '.env' });
 
 async function logAndRespond(res, message, statusCode, process = null, data = null) {
     const response = createCustomersResponse(message, statusCode, process, data);
@@ -16,23 +20,25 @@ async function responseRequest(req, res) {
             return logAndRespond(res, 'Clave (member), (customer) o (task) no encontrada en el cuerpo de la solicitud', 400);
         }
 
-        const member_id = member._id;
-        const createWzRecord = await functionsTask.createRequestWz(member_id, customer, task);
-        const requestWzRecord = await functionsTask.consultRequestWz(createWzRecord);
-        const url = createURLWithIdTaskIdCustomer(requestWzRecord.cliente_id, requestWzRecord.tarea_id);
+        logAndRespond(res, 'Solicitud procesada correctamente', 200);        
 
+        const { _id: id, externalId, app } = member;
+        const wz_id = await functionsWoztell.consultRecordWz(id, externalId, app);
+        const createRequestWzRecord = await functionsTask.createRequestWz(wz_id.id, customer, task);
+        const requestWzRecord = await functionsTask.consultRequestWz(createRequestWzRecord);
+        const url = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id);
+        const message = "";
+        // Falta completar la funcion de acortador de URL
         //const encodedUrl = shortenUrl("Orden de ingreso",url);
 
-        const message = "Solicitud creada correctamente";
-
-        const data = {
-            customer,
-            task,
+        redirectMemberToNode(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, null, {
+            customer: customer,
+            task: task,
             request: requestWzRecord.id,
-            url,
-        };
-
-        return logAndRespond(res, message, 200, REQ_SUCESS, data);
+            url: url,
+            message: message
+        });
+        return;
 
     } catch (error) {
         console.error('Error en la consulta de la tarea de orden de ingreso:', error);

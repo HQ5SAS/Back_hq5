@@ -4,10 +4,10 @@ import * as queryTask from '../Database/queysTask.js';
 import * as queryRequestWz from '../Database/querysRequestWz.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
-export async function createRequestWz(memberId, customerId, taskId) {
+export async function createRequestWz(wzId, customerId, taskId) {
     try {
         const [wzRecord, customerRecord, taskRecord] = await Promise.all([
-            queryWz.wzRecordExistsByMemberId(memberId),
+            queryWz.wzRecordExistsById(wzId),
             queryCustomer.customerRecordExistsById(customerId),
             queryTask.taskRecordExistsById(taskId),
         ]);

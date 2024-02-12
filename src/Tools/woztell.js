@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import {requestPost} from './utils.js';
 
 dotenv.config({ path: '.env' });
 
@@ -26,46 +27,28 @@ export const validateToken = async (req, res, next) => {
     }
 };
 
-// Función para redireccionar a un nodo al usuario (Customers)
-export const redirectNodeToUser = async (recipientId = null, memberId = null, nodeCompositeId) => {
-    const url = process.env.WZ_REDIRECT_MEMBER_TO_NODE;
-    const accessToken = process.env.WZ_ACCESS_TOKEN;
-    const channelId = process.env.WZ_CHANNEL_CUST;
-    const tree = process.env.WZ_TREE_CUST;
+// Funcion para redireccionar al usuario de Woztell a través de los nodos de conversación con 4 argumentos (node, memberid, externalId, meta)
+export const redirectMemberToNode = async (node, memberId = null, externalId = null, metaData) => {
+
+    const { WZ_REDIRECT_MEMBER_TO_NODE, WZ_ACCESS_TOKEN, WZ_CHANNEL_CUST, WZ_TREE_CUST } = process.env;
 
     const data = {
-        channelId: channelId,
-        memberId: memberId,
-        recipientId: recipientId,
+        channelId: WZ_CHANNEL_CUST,
+        memberId,
+        recipientId: externalId,
         redirect: {
-            tree: tree,
-            nodeCompositeId: nodeCompositeId,
+            tree: WZ_TREE_CUST,
+            nodeCompositeId: node,
             runPreAction: true,
             sendResponse: true,
             runPostAction: true
         },
-        meta: {}
+        meta: metaData
     };
 
     try {
-        const response = await fetch(`${url}?accessToken=${accessToken}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error en el servidor de Woztell: ${response}`);
-        }
-
-        const responseData = await response.json();
-
-        // Almacenar en logs
-        console.log(responseData);
-
+        const resultado = await requestPost(WZ_REDIRECT_MEMBER_TO_NODE, WZ_ACCESS_TOKEN, data);
     } catch (error) {
-        console.error('Error en la solicitud de redirección de usuario a Woztell:', error);
+        console.error('Error:', error.message);
     }
-}
+};

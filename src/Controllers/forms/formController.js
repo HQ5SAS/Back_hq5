@@ -9,8 +9,6 @@ async function logAndRespond(res, message, statusCode, process = null, data = nu
 
 async function getFieldValue(req, res) {
     try {
-
-        // Validar contenido de la solicitud
         const { customer, task } = req.body;
         if (!customer || !task) {
             return logAndRespond(res, 'Clave (customer) o (task) no encontrada en el cuerpo de la solicitud', 400);
@@ -36,7 +34,7 @@ async function getFieldValue(req, res) {
                 proceso: ["proceso 1", "proceso 2"],
             },
             cargo: {
-                nivel_riesgo: ["1", "2", "3"]
+                nivel_riesgo: "1"
             },
             salario: 123456789,
             sabado_habil: ["SI", "NO"],

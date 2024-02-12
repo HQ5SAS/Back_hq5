@@ -24,8 +24,37 @@ export const createCustomersResponse = (message, statusCode = 200, process = nul
     };
 };
 
+// Funcion para realizar solicitudes post con 3 argumento (url, accesstoken, datos o body)
+export const requestPost = async (url, accessToken, data) => {
+    try {
+
+        if (!url || !accessToken) {
+            throw new Error('URL y accessToken son obligatorios');
+        }
+
+        const respuesta = await fetch(`${url}?accessToken=${accessToken}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!respuesta.ok) {
+            throw new Error(`Error en la solicitud: ${respuesta.status} ${respuesta.statusText}`);
+        }
+
+        const resultado = await respuesta.json();
+        return resultado;
+
+    } catch (error) {
+        console.error('Error al realizar la solicitud:', error);
+        throw error;
+    }
+}
+
 // Funcion para complementar la URL del frontend con el id de la tabla de solicitud_wz
-export const createURLWithIdTaskIdCustomer = (customerId, taskId) => {
+export const createURLWithIdCustomerIdTask = (customerId, taskId) => {
     const baseUrl = process.env.APP_FRONT;
     return `${baseUrl}?clienteId=${customerId}&tareaId=${taskId}`;
 };
