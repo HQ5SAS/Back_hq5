@@ -34,7 +34,7 @@ async function validateContact(req, res) {
         }
 
         if (contact.length > 1) {
-            const customerMap = new Map(contact.map(item => [item.id, item.cliente]));
+            const customerMap = new Map(contact.map(item => [item.id_cliente, item.cliente]));
             const mapData = Object.fromEntries([...customerMap.entries()].map(([id, cliente], index) => [index + 1, `${id}`]));
             const message = [...customerMap.entries()].map(([id, cliente], index) => `${index + 1}️⃣  ${cliente}`).join('\n');
 
