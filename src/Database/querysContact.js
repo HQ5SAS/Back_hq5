@@ -11,8 +11,8 @@ export const contactRecordExistsByCel = (cel) => {
                 contacto.nombre AS nombre,
                 contacto.celular AS celular,
                 contacto.estado AS estado,
-                cliente.id AS id_cliente,
-                cliente.zh_id AS zh_id_cliente,
+                cliente.id AS id_cliente2,
+                cliente.zh_id AS id_cliente,
                 cliente.cliente AS cliente
             FROM contacto
             JOIN cliente ON contacto.zh_cliente = cliente.zh_id
