@@ -9,13 +9,13 @@ export const permitRecordExistsByContact = (contactId) => {
                 permiso.zh_id AS zh_id,
                 permiso.estado AS estado,
                 permiso.zh_contacto AS zh_contacto,
-                proceso.nombre AS nombre_proceso,
+                proceso_ov.nombre AS nombre_proceso,
                 tarea_bot.id AS tarea_bot_id2,
                 tarea_bot.zh_id AS tarea_bot_id,
                 tarea_bot.nombre AS nombre_tarea_bot
             FROM permiso
-            JOIN proceso ON permiso.zh_proceso = proceso.zh_id
-            JOIN tarea_bot ON tarea_bot.zh_proceso = proceso.zh_id
+            JOIN proceso_ov ON permiso.zh_proceso = proceso_ov.zh_id
+            JOIN tarea_bot ON tarea_bot.zh_proceso = proceso_ov.zh_id
             WHERE permiso.zh_contacto = ?;
         `;
         dbConnection.query(sqlQuery, [contactId], (results, fields) => {
@@ -37,13 +37,13 @@ export const permitRecordExistsByClient = (cel, customer) => {
                 permiso.zh_id AS zh_id,
                 permiso.estado AS estado,
                 permiso.zh_contacto AS zh_contacto,
-                proceso.nombre AS nombre_proceso,
+                proceso_ov.nombre AS nombre_proceso,
                 tarea_bot.id AS tarea_bot_id2,
                 tarea_bot.zh_id AS tarea_bot_id,
                 tarea_bot.nombre AS nombre_tarea_bot                
             FROM permiso
-            JOIN proceso ON permiso.zh_proceso = proceso.zh_id
-            JOIN tarea_bot ON tarea_bot.zh_proceso = proceso.zh_id
+            JOIN proceso_ov ON permiso.zh_proceso = proceso_ov.zh_id
+            JOIN tarea_bot ON tarea_bot.zh_proceso = proceso_ov.zh_id
             JOIN contacto ON contacto.zh_id = permiso.zh_contacto
             WHERE contacto.celular = ? AND contacto.zh_cliente = ?;
         `;

@@ -18,14 +18,10 @@ export const getFieldValue = async (customer) => {
         const estado = 'ACEPTADA';
         const url = `${apiUrl}?cliente_gen_req.ID=${clientId}&ESTADO=${estado}`;
 
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Zoho-oauthtoken ${accessToken}`
-            },
-        });
+        const response = await fetch(url, { method: 'GET', headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` }, });
 
         if (response.ok) {
+            
             const responseData = await response.json();
 
             if (responseData && responseData.hasOwnProperty('data') && Array.isArray(responseData.data)) {
