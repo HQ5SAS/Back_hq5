@@ -1,13 +1,13 @@
 import * as functionsTask from '../../Lib/functionsTask.js';
 import * as functionsWoztell from '../../Lib/functionsWoztell.js';
-import { createErrorResponse, createCustomersResponse, createURLWithIdCustomerIdTask, shortenUrl } from '../../Tools/utils.js';
+import { createErrorResponse, createCustomersResponse, createURLWithIdCustomerIdTask, shortenUrl, generateToken } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
-async function logAndRespond(res, message, statusCode, process = null, data = null) {
-    const response = createCustomersResponse(message, statusCode, process, data);
+async function logAndRespond(res, message, statusCode, data = null) {
+    const response = createCustomersResponse(message, statusCode, data);
     res.status(statusCode).json(response);
     return response;
 }
@@ -26,8 +26,11 @@ async function responseRequest(req, res) {
         const wz_id = await functionsWoztell.consultRecordWz(id, externalId, app);
         const createRequestWzRecord = await functionsTask.createRequestWz(wz_id.id, customer, task);
         const requestWzRecord = await functionsTask.consultRequestWz(createRequestWzRecord);
-        const url = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id);
+
+        const token = generateToken();
+        const url = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id, token);
         const message = "";
+
         // Falta completar la funcion de acortador de URL
         //const encodedUrl = shortenUrl("Orden de ingreso",url);
 

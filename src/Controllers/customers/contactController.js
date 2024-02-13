@@ -7,8 +7,8 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
-async function logAndRespond(res, message, statusCode, process = null, data = null) {
-    const response = createCustomersResponse(message, statusCode, process, data);
+async function logAndRespond(res, message, statusCode, data = null) {
+    const response = createCustomersResponse(message, statusCode, data);
     res.status(statusCode).json(response);
     return response;
 }

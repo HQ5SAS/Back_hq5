@@ -1,0 +1,1 @@
+export const entryOrder = "Orden de ingreso";
