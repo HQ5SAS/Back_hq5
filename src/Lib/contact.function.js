@@ -1,10 +1,10 @@
-import * as queryPermit from '../Database/queryPermit.js';
-import * as queryContact from '../Database/querysContact.js';
+import * as permitQuery from '../Database/permit.quey.js';
+import * as contactQuery from '../Database/contact.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
 export async function consultContact(cel) {
     try {
-        const response = await queryContact.contactRecordExistsByCel(cel);
+        const response = await contactQuery.contactRecordExistsByCel(cel);
         return response;
 
     } catch (error) {
@@ -15,7 +15,7 @@ export async function consultContact(cel) {
 
 export async function consultPermission(contactId) {
     try {
-        const response = await queryPermit.permitRecordExistsByContact(contactId);
+        const response = await permitQuery.permitRecordExistsByContact(contactId);
         return response;
         
     } catch (error) {

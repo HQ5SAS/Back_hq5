@@ -1,9 +1,9 @@
-import * as queryPermit from '../Database/queryPermit.js';
+import * as permitQuery from '../Database/permit.quey.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
 export async function consultPermissionClient(cel, customer) {
     try {
-        const response = await queryPermit.permitRecordExistsByClient(cel, customer);
+        const response = await permitQuery.permitRecordExistsByClient(cel, customer);
         return response;
         
     } catch (error) {

@@ -1,5 +1,5 @@
-import * as functionsTask from '../../Lib/functionsTask.js';
-import * as functionsWoztell from '../../Lib/functionsWoztell.js';
+import * as taskFunction from '../../Lib/task.function.js';
+import * as woztellFunction from '../../Lib/woztell.function.js';
 import { createErrorResponse, createCustomersResponse, createURLWithIdCustomerIdTask, shortenUrl, generateToken } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import dotenv from 'dotenv';
@@ -23,9 +23,9 @@ async function responseRequest(req, res) {
         logAndRespond(res, 'Solicitud procesada correctamente', 200);        
 
         const { _id: id, externalId, app } = member;
-        const wz_id = await functionsWoztell.consultRecordWz(id, externalId, app);
-        const createRequestWzRecord = await functionsTask.createRequestWz(wz_id.id, customer, task);
-        const requestWzRecord = await functionsTask.consultRequestWz(createRequestWzRecord);
+        const wz_id = await woztellFunction.consultRecordWz(id, externalId, app);
+        const createRequestWzRecord = await taskFunction.createRequestWz(wz_id.id, customer, task);
+        const requestWzRecord = await taskFunction.consultRequestWz(createRequestWzRecord);
 
         const token = generateToken();
         const url = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id, token);

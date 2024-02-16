@@ -1,9 +1,9 @@
-import * as queryTask from '../Database/queysTask.js';
+import * as taskQuery from '../Database/task.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
 export async function consultTask(taskId) {
     try {
-        const response = await queryTask.taskRecordExistsById(taskId);
+        const response = await taskQuery.taskRecordExistsById(taskId);
         return response;
 
     } catch (error) {

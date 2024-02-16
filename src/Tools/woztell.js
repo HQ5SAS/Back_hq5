@@ -28,14 +28,14 @@ export const validateToken = async (req, res, next) => {
 };
 
 // Funcion para redireccionar al usuario de Woztell a través de los nodos de conversación con 4 argumentos (node, memberid, externalId, meta)
-export const redirectMemberToNode = async (node, memberId = null, externalId = null, metaData) => {
+export const redirectMemberToNode = async (node, memberId = null, recipientId = null, metaData) => {
 
     const { WZ_REDIRECT_MEMBER_TO_NODE, WZ_ACCESS_TOKEN, WZ_CHANNEL_CUST, WZ_TREE_CUST } = process.env;
 
     const data = {
         channelId: WZ_CHANNEL_CUST,
         memberId,
-        recipientId: externalId,
+        recipientId: recipientId,
         redirect: {
             tree: WZ_TREE_CUST,
             nodeCompositeId: node,
@@ -47,6 +47,7 @@ export const redirectMemberToNode = async (node, memberId = null, externalId = n
     };
 
     try {
+        // Logs en una tabla dentro de la base de datos - Pendiente
         const resultado = await requestPost(WZ_REDIRECT_MEMBER_TO_NODE, WZ_ACCESS_TOKEN, data);
     } catch (error) {
         console.error('Error:', error.message);

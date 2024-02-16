@@ -1,18 +1,18 @@
-import * as queryWz from '../Database/querysWz.js';
+import * as wzQuery from '../Database/wz.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
 export async function consultRecordWz(memberId, externalId, app) {
     try {
-        const response = await queryWz.wzRecordExistsByMemberId(memberId);
+        const response = await wzQuery.wzRecordExistsByMemberId(memberId);
 
         if (!response.exists) {
 
             try {
-                const insert = await queryWz.wzRecordInsert(memberId, externalId, app);
+                const insert = await wzQuery.wzRecordInsert(memberId, externalId, app);
                 if (!insert || !insert.id) {
                     throw new Error('Error en la inserción de registros en wz');
                 }
-                const response = await queryWz.wzRecordExistsById(insert.id);
+                const response = await wzQuery.wzRecordExistsById(insert.id);
                 return response;
 
             } catch (error) {

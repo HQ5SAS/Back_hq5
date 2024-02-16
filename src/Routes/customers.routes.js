@@ -1,7 +1,7 @@
 import express from 'express';
-import contactController from '../Controllers/customers/contactController.js';
-import serviClientController from '../Controllers/customers/serviceClientController.js';
-import taskController from '../Controllers/customers/taskController.js';
+import contactController from '../Controllers/customers/contact.controller.js';
+import serviClientController from '../Controllers/customers/serviceClient.controller.js';
+import taskController from '../Controllers/customers/task.controller.js';
 import {validateToken} from '../Tools/woztell.js';
 
 const router = express.Router();
@@ -14,5 +14,17 @@ router.post('/consultServiceClient', validateToken, serviClientController.consul
 
 // Servicio generar orden de ingreso (Customers - Whatsapp)
 router.post('/task1', validateToken, taskController.responseRequest);
+
+// Confirmar orden de ingreso (Servicio 1) (Customers - Whatsapp)
+router.post('/confirmEntryOrder', validateToken, (req, res) => {
+    console.log(req.body);
+    res.status(200).send('Correcto');
+});
+
+// Contact soporte orden de ingreso (Servicio 1) (Customers - Whatsapp)
+router.post('/supportEntryOrder', validateToken, (req, res) => {
+    console.log(req.body);
+    res.status(200).send('Correcto');
+});
 
 export default router;

@@ -1,5 +1,5 @@
-import * as functionsWoztell from '../../Lib/functionsWoztell.js';
-import * as functionsContact from '../../Lib/functionsContact.js';
+import * as woztellFunction from '../../Lib/woztell.function.js';
+import * as contactFunction from '../../Lib/contact.function.js';
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import { CONT_STATE_ACT, PERM_STATE_ACT, PERM_STATE_INACT } from '../../Database/fields.js';
@@ -24,9 +24,9 @@ async function validateContact(req, res) {
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
         
         const { _id: memberId, externalId, app } = member;
-        const wz_id = await functionsWoztell.consultRecordWz(memberId, externalId, app);
+        const wz_id = await woztellFunction.consultRecordWz(memberId, externalId, app);
         const cel = parseInt(wz_id.externalId.substring(2));
-        const contact = await functionsContact.consultContact(cel);
+        const contact = await contactFunction.consultContact(cel);
 
         if (!contact || contact.length === 0) {
             redirectMemberToNode(process.env.WZ_NODE_UNREG_CONT, wz_id.memberId, null, {});
@@ -52,7 +52,7 @@ async function validateContact(req, res) {
             return;
         }
 
-        const permission = await functionsContact.consultPermission(contactRecord.id);
+        const permission = await contactFunction.consultPermission(contactRecord.id);
 
         if (!permission || permission.length === 0) {
             redirectMemberToNode(process.env.WZ_NODE_NOT_PERM_CONT, wz_id.memberId, null, {});

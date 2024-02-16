@@ -1,5 +1,5 @@
-import * as functionsServiceClient from '../../Lib/functionsServiceClient.js';
-import * as functionsWoztell from '../../Lib/functionsWoztell.js';
+import * as serviceClientFunction from '../../Lib/serviceClient.function.js';
+import * as woztellFunction from '../../Lib/woztell.function.js';
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import { PERM_STATE_ACT, PERM_STATE_INACT } from '../../Database/fields.js';
@@ -23,9 +23,9 @@ async function consultServiceClient(req, res) {
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
 
         const { _id: id, externalId, app } = member;
-        const wz_id = await functionsWoztell.consultRecordWz(id, externalId, app);
+        const wz_id = await woztellFunction.consultRecordWz(id, externalId, app);
         const cel = parseInt(wz_id.externalId.substring(2));
-        const permission = await functionsServiceClient.consultPermissionClient(cel, customer);
+        const permission = await serviceClientFunction.consultPermissionClient(cel, customer);
 
         if (!permission || permission.length === 0) {
             redirectMemberToNode(process.env.WZ_NODE_NOT_PERM_CONT, wz_id.memberId, null, {});

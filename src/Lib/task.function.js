@@ -1,21 +1,21 @@
-import * as queryWz from '../Database/querysWz.js';
-import * as queryCustomer from '../Database/querysCustomer.js';
-import * as queryTask from '../Database/queysTask.js';
-import * as queryRequestWz from '../Database/querysRequestWz.js';
+import * as wzQuery from '../Database/wz.query.js';
+import * as customerQuery from '../Database/customer.query.js';
+import * as taskQuery from '../Database/task.query.js';
+import * as requestWzQuery from '../Database/requestWz.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
 export async function createRequestWz(wzId, customerId, taskId) {
     try {
         const [wzRecord, customerRecord, taskRecord] = await Promise.all([
-            queryWz.wzRecordExistsById(wzId),
-            queryCustomer.customerRecordExistsById(customerId),
-            queryTask.taskRecordExistsById(taskId),
+            wzQuery.wzRecordExistsById(wzId),
+            customerQuery.customerRecordExistsById(customerId),
+            taskQuery.taskRecordExistsById(taskId),
         ]);
 
-        const { exists, id } = await queryRequestWz.requestWzRecordExists(wzRecord.id, customerRecord.id, taskRecord.id);
+        const { exists, id } = await requestWzQuery.requestWzRecordExists(wzRecord.id, customerRecord.id, taskRecord.id);
 
         if (!exists) {
-            const { id } = await queryRequestWz.requestWzRecordInsert(wzRecord.id, customerRecord.id, taskRecord.id);
+            const { id } = await requestWzQuery.requestWzRecordInsert(wzRecord.id, customerRecord.id, taskRecord.id);
             return id;
         }
 
@@ -29,7 +29,7 @@ export async function createRequestWz(wzId, customerId, taskId) {
 
 export async function consultRequestWz(idWzRecord) {
     try {
-        const response = await queryRequestWz.requestWzRecordExistsById(idWzRecord);
+        const response = await requestWzQuery.requestWzRecordExistsById(idWzRecord);
         return response;
 
     } catch (error) {

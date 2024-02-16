@@ -5,7 +5,6 @@ dotenv.config({ path: '.env' });
 
 class DatabaseConnection {
 
-    // Constructor de la clase
     constructor() {
         this.connection = mysql.createConnection({
         host: process.env.DB_HOST,
@@ -16,7 +15,6 @@ class DatabaseConnection {
         connectTimeout: 20000,
         });
 
-        // Conectar a la base de datos al crear una instancia de la clase
         this.connection.connect((err) => {
             if (err) {
             console.error('Error al conectar a la base de datos:', err);
@@ -26,7 +24,6 @@ class DatabaseConnection {
         });
     }
 
-    // Método para realizar consultas
     query(sql, values, callback) {
         this.connection.query(sql, values, (err, results, fields) => {
         if (err) {
@@ -37,7 +34,6 @@ class DatabaseConnection {
         });
     }
 
-    // Método para cerrar la conexión
     end() {
         this.connection.end((err) => {
         if (err) {

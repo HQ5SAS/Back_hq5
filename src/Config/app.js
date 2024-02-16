@@ -10,7 +10,6 @@ import { log } from 'console';
 
 dotenv.config({ path: '.env' });
 
-// Configuracion de la aplicacion
 const app = express();
 const PORT = process.env.PORT || 4001;
 const router = express.Router();
@@ -20,7 +19,6 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(corsConfig);
 
-// Configuracion router
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const routesDir = join(__dirname, '../Routes');

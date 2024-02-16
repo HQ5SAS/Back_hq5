@@ -1,4 +1,4 @@
-import { dbConnection } from '../Database/connection.js';
+import { dbConnection } from './connection.js';
 
 // Función para realizar la inserción de registros en la tabla solicitud_wz
 export const requestWzRecordInsert = (wzId, customerId, taskId) => {
@@ -13,7 +13,7 @@ export const requestWzRecordInsert = (wzId, customerId, taskId) => {
                 console.log(`Se insertó en la tabla solicitud wz con ID: ${result.insertId}`);
                 resolve({ id: result.insertId });
             } else {
-                console.error('Error al insertar en la tabla solicitud wz');
+                console.error('Error al insertar en la tabla solicitud wz: requestWzRecordInsert');
                 reject('Error al insertar un registro en la tabla solicitud wz');
             }
         });

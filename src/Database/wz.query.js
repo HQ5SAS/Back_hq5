@@ -15,7 +15,7 @@ export const wzRecordInsert = (memberId, externalId, app) => {
                 console.log(`Se insertó en la tabla wz con ID: ${result.insertId}`);
                 resolve({ id: result.insertId});
             } else {
-                console.error('Error al insertar en la tabla wz: InsertId no válido');
+                console.error('Error al insertar en la tabla wz: wzRecordInsert');
                 reject('Error al insertar un registro en la tabla wz');
             }
         });

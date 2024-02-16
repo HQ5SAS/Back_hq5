@@ -1,4 +1,4 @@
-import { dbConnection } from '../Database/connection.js';
+import { dbConnection } from './connection.js';
 import { CLI_STATE_ACT } from './fields.js'
 
 // Función que realiza la consulta del contacto
@@ -23,7 +23,7 @@ export const contactRecordExistsByCel = (cel) => {
             if (results) {
                 resolve(results);
             } else {
-                reject('Error en la consulta del usuario');
+                reject('Error en la consulta de: contactRecordExistsByCel');
             }
         });
     });

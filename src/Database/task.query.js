@@ -1,4 +1,4 @@
-import { dbConnection } from '../Database/connection.js';
+import { dbConnection } from './connection.js';
 
 // Función para verificar si existe un registro en la tabla tarea_bot
 export const taskRecordExistsById = (taskId) => {

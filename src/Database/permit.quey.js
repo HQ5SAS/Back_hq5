@@ -22,7 +22,7 @@ export const permitRecordExistsByContact = (contactId) => {
             if (results) {
                 resolve(results);
             } else {
-                reject('Error en la consulta de permisos');
+                reject('Error en la consulta de: permitRecordExistsByContact');
             }
         });
     });
@@ -51,7 +51,7 @@ export const permitRecordExistsByClient = (cel, customer) => {
             if (results) {
                 resolve(results);
             } else {
-                reject('Error en la consulta de permisos asociados a un cliente');
+                reject('Error en la consulta de: permitRecordExistsByClient');
             }
         });
     });

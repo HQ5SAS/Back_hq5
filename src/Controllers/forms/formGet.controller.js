@@ -1,7 +1,7 @@
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
 import { entryOrder } from '../../Tools/taskName.js';
-import { consultTask } from '../../Lib/functionsForm.js';
-import { getFieldValue } from './entryOrderController.js';
+import { consultTask } from '../../Lib/form.function.js';
+import { getFieldValue } from './entryOrderPost.controller.js';
 
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
@@ -12,23 +12,27 @@ async function logAndRespond(res, message, statusCode, data = null) {
 async function processForm(req, res) {
     try {
         const { customer, task } = req.body;
+
         if (!customer || !task) {
             return logAndRespond(res, 'Clave (customer) o (task) no encontrada en el cuerpo de la solicitud', 400);
         }
 
-        // Por ahora
-        logAndRespond(res, "ok", 200);
-
-        // Consultar el tipo de tarea para ejecutar su controller
         const taskRecord = await consultTask(task);
         const { nombre: taskName } = taskRecord;
-        if(taskName == entryOrder)
-        {
-            const fieldsValues = getFieldValue(customer);
-        }
-        else
-        {
-            console.log("No");
+
+        if (taskName === entryOrder) {
+            // Falta acceder al cliente que se recibe en la solicitud
+            // Falta filtrar los postulados por su estado
+            // Falta crear objeto con selecciones automaticas
+            const customerId = "3960020000000245031";
+            console.log(customerId);
+            const fieldsValues = await getFieldValue(customerId);
+
+            if (fieldsValues === null) {
+                return logAndRespond(res, "Error en el proceso", 400);
+            }
+
+            return logAndRespond(res, "Solicitud completada", 200, fieldsValues);
         }
 
     } catch (error) {
