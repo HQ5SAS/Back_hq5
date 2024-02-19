@@ -1,4 +1,4 @@
-import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
+import { createErrorResponse, createCustomersResponse, generateToken } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import dotenv from 'dotenv';
 
@@ -19,7 +19,11 @@ async function notifyEntryOrderCustomer(req, res, node) {
             return logAndRespond(res, errorMessage, 400);
         }
 
-        redirectMemberToNode(node, null, data.recipientId, req.body);
+        const body = req.body;
+        const token = generateToken();
+        body.data.path = `?idEntryOrder=${data.id}&token=${token}`;
+
+        redirectMemberToNode(node, null, data.recipientId, body);
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
         return;
 

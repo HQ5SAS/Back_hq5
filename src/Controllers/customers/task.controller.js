@@ -1,6 +1,6 @@
 import * as taskFunction from '../../Lib/task.function.js';
 import * as woztellFunction from '../../Lib/woztell.function.js';
-import { createErrorResponse, createCustomersResponse, createURLWithIdCustomerIdTask, shortenUrl, generateToken } from '../../Tools/utils.js';
+import { createErrorResponse, createCustomersResponse, createURLWithIdCustomerIdTask, generateToken } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import dotenv from 'dotenv';
 
@@ -28,18 +28,15 @@ async function responseRequest(req, res) {
         const requestWzRecord = await taskFunction.consultRequestWz(createRequestWzRecord);
 
         const token = generateToken();
-        const url = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id, token);
+        const path = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id, token);
         const message = "";
-
-        // Falta completar la funcion de acortador de URL
-        //const encodedUrl = shortenUrl("Orden de ingreso",url);
 
         redirectMemberToNode(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, null, {
             customer: customer,
             task: task,
             request: requestWzRecord.id,
-            url: url,
-            path: "RegistrarHV/",
+            url: "",
+            path: path,
             message: message
         });
         return;

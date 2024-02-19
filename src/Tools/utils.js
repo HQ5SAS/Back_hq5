@@ -54,8 +54,7 @@ export const requestPost = async (url, accessToken, data) => {
 
 // Funcion para complementar la URL del frontend con el idCliente el idTask y el token
 export const createURLWithIdCustomerIdTask = (customerId, taskId, token = null) => {
-    const baseUrl = process.env.APP_FRONT;
-    return `${baseUrl}?customer=${customerId}&task=${taskId}&token=${token}`;
+    return `?customer=${customerId}&task=${taskId}&token=${token}`;
 };
 
 // Funcion para acortar las url con rebranly
@@ -92,7 +91,7 @@ const SECRET_KEY = process.env.SECRET_KEY_SERVICE;
 const DEFAULT_TOKEN_DATA = {
     user: process.env.USER_SERVICE,
     role: process.env.ROL_SERVICE,
-    expiresIn: '1h'
+    expiresIn: '12h'
 };
 
 // Función auxiliar para convertir la duración de caducidad del token a milisegundos
