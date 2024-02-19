@@ -7,12 +7,12 @@ export const contactRecordExistsByCel = (cel) => {
         const sqlQuery = `
             SELECT 
                 contacto.id AS id2,
-                contacto.zh_id AS id,
+                CONVERT(contacto.zh_id, CHAR) AS id,
                 contacto.nombre AS nombre,
                 contacto.celular AS celular,
                 contacto.estado AS estado,
                 cliente.id AS id_cliente2,
-                cliente.zh_id AS id_cliente,
+                CONVERT(cliente.zh_id, CHAR) AS id_cliente,
                 cliente.cliente AS cliente
             FROM contacto
             JOIN cliente ON contacto.zh_cliente = cliente.zh_id

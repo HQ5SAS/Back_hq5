@@ -6,12 +6,12 @@ export const permitRecordExistsByContact = (contactId) => {
         const sqlQuery = `
             SELECT 
                 permiso.id AS id,
-                permiso.zh_id AS zh_id,
+                CONVERT(permiso.zh_id, CHAR) AS zh_id,
                 permiso.estado AS estado,
-                permiso.zh_contacto AS zh_contacto,
+                CONVERT(permiso.zh_contacto, CHAR) AS zh_contacto,
                 proceso_ov.nombre AS nombre_proceso,
                 tarea_bot.id AS tarea_bot_id2,
-                tarea_bot.zh_id AS tarea_bot_id,
+                CONVERT(tarea_bot.zh_id, CHAR) AS tarea_bot_id,
                 tarea_bot.nombre AS nombre_tarea_bot
             FROM permiso
             JOIN proceso_ov ON permiso.zh_proceso = proceso_ov.zh_id
@@ -34,12 +34,12 @@ export const permitRecordExistsByClient = (cel, customer) => {
         const sqlQuery = `
             SELECT 
                 permiso.id AS id,
-                permiso.zh_id AS zh_id,
+                CONVERT(permiso.zh_id, CHAR) AS zh_id,
                 permiso.estado AS estado,
-                permiso.zh_contacto AS zh_contacto,
+                CONVERT(permiso.zh_contacto, CHAR) AS zh_contacto,
                 proceso_ov.nombre AS nombre_proceso,
                 tarea_bot.id AS tarea_bot_id2,
-                tarea_bot.zh_id AS tarea_bot_id,
+                CONVERT(tarea_bot.zh_id, CHAR) AS tarea_bot_id,
                 tarea_bot.nombre AS nombre_tarea_bot                
             FROM permiso
             JOIN proceso_ov ON permiso.zh_proceso = proceso_ov.zh_id

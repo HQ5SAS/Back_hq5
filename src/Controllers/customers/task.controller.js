@@ -39,6 +39,7 @@ async function responseRequest(req, res) {
             task: task,
             request: requestWzRecord.id,
             url: url,
+            path: "RegistrarHV/",
             message: message
         });
         return;

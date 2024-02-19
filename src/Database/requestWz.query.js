@@ -46,8 +46,8 @@ export const requestWzRecordExistsById = (id) => {
         const sqlQuery = `
         SELECT 
             solicitud_wz.id AS id,
-            solicitud_wz.zh_cliente AS cliente_id, 
-            solicitud_wz.zh_tarea_bot AS tarea_id,
+            CONVERT(solicitud_wz.zh_cliente, CHAR) AS cliente_id, 
+            CONVERT(solicitud_wz.zh_tarea_bot, CHAR) AS tarea_id,
             cliente.cliente AS cliente_nombre, 
             tarea_bot.nombre AS tarea_nombre
         FROM 

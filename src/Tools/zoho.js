@@ -1,8 +1,11 @@
 import fetch from 'node-fetch';
+import jwt from 'jsonwebtoken';
+import { createErrorResponse } from './utils.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
+// Obtener access token para tener acceso a creator con multiples scopes
 export const getAccessToken = async () => {
 
     const url = process.env.ZH_URL_TOKEN;
@@ -35,3 +38,23 @@ export const getAccessToken = async () => {
         return null;
     }   
 }
+
+// Función para validar el token de Zoho con el servidor
+export const validateToken = async (req, res, next) => {
+    try {
+        const secretKey = process.env.ZH_SECRET_KEY;
+        const token = req.header('Authorization');
+
+        if (!token) {
+            const response = createErrorResponse('Token no proporcionado', 401);
+            return res.status(401).json(response);
+        }
+
+        const decoded = await jwt.verify(token.replace('Bearer ', ''), secretKey);
+        next();
+
+    } catch (error) {
+        const response = createErrorResponse('Token inválido', 401);
+        return res.status(401).json(response);
+    }
+};
