@@ -14,8 +14,8 @@ async function notifyEntryOrderCustomer(req, res, node) {
     try {
         const { data } = req.body;
 
-        if (!data || !data.msg || !data.id || !data.recipientId) {
-            const errorMessage = 'Las claves (msg), (id) o (recipientId) no se encontraron en el cuerpo de la solicitud';
+        if (!data || !data.message || !data.id || !data.recipientId) {
+            const errorMessage = 'Las claves (message), (id) o (recipientId) no se encontraron en el cuerpo de la solicitud';
             return logAndRespond(res, errorMessage, 400);
         }
 
