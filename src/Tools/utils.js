@@ -123,6 +123,7 @@ const parseDuration = (duration) => {
 export const generateToken = () => {
     const tokenData = { ...DEFAULT_TOKEN_DATA, exp: Date.now() + parseDuration(DEFAULT_TOKEN_DATA.expiresIn) };
     const token = jwt.sign(tokenData, SECRET_KEY, { algorithm: 'HS256' });
+    console.log(token);
     return token;
 };
 

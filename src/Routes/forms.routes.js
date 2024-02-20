@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Obtener los valores a cargar en los campos del formulario frontend web
 // Falta agregar la validacion de token
-router.get('/', formGet.processForm);
+router.get('/', verifyTokenMiddleware, formGet.processForm);
 
 // Falta validar token y crear registro de respuesta en Zoho, y luego lo aparte del ciclo
 router.post('/', formPost.processForm);

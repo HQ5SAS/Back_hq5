@@ -1,7 +1,7 @@
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
 import { entryOrder } from '../../Tools/taskName.js';
 import { consultTask } from '../../Lib/form.function.js';
-import { getFieldValue } from './entryOrderPost.controller.js';
+import { getFieldValue } from './entryOrderOut.controller.js';
 
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
@@ -11,10 +11,13 @@ async function logAndRespond(res, message, statusCode, data = null) {
 
 async function processForm(req, res) {
     try {
-        const { customer, task } = req.body;
 
-        if (!customer || !task) {
-            return logAndRespond(res, 'Clave (customer) o (task) no encontrada en el cuerpo de la solicitud', 400);
+        const { customer, task } = req.query;
+        const requiredParams = ['customer', 'task'];
+        const missingParams = requiredParams.filter(param => !req.query[param]);
+
+        if (missingParams.length > 0) {
+        return logAndRespond(res, `Faltan parámetros obligatorios: ${missingParams.join(', ')}`, 400);
         }
 
         const taskRecord = await consultTask(task);
@@ -23,10 +26,8 @@ async function processForm(req, res) {
         if (taskName === entryOrder) {
             // Falta acceder al cliente que se recibe en la solicitud
             // Falta filtrar los postulados por su estado
-            // Falta crear objeto con selecciones automaticas
-            const customerId = "3960020000000245031";
-            console.log(customerId);
-            const fieldsValues = await getFieldValue(customerId);
+            // Falta crear objeto con selecciones pre diligenciadas
+            const fieldsValues = await getFieldValue(customer);
 
             if (fieldsValues === null) {
                 return logAndRespond(res, "Error en el proceso", 400);

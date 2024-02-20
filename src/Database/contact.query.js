@@ -28,3 +28,22 @@ export const contactRecordExistsByCel = (cel) => {
         });
     });
 };
+
+// Función para actualizar en la tabla contacto el campo de fk_wz_id de acuerdo al cliente que interactua con el bot
+export const updateContactWzIdById = (contactId, wzId) => {
+    return new Promise((resolve, reject) => {
+        const sqlQuery = `
+            UPDATE contacto
+            SET fk_wz_id = ?
+            WHERE zh_id = ?;
+        `;
+
+        dbConnection.query(sqlQuery, [wzId, contactId], (results, fields) => {
+            if (results.affectedRows > 0) {
+                resolve(results);
+            } else {
+                reject('Error en la actualización de contacto');
+            }
+        });
+    });
+};

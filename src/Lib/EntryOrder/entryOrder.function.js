@@ -6,7 +6,9 @@ import { subCostCenterRecordExistsByIdCustomer } from '../../Database/subCostCen
 import { costCenterRecordExistsByIdCustomer } from '../../Database/costCenter.query.js';
 import { groupRecordExistsByGroup } from '../../Database/group.query.js';
 import { conceptRecordExistsByIdGroup } from '../../Database/concept.query.js';
+import { profileRecordExistsById } from '../../Database/profile.query.js';
 import { createErrorResponse } from '../../Tools/utils.js';
+import { applyCallRecordExistsByIdReq } from '../../Database/applyCall.query.js';
 
 async function consultRecordByIdCustomer(recordFunction, recordType, customerId) {
     try {
@@ -62,5 +64,27 @@ export async function consultConcept(groupId) {
     } catch (error) {
         console.error('Error al obtener los conceptos por id grupo', error);
         throw createErrorResponse('Error al obtener los conceptos por id grupo', 400);
+    }
+}
+
+export async function consultProfile(profileId) {
+    try {
+        const response = await profileRecordExistsById(profileId);
+        return response;
+
+    } catch (error) {
+        console.error('Error al obtener el perfil por id perfil', error);
+        throw createErrorResponse('Error al obtener el perfil por id perfil', 400);
+    }
+}
+
+export async function consultApplyCall(reqId) {
+    try {
+        const response = await applyCallRecordExistsByIdReq(reqId);
+        return response;
+
+    } catch (error) {
+        console.error('Error al obtener aplicar convocatoria por id requisicion', error);
+        throw createErrorResponse('Error al obtener aplicar convocatoria por id requisicion', 400);
     }
 }

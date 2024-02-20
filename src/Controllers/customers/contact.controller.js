@@ -26,7 +26,7 @@ async function validateContact(req, res) {
         const { _id: memberId, externalId, app } = member;
         const wz_id = await woztellFunction.consultRecordWz(memberId, externalId, app);
         const cel = parseInt(wz_id.externalId.substring(2));
-        const contact = await contactFunction.consultContact(cel);
+        const contact = await contactFunction.consultContact(cel, wz_id.id);
 
         if (!contact || contact.length === 0) {
             redirectMemberToNode(process.env.WZ_NODE_UNREG_CONT, wz_id.memberId, null, {});

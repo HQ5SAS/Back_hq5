@@ -7,4 +7,4 @@ const localhostCorsOptions = {
     optionsSuccessStatus: 204,
   };
 
-export default cors(localhostCorsOptions);
+export default cors();

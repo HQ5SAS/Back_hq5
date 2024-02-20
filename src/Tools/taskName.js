@@ -1,1 +1,1 @@
-export const entryOrder = "Orden de ingreso";
+export const entryOrder = "Generacion y aprobacion orden ingreso";
