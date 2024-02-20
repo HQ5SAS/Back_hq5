@@ -36,7 +36,7 @@ const fetchData2 = async (apiUrl, criteria, accessToken) => {
 // };
 
 const buildInnerApplyCallsObject = (applyCallsData) => {
-    return applyCallsData.reduce((obj, { id, documento, nombre, id_hv, estado }) => ({ ...obj, [documento]: { id, nombre, id_hv, estado } }), {});
+    return applyCallsData.reduce((obj, { id, documento, nombre, id_hv }) => ({ ...obj, [documento]: { id, nombre, id_hv } }), {});
 };
 
 const buildInnerCenterCostObject = (centerCostData) => {
@@ -77,7 +77,7 @@ const buildInnerConceptObject = (conceptData) => {
     return conceptData.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id, valor: 0, metodologia_pago: ['Proporcional días laborados', 'Valor fijo mes'] } }), {});
 };
 
-const buildInnerReqObj = (element, applyCallsObj, profileObj) => {
+const buildInnerReqObj = (element, applyCallObj, profileObj) => {
 
     const { ID: id, Salario_basico: salary, ESTADO: status, tipo_cont_gen_req_lp_agreg_tip_jorn: typeContract, Tipo_de_Jornada: typeWorkDay } = element;
 
@@ -88,7 +88,7 @@ const buildInnerReqObj = (element, applyCallsObj, profileObj) => {
     return {
         estado: status,
         id: id,
-        postulados: applyCallsObj,
+        postulados: applyCallObj,
         nivel_riesgo: profileObj,
         salario_basico: salaryBasic,
         tipo_contrato: dataContract,
@@ -122,7 +122,6 @@ const processRequisitionData = async (responseData, accessToken) => {
         const { id_req_gen_req: reqNumber, ID: reqId, cargo_gen_req_lp_perf: profile } = element;
         const { ID: profileId } = profile;
         
-        // faltaria validacion de orden ingreso
         // const applyCall = fetchData(`${BASE_URL_HQ5}vista_general`, `REQUISICION_RELATED.ID=${reqId}`, accessToken)
         
         const [ responseApplyCalls, 
@@ -132,19 +131,20 @@ const processRequisitionData = async (responseData, accessToken) => {
             entryOrder.consultProfile(profileId)
         ]);
 
-        // const applyCallsObj = responseApplyCalls && Array.isArray(responseApplyCalls.data) ?
+        // const applyCallObj = responseApplyCalls && Array.isArray(responseApplyCalls.data) ?
         //     buildInnerApplyCallsObject(responseApplyCalls.data) : {};
 
-        const applyCallsObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};    
+        const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};    
         const profileObj = responseProfile && responseProfile.length > 0 ? buildInnerProfileObject(responseProfile) : {};
 
-        if(Object.keys(applyCallsObj).length !== 0)
-        {
-            console.log(applyCallsObj);
-        }
+        // const innerObj = buildInnerReqObj(element, applyCallObj, profileObj);
+        // reqObj[reqNumber] = innerObj;
 
-        const innerObj = buildInnerReqObj(element, applyCallsObj, profileObj);
-        reqObj[reqNumber] = innerObj;
+        const innerObj = Object.keys(applyCallObj).length > 0 ? buildInnerReqObj(element, applyCallObj, profileObj) : null;
+        // Verificar si innerObj tiene datos antes de asignar a reqObj
+        if (innerObj) {
+            reqObj[reqNumber] = innerObj;
+        }
     });
 
     // Esperar a que todas las solicitudes en paralelo se completen antes de retornar
@@ -209,6 +209,7 @@ export const getFieldValue = async (customerId) => {
         if (response && response?.data && Array.isArray(response.data) && response.data.length > 0) {
             
             console.log("Procesando...");
+
             const [dataObj, reqObj] = await Promise.all([
                 processDataFields(response.data[0], accessToken),
                 processRequisitionData(response.data, accessToken)
@@ -218,7 +219,6 @@ export const getFieldValue = async (customerId) => {
             const combinedObj = Object.assign({}, dataObj, reqObjF);
             const entOrdObj = { orden_ingreso: { campos: combinedObj } };
 
-            // Estas 4 lineas sobran con el procesando de arriba
             // const jsonString = JSON.stringify(entOrdObj, null, 2);
             // const filePath = './archivo.json';
             // await fs.writeFile(filePath, jsonString, 'utf-8');

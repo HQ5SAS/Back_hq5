@@ -1,47 +1,41 @@
-import mysql from 'mysql';
+import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
 class DatabaseConnection {
-
     constructor() {
-        this.connection = mysql.createConnection({
+        this.connection = mysql.createPool({
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_DATABASE,
             port: process.env.DB_PORT,
+            connectionLimit: 100,
             connectTimeout: 20000,
         });
 
-        this.connection.connect((err) => {
-            if (err) {
-            console.error('Error al conectar a la base de datos:', err);
-            throw err;
-            }
-            console.log('Conectado a la base de datos');
-        });
+        console.log('Conexión a la base de datos establecida');
     }
 
-    query(sql, values, callback) {
-        this.connection.query(sql, values, (err, results, fields) => {
-        if (err) {
+    async query(sql, values) {
+        try {
+            const [results, fields] = await this.connection.query(sql, values);
+            return { results, fields };
+        } catch (err) {
             console.error('Error al realizar la consulta:', err);
-            return;
+            throw err;
         }
-        callback(results, fields);
-        });
     }
 
-    end() {
-        this.connection.end((err) => {
-        if (err) {
+    async end() {
+        try {
+            await this.connection.end();
+            console.log('Conexión cerrada');
+        } catch (err) {
             console.error('Error al cerrar la conexión:', err);
             throw err;
         }
-        console.log('Conexión cerrada');
-        });
     }
 }
 

@@ -1,58 +1,56 @@
 import { dbConnection } from './connection.js';
 
+// OK
+
 // Función que realiza la consulta de los permisos del contacto
-export const permitRecordExistsByContact = (contactId) => {
-    return new Promise((resolve, reject) => {
-        const sqlQuery = `
+export const permitRecordExistsByContact = async (contactId) => {
+    try {
+        const { results } = await dbConnection.query(`
             SELECT 
                 permiso.id AS id,
-                CONVERT(permiso.zh_id, CHAR) AS zh_id,
+                CAST(permiso.zh_id AS CHAR) AS zh_id,
                 permiso.estado AS estado,
-                CONVERT(permiso.zh_contacto, CHAR) AS zh_contacto,
+                CAST(permiso.zh_contacto AS CHAR) AS zh_contacto,
                 proceso_ov.nombre AS nombre_proceso,
                 tarea_bot.id AS tarea_bot_id2,
-                CONVERT(tarea_bot.zh_id, CHAR) AS tarea_bot_id,
+                CAST(tarea_bot.zh_id AS CHAR) AS tarea_bot_id,
                 tarea_bot.nombre AS nombre_tarea_bot
             FROM permiso
             JOIN proceso_ov ON permiso.zh_proceso = proceso_ov.zh_id
             JOIN tarea_bot ON tarea_bot.zh_proceso = proceso_ov.zh_id
             WHERE permiso.zh_contacto = ?;
-        `;
-        dbConnection.query(sqlQuery, [contactId], (results, fields) => {
-            if (results) {
-                resolve(results);
-            } else {
-                reject('Error en la consulta de: permitRecordExistsByContact');
-            }
-        });
-    });
+        `, [contactId]);
+
+        return results;
+    } catch (error) {
+        console.error('Error en la consulta de: permitRecordExistsByContact', error);
+        throw error;
+    }
 };
 
 // Función que realiza la consulta de los permisos del contacto por cliente
-export const permitRecordExistsByClient = (cel, customer) => {
-    return new Promise((resolve, reject) => {
-        const sqlQuery = `
+export const permitRecordExistsByClient = async (cel, customer) => {
+    try {
+        const { results } = await dbConnection.query(`
             SELECT 
                 permiso.id AS id,
-                CONVERT(permiso.zh_id, CHAR) AS zh_id,
+                CAST(permiso.zh_id AS CHAR) AS zh_id,
                 permiso.estado AS estado,
-                CONVERT(permiso.zh_contacto, CHAR) AS zh_contacto,
+                CAST(permiso.zh_contacto AS CHAR) AS zh_contacto,
                 proceso_ov.nombre AS nombre_proceso,
                 tarea_bot.id AS tarea_bot_id2,
-                CONVERT(tarea_bot.zh_id, CHAR) AS tarea_bot_id,
+                CAST(tarea_bot.zh_id AS CHAR) AS tarea_bot_id,
                 tarea_bot.nombre AS nombre_tarea_bot                
             FROM permiso
             JOIN proceso_ov ON permiso.zh_proceso = proceso_ov.zh_id
             JOIN tarea_bot ON tarea_bot.zh_proceso = proceso_ov.zh_id
             JOIN contacto ON contacto.zh_id = permiso.zh_contacto
             WHERE contacto.celular = ? AND contacto.zh_cliente = ?;
-        `;
-        dbConnection.query(sqlQuery, [cel, customer], (results, fields) => {
-            if (results) {
-                resolve(results);
-            } else {
-                reject('Error en la consulta de: permitRecordExistsByClient');
-            }
-        });
-    });
+        `, [cel, customer]);
+
+        return results;
+    } catch (error) {
+        console.error('Error en la consulta de: permitRecordExistsByClient', error);
+        throw error;
+    }
 };

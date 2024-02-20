@@ -24,7 +24,9 @@ async function validateContact(req, res) {
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
         
         const { _id: memberId, externalId, app } = member;
+
         const wz_id = await woztellFunction.consultRecordWz(memberId, externalId, app);
+        
         const cel = parseInt(wz_id.externalId.substring(2));
         const contact = await contactFunction.consultContact(cel, wz_id.id);
 

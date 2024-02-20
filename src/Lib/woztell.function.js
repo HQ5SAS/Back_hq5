@@ -9,6 +9,7 @@ export async function consultRecordWz(memberId, externalId, app) {
 
             try {
                 const insert = await wzQuery.wzRecordInsert(memberId, externalId, app);
+
                 if (!insert || !insert.id) {
                     throw new Error('Error en la inserción de registros en wz');
                 }

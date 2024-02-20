@@ -1,49 +1,49 @@
 import { dbConnection } from './connection.js';
-import { CLI_STATE_ACT } from './fields.js'
+import { CLI_STATE_ACT } from './fields.js';
+
+// OK
 
 // Función que realiza la consulta del contacto
-export const contactRecordExistsByCel = (cel) => {
-    return new Promise((resolve, reject) => {
-        const sqlQuery = `
+export const contactRecordExistsByCel = async (cel) => {
+    try {
+        const { results } = await dbConnection.query(`
             SELECT 
                 contacto.id AS id2,
-                CONVERT(contacto.zh_id, CHAR) AS id,
+                CAST(contacto.zh_id AS CHAR) AS id,
                 contacto.nombre AS nombre,
                 contacto.celular AS celular,
                 contacto.estado AS estado,
                 cliente.id AS id_cliente2,
-                CONVERT(cliente.zh_id, CHAR) AS id_cliente,
+                CAST(cliente.zh_id AS CHAR) AS id_cliente,
                 cliente.cliente AS cliente
             FROM contacto
             JOIN cliente ON contacto.zh_cliente = cliente.zh_id
-            WHERE contacto.celular = ? AND cliente.estado = '${CLI_STATE_ACT}';
-        `;
+            WHERE contacto.celular = ? AND cliente.estado = ?;
+        `, [cel, CLI_STATE_ACT]);
 
-        dbConnection.query(sqlQuery, [cel], (results, fields) => {
-            if (results) {
-                resolve(results);
-            } else {
-                reject('Error en la consulta de: contactRecordExistsByCel');
-            }
-        });
-    });
+        return results;
+    } catch (error) {
+        console.error('Error en la consulta de: contactRecordExistsByCel', error);
+        throw error;
+    }
 };
 
-// Función para actualizar en la tabla contacto el campo de fk_wz_id de acuerdo al cliente que interactua con el bot
-export const updateContactWzIdById = (contactId, wzId) => {
-    return new Promise((resolve, reject) => {
-        const sqlQuery = `
+// Función para actualizar en la tabla contacto el campo de fk_wz_id de acuerdo al cliente que interactúa con el bot
+export const updateContactWzIdById = async (contactId, wzId) => {
+    try {
+        const { results } = await dbConnection.query(`
             UPDATE contacto
             SET fk_wz_id = ?
             WHERE zh_id = ?;
-        `;
+        `, [wzId, contactId]);
 
-        dbConnection.query(sqlQuery, [wzId, contactId], (results, fields) => {
-            if (results.affectedRows > 0) {
-                resolve(results);
-            } else {
-                reject('Error en la actualización de contacto');
-            }
-        });
-    });
+        if (results.affectedRows > 0) {
+            return results;
+        } else {
+            throw new Error('Error en la actualización de contacto');
+        }
+    } catch (error) {
+        console.error('Error en la actualización de contacto', error);
+        throw error;
+    }
 };
