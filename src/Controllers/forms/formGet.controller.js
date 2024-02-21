@@ -1,7 +1,7 @@
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
 import { entryOrder } from '../../Tools/taskName.js';
 import { consultTask } from '../../Lib/form.function.js';
-import { getFieldValue } from './entryOrderOut.controller.js';
+import { getFieldValue } from '../../Lib/EntryOrder/entryOrderGet.function.js';
 
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
@@ -24,9 +24,7 @@ async function processForm(req, res) {
         const { nombre: taskName } = taskRecord;
 
         if (taskName === entryOrder) {
-            // Falta acceder al cliente que se recibe en la solicitud
-            // Falta filtrar los postulados por su estado
-            // Falta crear objeto con selecciones pre diligenciadas
+            
             const fieldsValues = await getFieldValue(customer);
 
             if (fieldsValues === null) {

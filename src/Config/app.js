@@ -33,7 +33,7 @@ const importRoutes = async () => {
             const { default: routes } = await import(fileUrl);
             const routeName = file.replace('.routes.js', '').toLowerCase();
             router.use(`/api/v1/${routeName}`, routes);
-            console.log(`Ruta > ${routeName}`);
+            // console.log(`Ruta > ${routeName}`);
         }));
 
     } catch (error) {

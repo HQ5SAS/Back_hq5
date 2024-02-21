@@ -1,35 +1,39 @@
 // Validacion de Json
 async function validateJson(data) {
+
+    // Keys esperadas en el objeto principal
     const expectedKeys = [
+        "requisicion",
+        "postulados",
+        "centro_costo",
         "fecha_ingreso",
         "sitio_trabajo",
         "sitio_presentacion",
-        "salario_integral",
-        "sabado_habil",
-        "observaciones",
-        "centro_costo",
-        "naturaleza_cc",
-        "proyecto_cc",
-        "linea_negocio_cc",
-        "area_cc",
-        "sub_centro_cc",
         "nivel_riesgo",
         "salario_basico",
+        "salario_integral",
+        "sabado_habil",
         "tipo_contrato",
         "tipo_jornada",
-        "requisicion",
-        "postulados",
+        "observaciones",
+        "naturaleza_cc",
+        "proyecto_cc",
+        "sub_centro_cc",
+        "linea_negocio_cc",
+        "area_cc",
         "beneficios_contrato"
     ];
 
+    // Keys esperadas en objetos anidados
     const expectedNestedKeys = {
+        "requisicion": ["id"],
         "centro_costo": ["id", "periodicidad", "dias_pago"],
         "salario_basico": ["valor"],
         "tipo_contrato": ["id"],
-        "tipo_jornada": ["id"],
-        "requisicion": ["id"]
+        "tipo_jornada": ["id"]
     };
 
+    // Validación adicional para otras claves
     const validationRules = {
         "postulados": {
             isArray: true,
@@ -37,68 +41,52 @@ async function validateJson(data) {
         }
     };
 
-    const validateNestedKeys = (nestedObject, expectedNestedKeys) => {
-        const missingNestedKeys = expectedNestedKeys.filter(key => !Object.keys(nestedObject).includes(key));
+    // Función para validar claves anidadas
+    const validateNestedKeys = (nestedObject, expectedNestedKeys) =>
+        expectedNestedKeys.filter(key => !Object.keys(nestedObject).includes(key));
 
-        if (missingNestedKeys.length > 0) {
-            return missingNestedKeys;
-
-        } else {
-            return [];
-        }
-    };
-
+    // Función para validar una clave específica según sus reglas
     const validateField = (fieldName, fieldValue, rules) => {
-        if (rules.isArray) {
-            if (!Array.isArray(fieldValue) || fieldValue.length === 0) {
-                console.log(`La lista ${fieldName} debe tener al menos un elemento`);
-                return false;
-            }
+        if (rules.isArray && (!Array.isArray(fieldValue) || fieldValue.length === 0)) {
+            console.log(`La lista ${fieldName} debe tener al menos un elemento`);
+            return false;
         }
 
-        if (rules.hasRequiredField) {
-            if (!fieldValue[0]?.hasOwnProperty(rules.hasRequiredField)) {
-                console.log(`El elemento en la lista ${fieldName} debe tener la clave "${rules.hasRequiredField}"`);
-                return false;
-            }
+        if (rules.hasRequiredField && !fieldValue[0]?.hasOwnProperty(rules.hasRequiredField)) {
+            console.log(`El elemento en la lista ${fieldName} debe tener la clave "${rules.hasRequiredField}"`);
+            return false;
         }
 
         return true;
     };
 
+    // Claves reales presentes en el objeto data
     const keysInData = Object.keys(data);
 
+    // Filtra las claves esperadas que no están presentes en el objeto data
     const missingKeys = expectedKeys.filter(key => {
         if (keysInData.includes(key)) {
-            if (typeof data[key] === 'object' && expectedNestedKeys[key]) {
-                const nestedKeys = expectedNestedKeys[key];
-                const missingNestedKeys = validateNestedKeys(data[key], nestedKeys);
 
+            // Si la clave es un objeto anidado, valida sus claves internas
+            if (typeof data[key] === 'object' && expectedNestedKeys[key]) {
+                const missingNestedKeys = validateNestedKeys(data[key], expectedNestedKeys[key]);
                 if (missingNestedKeys.length > 0) {
                     console.log(`Faltan claves en el objeto ${key}: ${missingNestedKeys.join(', ')}`);
                     return true;
                 }
-            } else if (validationRules[key]) {
-                if (!validateField(key, data[key], validationRules[key])) {
-                    return true;
-                }
+            } else if (validationRules[key] && !validateField(key, data[key], validationRules[key])) {
+                return true;
             }
             return false;
         }
         return true;
     });
 
-    if (missingKeys.length > 0) {
-        return {
-            valid: false,
-            missingKeys: missingKeys
-        };
-
-    } else {
-        return {
-            valid: true
-        };
-    }
+    // Retorna un objeto indicando si el objeto data es válido y las claves faltantes
+    return {
+        valid: missingKeys.length === 0,
+        missingKeys: missingKeys
+    };
 }
 
-export default validateJson;
+export { validateJson };

@@ -6,8 +6,8 @@ export const requestWzRecordInsert = async (wzId, customerId, taskId) => {
         const result = await dbConnection.query('INSERT INTO solicitud_wz (fk_wz_id, zh_cliente, zh_tarea_bot) VALUES (?, ?, ?)', [wzId, customerId, taskId]);
 
         if (result && result.results.insertId !== undefined) {
-            console.log(`Se insertó en la tabla solicitud wz con ID: ${result.insertId}`);
-            return { id: result.insertId };
+            console.log(`Se insertó en la tabla solicitud wz con ID: ${result.results.insertId}`);
+            return { id: result.results.insertId };
         } else {
             console.error('Error al insertar en la tabla solicitud wz: requestWzRecordInsert');
             throw new Error('Error al insertar un registro en la tabla solicitud wz');

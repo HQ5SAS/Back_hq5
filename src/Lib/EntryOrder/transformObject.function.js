@@ -1,4 +1,7 @@
+// Transformar un objeto JSON según reglas de transformación predefinidas.
 async function transformJson(obj) {
+
+    // Reglas de transformación predefinidas Zoho Creator
     const transformationRules = {
         "requisicion": "id_req_lp_gen_req",
         "postulados": "postulaciones_lp_apli_conv",
@@ -26,6 +29,7 @@ async function transformJson(obj) {
         "metodologia_pago": "metodologia_de_pago"
     };
 
+    // Función recursiva para transformar un objeto anidado.
     function transformObject(obj, rules) {
         const transformObj = {};
 
@@ -33,7 +37,7 @@ async function transformJson(obj) {
             if (obj.hasOwnProperty(key)) {
                 if (rules[key]) {
                     if (typeof rules[key] === 'function') {
-                        transformObj[rules[key]] = ruleskey;
+                        transformObj[rules[key]] = rules[key](obj[key]);
                     } else {
                         transformObj[rules[key]] = obj[key];
                     }

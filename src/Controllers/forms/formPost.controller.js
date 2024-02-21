@@ -1,7 +1,5 @@
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
-import validateJson from '../../Lib/EntryOrder/validateObject.function.js';
-import { createNewReqObject, createNewBenObject } from '../../Lib/EntryOrder/createObject.function.js';
-import { transformJson } from '../../Lib/EntryOrder/transformObject.function.js';
+import { setFieldsValue } from '../../Lib/EntryOrder/entryOrderPost.function.js';
 
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
@@ -12,34 +10,21 @@ async function logAndRespond(res, message, statusCode, data = null) {
 async function processForm(req, res) {
     try {
         const requestBody = req.body;
-        const data = requestBody.data?.orden_ingreso?.campos;
+        const data = requestBody.data;
 
         if (!data) {
             return logAndRespond(res, "El formato de la solicitud no es válido", 400);
         }
 
-        const validationResult = await validateJson(data);
-
-        if (validationResult.valid) {
-            
-            const newReqObj = await createNewReqObject(data);
-            const newReqObjT = await transformJson(newReqObj);
-
-            const combinedArray = [];
-            combinedArray.push(newReqObjT);
-            // Crear registro en Zoho con el objeto newReqObjT
-
-            for (const beneficio of data.beneficios_contrato) {
-                const newBenObj = await createNewBenObject(beneficio);
-                const newBenObjT = await transformJson(newBenObj);
-                // Crear registro en Zoho con el objeto newBenObjT
-                combinedArray.push(newBenObjT);
-            }
-
-            logAndRespond(res, "Solicitud completa", 200, combinedArray);
-
-        } else {
-            logAndRespond(res, "Faltan claves en el JSON", 400, { missingKeys: validationResult.missingKeys });
+        // Validar el tipo de formulario (Orden ingreso)
+        if(requestBody.data.orden_ingreso)
+        {
+            const response = await setFieldsValue(requestBody);
+            const records = response.data;
+            // Insertar registros en Zoho ... Aplica para las prediligenciadas y las no prediligenciadas
+            // Insertar orden de ingreso masivo
+            // Insertar beneficios de contrato
+            return logAndRespond(res, response.message, response.status, response.data);
         }
 
     } catch (error) {

@@ -1,43 +1,71 @@
+// Crea un nuevo objeto para representar una requisición.
 async function createNewReqObject(data) {
+    const {
+        requisicion,
+        postulados,
+        centro_costo,
+        fecha_ingreso,
+        sitio_trabajo,
+        sitio_presentacion,
+        nivel_riesgo,
+        salario_basico,
+        salario_integral,
+        sabado_habil,
+        tipo_contrato,
+        tipo_jornada,
+        observaciones,
+        naturaleza_cc,
+        proyecto_cc,
+        linea_negocio_cc,
+        area_cc,
+        sub_centro_cc
+    } = data;
 
+    // Crear el nuevo objeto de requisición
     const newObject = {
-        requisicion: data.requisicion.id,
-        postulados: data.postulados.map(postulado => postulado.id),
-        centro_costo: data.centro_costo.id,
-        periodicidad: data.centro_costo.periodicidad,
-        dias_pago: data.centro_costo.dias_pago,
-        fecha_ingreso: data.fecha_ingreso,
-        sitio_trabajo: data.sitio_trabajo,
-        sitio_presentacion: data.sitio_presentacion,
-        nivel_riesgo: data.nivel_riesgo,
-        salario_basico: data.salario_basico.valor,
-        salario_integral: data.salario_integral,
-        sabado_habil: data.sabado_habil,
-        tipo_contrato: data.tipo_contrato.id,
-        tipo_jornada: data.tipo_jornada.id,
-        observaciones: data.observaciones,
-        naturaleza_cc: data.naturaleza_cc.id,
-        proyecto_cc: data.proyecto_cc.id,
-        linea_negocio_cc: data.linea_negocio_cc.id,
-        area_cc: data.area_cc.id,
-        sub_centro_cc: data.sub_centro_cc.id
+        requisicion: requisicion.id,
+        postulados: postulados.map(postulado => postulado.id),
+        centro_costo: centro_costo.id,
+        periodicidad: centro_costo.periodicidad,
+        dias_pago: centro_costo.dias_pago,
+        fecha_ingreso,
+        sitio_trabajo,
+        sitio_presentacion,
+        nivel_riesgo,
+        salario_basico: salario_basico.valor,
+        salario_integral,
+        sabado_habil,
+        tipo_contrato: tipo_contrato.id,
+        tipo_jornada: tipo_jornada.id,
+        observaciones,
+        naturaleza_cc: naturaleza_cc.id,
+        proyecto_cc: proyecto_cc.id,
+        linea_negocio_cc: linea_negocio_cc.id,
+        area_cc: area_cc.id,
+        sub_centro_cc: sub_centro_cc.id
     };
 
-    const reqObject = { "data": newObject};
-    return reqObject;
+    return { "data": newObject };
 }
 
+// Crear un nuevo objeto para representar un beneficio
 async function createNewBenObject(data) {
+    const { 
+        grupo, 
+        concepto, 
+        valor, 
+        metodologia_pago 
+    } = data;
 
+    // Crear el nuevo objeto de beneficio
     const newObject = {
-        grupo: data.grupo.id,
-        concepto: data.concepto.id,
-        valor: data.valor,
-        metodologia_pago: data.metodologia_pago,
+        grupo: grupo.id,
+        concepto: concepto.id,
+        valor,
+        metodologia_pago
     };
 
-    const newObjectOut = { "data": newObject};
-    return newObjectOut;
+    return { "data": newObject };
 }
 
 export { createNewReqObject, createNewBenObject };
