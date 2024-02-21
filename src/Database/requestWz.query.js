@@ -3,9 +3,9 @@ import { dbConnection } from './connection.js';
 // Función para realizar la inserción de registros en la tabla solicitud_wz
 export const requestWzRecordInsert = async (wzId, customerId, taskId) => {
     try {
-        const { results } = await dbConnection.query('INSERT INTO solicitud_wz (fk_wz_id, zh_cliente, zh_tarea_bot) VALUES (?, ?, ?)', [wzId, customerId, taskId]);
+        const result = await dbConnection.query('INSERT INTO solicitud_wz (fk_wz_id, zh_cliente, zh_tarea_bot) VALUES (?, ?, ?)', [wzId, customerId, taskId]);
 
-        if (result && result.insertId !== undefined) {
+        if (result && result.results.insertId !== undefined) {
             console.log(`Se insertó en la tabla solicitud wz con ID: ${result.insertId}`);
             return { id: result.insertId };
         } else {
