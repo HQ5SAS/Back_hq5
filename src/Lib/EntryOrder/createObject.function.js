@@ -20,13 +20,14 @@ async function createNewReqObject(data) {
         proyecto_cc,
         linea_negocio_cc,
         area_cc,
-        sub_centro_cc
+        sub_centro_cc,
+        beneficios_contrato
     } = data;
 
     // Formatear la fecha
     let entryDate = new Date(fecha_ingreso);
-    const optionDate = { day: '2-digit', month: 'short', year: 'numeric' };
-    const formattedDate = entryDate.toLocaleDateString('en-GB', optionDate).replace(/ /g, '-');
+    const optionDate = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = entryDate.toLocaleDateString('en-GB', optionDate).replace(/ /g, '-').toString();
     
     // Formatear el celular
     let cel = `+${contacto}`;
@@ -54,7 +55,8 @@ async function createNewReqObject(data) {
         proyecto_cc: proyecto_cc.id,
         linea_negocio_cc: linea_negocio_cc.id,
         area_cc: area_cc.id,
-        sub_centro_cc: sub_centro_cc.id
+        sub_centro_cc: sub_centro_cc.id,
+        beneficios_contrato
     };
 
     return { "data": newObject };
@@ -77,7 +79,7 @@ async function createNewBenObject(data) {
         metodologia_pago
     };
 
-    return { "data": newObject };
+    return newObject;
 }
 
 export { createNewReqObject, createNewBenObject };

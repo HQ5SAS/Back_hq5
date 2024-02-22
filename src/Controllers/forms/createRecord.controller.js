@@ -1,4 +1,5 @@
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
+import { postZohoCreator } from '../../Tools/zoho.js';
 import { setFieldsValue } from '../../Lib/EntryOrder/entryOrderPost.function.js';
 import { consultRecordWzById } from '../../Lib/woztell.function.js';
 
@@ -25,7 +26,7 @@ async function processForm(req, res) {
             requestBody.data.orden_ingreso.campos.contacto = cel.externalId;
             requestBody.data.orden_ingreso.campos.tipo_confirmacion = "Confirmacion por Whatsapp";
             const response = await setFieldsValue(requestBody);
-            const records = response.data;
+            let responseZoho = {};
             
             console.log("\n▶ Validando proceso si es creacion o edicion ...");
             if(requestBody.data.orden_ingreso.campos.id !== null)
@@ -39,18 +40,14 @@ async function processForm(req, res) {
             }
             else
             {
-                console.log('    ▶ Proceso de creacion');
-                // Insertar registros ... Aplica para las prediligenciadas y las no prediligenciadas
                 // Insertar orden de ingreso masivo
-                console.log('       ▶ Creando registro orden ingreso...');
-                // Insertar beneficios de contrato
-                console.log('       ▶ Creando registros beneficios ...\n');
-                // Mostrar campos a crear
-                console.log(records.requisicion);
-                console.log(records.beneficio_contrato);
+                console.log('    ▶ Proceso de creacion');
+                console.log('       ▶ Creando registro orden ingreso\n');
+                // Llamar la funcion de insercion de registros
+                responseZoho = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
             }
 
-            return logAndRespond(res, response.message, response.status, response.data);
+            return logAndRespond(res, response.message, response.status, responseZoho);
         }
 
     } catch (error) {

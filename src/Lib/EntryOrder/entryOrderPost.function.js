@@ -8,16 +8,16 @@ export async function setFieldsValue(requestBody) {
     const validationResult = await validateJson(data);
 
     if (validationResult.valid) {
-        const combinedObject = {
-            requisicion: await transformJson(await createNewReqObject(data)),
-            beneficio_contrato: await Promise.all(data.beneficios_contrato.map(async beneficio => await transformJson(await createNewBenObject(beneficio))))
-        };
+
+        data.beneficios_contrato = await Promise.all(data.beneficios_contrato.map(async beneficio => await transformJson(await createNewBenObject(beneficio))))
+        const combinedObject = await transformJson(await createNewReqObject(data));
 
         return {
             status: 200,
             message: "Solicitud completa",
             data: combinedObject
         };
+
     } else {
         return {
             status: 400,

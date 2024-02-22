@@ -25,6 +25,7 @@ async function transformJson(obj) {
         "linea_negocio_cc": "linea_neg_lp_lin_neg",
         "area_cc": "area_lp_area",
         "sub_centro_cc": "sub_centro_costo_lp_cen_cos",
+        "beneficios_contrato": "subform_beneficios_contrato",
         "grupo": "grupo",
         "concepto": "concepto",
         "valor": "valor",
