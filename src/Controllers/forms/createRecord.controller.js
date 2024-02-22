@@ -21,7 +21,7 @@ async function processForm(req, res) {
         {
             const response = await setFieldsValue(requestBody);
             const records = response.data;
-            // Insertar registros en Zoho ... Aplica para las prediligenciadas y las no prediligenciadas
+            // Insertar registros ... Aplica para las prediligenciadas y las no prediligenciadas
             // Insertar orden de ingreso masivo
             // Insertar beneficios de contrato
             return logAndRespond(res, response.message, response.status, response.data);

@@ -3,124 +3,98 @@ import { projectRecordExistsByIdCustomer } from '../../Database/project.query.js
 import { businessLineRecordExistsByIdCustomer } from '../../Database/businessLine.quey.js';
 import { areaRecordExistsByIdCustomer } from '../../Database/area.query.js';
 import { subCostCenterRecordExistsByIdCustomer } from '../../Database/subCostCenter.query.js';
+import { requisitionRecordExistsById, requisitionRecordExistsByIdCustomer } from '../../Database/requisition.query.js';
 import { costCenterRecordExistsByIdCustomerIdCity } from '../../Database/costCenter.query.js';
 import { groupRecordExistsByGroup } from '../../Database/group.query.js';
 import { conceptRecordExistsByIdGroup } from '../../Database/concept.query.js';
 import { profileRecordExistsById } from '../../Database/profile.query.js';
-import { createErrorResponse } from '../../Tools/utils.js';
-import { applyCallRecordExistsByIdReq } from '../../Database/applyCall.query.js';
-import { requisitionRecordExistsByIdCustomer } from '../../Database/requisition.query.js';
+import { applyCallRecordExistsById, applyCallRecordExistsByIdReq } from '../../Database/applyCall.query.js';
 import { baseValuesByYear } from '../../Database/baseValues.query.js';
-import { contractBenefitRecordExistsByIdReq } from '../../Database/contractBenefit.query.js';
+import { contractBenefitRecordExistsByIdEntryOrderM, contractBenefitRecordExistsByIdReq } from '../../Database/contractBenefit.query.js';
+import { entryOrderMRecordExistsById } from '../../Database/entryOrderM.query.js';
+import { entryOrderRecordExistsByIdMas } from '../../Database/entryOrder.query.js';
+import { createErrorResponse } from '../../Tools/utils.js';
 
-async function consultRecordByIdCustomer(recordFunction, recordType, customerId) {
+async function consultRecord(recordFunction, recordType, ...args) {
     try {
-        const response = await recordFunction(customerId);
+        const response = await recordFunction(...args);
         return response;
-  
     } catch (error) {
-        console.error(`Error al obtener ${recordType} por id cliente:`, error);
-        throw createErrorResponse(`Error al obtener ${recordType} por id cliente`, 400);
+        console.error(`Error al obtener ${recordType}`, error);
+        throw createErrorResponse(`Error al obtener ${recordType}`, 400);
     }
 }
-  
+
 export async function consultNature(customerId) {
-    return consultRecordByIdCustomer(natureRecordExistsByIdCustomer, 'la naturaleza del centro de costo', customerId);
+    return consultRecord(natureRecordExistsByIdCustomer, 'la naturaleza del centro de costo', customerId);
 }
 
 export async function consultProject(customerId) {
-    return consultRecordByIdCustomer(projectRecordExistsByIdCustomer, 'el project', customerId);
+    return consultRecord(projectRecordExistsByIdCustomer, 'el project', customerId);
 }
 
 export async function consultBusinessLine(customerId) {
-    return consultRecordByIdCustomer(businessLineRecordExistsByIdCustomer, 'la línea de negocio', customerId);
+    return consultRecord(businessLineRecordExistsByIdCustomer, 'la linea de negocio', customerId);
 }
 
 export async function consultArea(customerId) {
-    return consultRecordByIdCustomer(areaRecordExistsByIdCustomer, 'el área', customerId);
+    return consultRecord(areaRecordExistsByIdCustomer, 'el area', customerId);
 }
 
 export async function consultSubCenterCost(customerId) {
-    return consultRecordByIdCustomer(subCostCenterRecordExistsByIdCustomer, 'el sub centro de costo', customerId);
+    return consultRecord(subCostCenterRecordExistsByIdCustomer, 'el sub centro de costo', customerId);
 }
 
 export async function consultRequisition(customerId) {
-    return consultRecordByIdCustomer(requisitionRecordExistsByIdCustomer, 'la requisicion', customerId);
+    return consultRecord(requisitionRecordExistsByIdCustomer, 'la requisicion', customerId);
+}
+
+export async function consultRequisitionId(requisicionId) {
+    return consultRecord(requisitionRecordExistsById, 'la requisicion', requisicionId);
 }
 
 export async function consultCostCenter(customerId, cityId) {
-    try {
-        const response = await costCenterRecordExistsByIdCustomerIdCity(customerId, cityId);
-        return response;
-  
-    } catch (error) {
-        console.error(`Error al obtener el centro de costo por id cliente, id ciudad:`, error);
-        throw createErrorResponse(`Error al obtener el centro de costo por id cliente, id ciudad`, 400);
-    }
+    return consultRecord(costCenterRecordExistsByIdCustomerIdCity, 'el centro de costo', customerId, cityId);
 }
 
 export async function consultGroup() {
-    try {
-        const response = await groupRecordExistsByGroup();
-        return response;
-  
-    } catch (error) {
-        console.error('Error al obtener los grupos de conceptos', error);
-        throw createErrorResponse('Error al obtener los grupos de conceptos', 400);
-    }
+    return consultRecord(groupRecordExistsByGroup, 'los grupos de conceptos');
 }
 
 export async function consultConcept(groupId) {
-    try {
-        const response = await conceptRecordExistsByIdGroup(groupId);
-        return response;
-
-    } catch (error) {
-        console.error('Error al obtener los conceptos por id grupo', error);
-        throw createErrorResponse('Error al obtener los conceptos por id grupo', 400);
-    }
+    return consultRecord(conceptRecordExistsByIdGroup, 'los conceptos', groupId);
 }
 
 export async function consultProfile(profileId) {
-    try {
-        const response = await profileRecordExistsById(profileId);
-        return response;
-
-    } catch (error) {
-        console.error('Error al obtener el perfil por id perfil', error);
-        throw createErrorResponse('Error al obtener el perfil por id perfil', 400);
-    }
+    return consultRecord(profileRecordExistsById, 'el perfil', profileId);
 }
 
 export async function consultApplyCall(reqId) {
-    try {
-        const response = await applyCallRecordExistsByIdReq(reqId);
-        return response;
+    return consultRecord(applyCallRecordExistsByIdReq, 'aplicar convocatoria', reqId);
+}
 
-    } catch (error) {
-        console.error('Error al obtener aplicar convocatoria por id requisicion', error);
-        throw createErrorResponse('Error al obtener aplicar convocatoria por id requisicion', 400);
-    }
+export async function consultApplyCallById(Id) {
+    return consultRecord(applyCallRecordExistsById, 'aplicar convocatoria', Id);
 }
 
 export async function consultBaseValues() {
-    try {
-        const response = await baseValuesByYear();
-        return response;
-
-    } catch (error) {
-        console.error('Error al obtener los valores base', error);
-        throw createErrorResponse('Error al obtener los valores base', 400);
-    }
+    return consultRecord(baseValuesByYear, 'los valores base');
 }
 
 export async function consultContractBenefit(reqId) {
-    try {
-        const response = await contractBenefitRecordExistsByIdReq(reqId);
-        return response;
+    return consultRecord(contractBenefitRecordExistsByIdReq, 'los beneficios del contrato', reqId);
+}
 
-    } catch (error) {
-        console.error('Error al obtener los beneficios del contrato por id requisicion', error);
-        throw createErrorResponse('Error al obtener los beneficios del contrato por id requisicion', 400);
-    }
+export async function consultContractBenefitByIdEntryOrderM(entryOrderMId) {
+    return consultRecord(contractBenefitRecordExistsByIdEntryOrderM, 'los beneficios del contrato', entryOrderMId);
+}
+
+export async function consultEntryOrderM(entryOrderMId) {
+    const responseEOM = await consultRecord(entryOrderMRecordExistsById, 'la orden de ingreso masiva', entryOrderMId);
+    const responseEO = await consultRecord(entryOrderRecordExistsByIdMas, 'la orden de ingreso', responseEOM[0].id);
+    responseEOM[0].id_requisicion = responseEO[0].id_requisicion;
+    responseEOM[0].id_cliente = responseEO[0].id_cliente;
+    responseEOM[0].id_ciudad = responseEO[0].id_ciudad;
+    responseEOM[0].id_postulado = responseEO.map(item => item.id_postulado);
+    return responseEOM;
 }

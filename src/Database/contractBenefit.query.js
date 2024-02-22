@@ -38,3 +38,34 @@ export const contractBenefitRecordExistsByIdReq = async (reqId) => {
         throw error;
     }
 };
+
+// Función para obtener los beneficios del contrato por id orden ingreso masivo
+export const contractBenefitRecordExistsByIdEntryOrderM = async (entryOrderMId) => {
+    try {
+        const { results } = await dbConnection.query(`
+        SELECT 
+            beneficio_contrato.id AS id2, 
+            CAST(beneficio_contrato.zh_id AS CHAR) AS id,
+            CAST(beneficio_contrato.zh_grupo AS CHAR) AS id_grupo,
+            CAST(beneficio_contrato.zh_concepto AS CHAR) AS id_concepto,
+            beneficio_contrato.valor AS valor,
+            beneficio_contrato.metodologia_pago AS m_pago,
+            grupo.nombre AS n_grupo,
+            concepto.nombre AS n_concepto
+        FROM 
+            beneficio_contrato
+        JOIN 
+            grupo ON beneficio_contrato.zh_grupo = grupo.zh_id
+        JOIN 
+            concepto ON beneficio_contrato.zh_concepto = concepto.zh_id
+        WHERE 
+            zh_orden_ingreso_masivo = ?;
+        `, [entryOrderMId]);
+        
+        return results;
+
+    } catch (error) {
+        console.error('Error en la consulta de: contractBenefitRecordExistsByIdEntryOrderM', error);
+        throw error;
+    }
+};

@@ -1,7 +1,7 @@
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
 import { entryOrder } from '../../Tools/taskName.js';
 import { consultTask } from '../../Lib/form.function.js';
-import { getFieldValue } from '../../Lib/EntryOrder/entryOrderGet.function.js';
+import { getFieldValueCreate } from '../../Lib/EntryOrder/entryOrderGet.function.js';
 
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
@@ -25,7 +25,7 @@ async function processForm(req, res) {
 
         if (taskName === entryOrder) {
             
-            const fieldsValues = await getFieldValue(customer);
+            const fieldsValues = await getFieldValueCreate(customer);
 
             if (fieldsValues === null) {
                 return logAndRespond(res, "Error en el proceso", 400);

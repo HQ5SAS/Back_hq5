@@ -57,6 +57,11 @@ export const createURLWithIdCustomerIdTask = (customerId, taskId, token = null) 
     return `?customer=${customerId}&task=${taskId}&token=${token}`;
 };
 
+// Funcion para complementar la URL del frontend con el idRecord el idTask y el token
+export const createURLWithIdRecordIdTask = (recordId, taskId, token = null) => {
+    return `?record=${recordId}&task=${taskId}&token=${token}`;
+};
+
 // Funcion para acortar las url con rebranly
 export const shortenUrl  = async (title, destination) => {
     try {
@@ -175,3 +180,16 @@ export const verifyTokenMiddleware = async (req, res, next) => {
         return res.status(500).json({ error: true, statusCode: 500, message: 'Error interno del servidor', data: null });
     }
 };
+
+// Funcion para obtener el id de la tarea en la tabla tarea_bot por nombre
+import * as taskQuery from '../Database/task.query.js';
+export const consultTask = async (taskName) => {
+    try {
+        const response = await taskQuery.taskRecordExistsByName(taskName);
+        return response;
+        
+    } catch (error) {
+        console.error('Error al consultar la tabla tarea_bot:', error);
+        throw createErrorResponse('Error al consultar la tabla tarea_bot', 400);
+    }
+}

@@ -30,3 +30,30 @@ export const applyCallRecordExistsByIdReq = async (reqId) => {
         throw error;
     }
 };
+
+// Función para verificar si existe un registro en la tabla aplicar_convocatorias por zh_id
+export const applyCallRecordExistsById = async (Id) => {
+    try {
+        const { results } = await dbConnection.query(`
+            SELECT
+                aplicar_convocatoria.id AS id2,
+                CAST(aplicar_convocatoria.zh_id AS CHAR) AS id,
+                CAST(hv.zh_id AS CHAR) AS id_hv,
+                hv.num_documento AS documento,
+                CONCAT(hv.primer_apellido, ' ', hv.primer_nombre) AS nombre,
+                aplicar_convocatoria.estado_postulacion AS estado
+            FROM 
+                aplicar_convocatoria
+            JOIN 
+                hv ON aplicar_convocatoria.zh_hv = hv.zh_id
+            WHERE 
+                aplicar_convocatoria.zh_id IN (?);
+        `, [Id]);
+
+        return results;
+
+    } catch (error) {
+        console.error('Error en la consulta de: applyCallRecordExistsById', error);
+        throw error;
+    }
+};

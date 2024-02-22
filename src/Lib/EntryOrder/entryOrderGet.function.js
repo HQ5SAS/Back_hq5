@@ -1,54 +1,49 @@
 import * as entryOrder from './entryOrderQuery.function.js';
 import { WORK_DAY_COM, WORK_DAY_DEST, WORK_DAY_DAYS } from '../../Database/fields.js';
 
-const buildInnerApplyCallsObject = (applyCallsData) => {
-    return applyCallsData.reduce((obj, { id, documento, nombre, id_hv }) => ({ ...obj, [documento]: { id, nombre, id_hv } }), {});
+const buildInnerApplyCallsObject = (data) => {
+    return data.reduce((obj, { id, documento, nombre }) => ({ ...obj, [documento]: { id, nombre } }), {});
 };
 
-const buildInnerCenterCostObject = (centerCostData) => {
-    return centerCostData.reduce((obj, { id, nombre, periodicidad, dias_pago }) => ({ ...obj, [nombre]: { id, periodicidad, dias_pago } }), {});
+const buildInnerCenterCostObject = (data) => {
+    return data.reduce((obj, { id, nombre, periodicidad, dias_pago }) => ({ ...obj, [nombre]: { id, periodicidad, dias_pago } }), {});
 };
 
-const buildInnerProfileObject = (profileData) => {
-    const [profileObj] = profileData || [];
-    const { nombre, id, nivel_riesgo } = profileObj || {};
+const buildInnerProfileObject = (data) => {
+    const { nombre, id, nivel_riesgo } = (data && data[0]) || {};
     return { id, nombre, nivel_riesgo };
 };
 
-const buildInnerNatureCenterCostObject = (NatureCCData) => {
-    return NatureCCData.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
+const buildInnerNatureCenterCostObject = (data) => {
+    return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
-const buildInnerProyectCCObject = (proyectCCData) => {
-    return proyectCCData.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
+const buildInnerProyectCCObject = (data) => {
+    return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
-const buildInnerBusinessLineObject = (businessLineData) => {
-    return businessLineData.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
+const buildInnerBusinessLineObject = (data) => {
+    return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
-const buildInnerAreaObject = (areaData) => {
-    return areaData.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
+const buildInnerAreaObject = (data) => {
+    return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
-const buildInnerSubCenterObject = (subCenterData) => {
-    return subCenterData.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
+const buildInnerSubCenterObject = (data) => {
+    return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
-const buildInnerGroupConceptObject = (groupConceptData) => {
-    return groupConceptData.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id, nombre } }), {});
+const buildInnerGroupConceptObject = (data) => {
+    return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id, nombre } }), {});
 };
 
-const buildInnerConceptObject = (conceptData) => {
-    return conceptData.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id, valor: 0, metodologia_pago: ['Proporcional días laborados', 'Valor fijo mes'] } }), {});
+const buildInnerConceptObject = (data) => {
+    return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id, valor: 0, metodologia_pago: ['Proporcional días laborados', 'Valor fijo mes'] } }), {});
 };
 
-const buildInnerContractBenefitObject = (contractBenefitData) => {
-    // return contractBenefitData.reduce((obj, { id, id_grupo, n_grupo, id_concepto, n_concepto, valor, m_pago, id_req, id_perfil, n_perfil }) => (
-    //     { ...obj, [id_req]: { id, id_grupo, n_grupo, id_concepto, n_concepto, valor, m_pago, id_req, id_perfil, n_perfil } }
-    //     ), {});
-
-    return contractBenefitData.map(({ id, id_grupo, n_grupo, id_concepto, n_concepto, valor, m_pago, id_req, id_perfil, n_perfil }) => ({
+const buildInnerContractBenefitObject = (data) => {
+    return data.map(({ id, id_grupo, n_grupo, id_concepto, n_concepto, valor, m_pago, id_req, id_perfil, n_perfil }) => ({
         id,
         id_grupo,
         n_grupo,
@@ -62,7 +57,7 @@ const buildInnerContractBenefitObject = (contractBenefitData) => {
     }));
 };
 
-const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj) => {
+const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) => {
 
     const { id: id, salario: salary, tipo_contrato: typeContract, tipo_jornada: typeWorkDay } = element;
     const { salario: salaryBase, subsidio_transporte: subsidyTransport} = baseValues[0];
@@ -80,8 +75,53 @@ const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerC
         subsidio_transporte_required: subsidyTransportRequired
     };
 
+    // Verificar si el objeto options está vacío
+    if (Object.keys(options).length === 0) {
+        return {
+            id: id,
+            postulados: applyCallObj,
+            nivel_riesgo: profileObj,
+            salario_basico: salaryBasic,
+            tipo_contrato: typeContract,
+            tipo_jornada: typeWorkDay,
+            centro_costo: centerCostObj,
+            beneficios_contrato: contractBenefitObj     
+        };
+    }
+
+    const {
+        nivel_riesgo,
+        salario,
+        centro_costo,
+        id_postulado
+    } = options;
+
+    if (nivel_riesgo !== null) {
+        profileObj.nivel_riesgo = nivel_riesgo;
+        profileObj.select = true;
+    }
+
+    if (salario !== null) {
+        salaryBasic.valor = salario;
+        salaryBasic.select = true;
+    }
+
+    for (const key in centerCostObj) {
+        if (centerCostObj[key].id === centro_costo) {
+            centerCostObj[key].select = true;
+            break;
+        }
+    }
+
+    for (const key in applyCallObj) {
+        if (id_postulado.includes(applyCallObj[key].id)) {
+            applyCallObj[key].select = true;
+        }
+    }
+
     return {
         id: id,
+        select: true,
         postulados: applyCallObj,
         nivel_riesgo: profileObj,
         salario_basico: salaryBasic,
@@ -92,14 +132,72 @@ const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerC
     };
 };
 
-const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, groupConceptObj) => {
+const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, groupConceptObj, options) => {
+
+    // Verificar si el objeto options está vacío
+    if (Object.keys(options).length === 0) {
+        return {
+            fecha_ingreso: null,
+            sitio_trabajo: null,
+            sitio_presentacion: null,
+            salario_integral: ["SI", "NO"],
+            sabado_habil: ["SI", "NO"],
+            observaciones: null,
+            beneficios_contrato: { grupo: groupConceptObj },
+            naturaleza_cc: natureCCObj,
+            proyecto_cc: proyectCCObj,
+            linea_negocio_cc: businessLineObj,
+            area_cc: areaObj,
+            sub_centro_cc: subCenterObj
+        };
+    }
+
+    const {
+        fecha_ingreso,
+        sitio_trabajo,
+        sitio_presentacion,
+        salario_integral,
+        sabado_habil,
+        observaciones,
+        naturaleza_centro_costo,
+        proyecto,
+        linea_negocio,
+        area,
+        sub_centro_costo
+    } = options;
+
+    if (naturaleza_centro_costo !== null) {
+        const matchingObj = Object.values(natureCCObj).find(obj => obj.id === naturaleza_centro_costo);
+        if (matchingObj) {matchingObj.select = true;}
+    }
+
+    if (proyecto !== null) {
+        const matchingObj = Object.values(proyectCCObj).find(obj => obj.id === proyecto);
+        if (matchingObj) { matchingObj.select = true; }
+    }    
+
+    if (linea_negocio !== null) {
+        const matchingObj = Object.values(businessLineObj).find(obj => obj.id === linea_negocio);
+        if (matchingObj) { matchingObj.select = true; }
+    }
+    
+    if (area !== null) {
+        const matchingObj = Object.values(areaObj).find(obj => obj.id === area);
+        if (matchingObj) { matchingObj.select = true; }
+    }
+    
+    if (sub_centro_costo !== null) {
+        const matchingObj = Object.values(subCenterObj).find(obj => obj.id === sub_centro_costo);
+        if (matchingObj) { matchingObj.select = true; }
+    }    
+
     return {
-        fecha_ingreso: null,
-        sitio_trabajo: null,
-        sitio_presentacion: null,
-        salario_integral: ["SI", "NO"],
-        sabado_habil: ["SI", "NO"],
-        observaciones: null,
+        fecha_ingreso,
+        sitio_trabajo,
+        sitio_presentacion,
+        salario_integral: [salario_integral],
+        sabado_habil: [sabado_habil],
+        observaciones,
         beneficios_contrato: { grupo: groupConceptObj },
         naturaleza_cc: natureCCObj,
         proyecto_cc: proyectCCObj,
@@ -109,12 +207,12 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
     };
 };
 
-const processRequisitionData = async (responseData, baseValues) => {
+const processRequisitionDataCreate = async (responseData, baseValues, options = {}) => {
     const reqObj = {};
 
     const promises = responseData.map(async (element) => {
         const { nombre: reqName, id: reqId, id_profile: profileId, id_cliente: customerId, id_ciudad: cityId } = element;
-        
+
         const [ responseApplyCalls, 
                 responseProfile,
                 responseCostCenter,
@@ -131,7 +229,7 @@ const processRequisitionData = async (responseData, baseValues) => {
         const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : {};
         const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : {};
 
-        const innerObj = Object.keys(applyCallObj).length > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj) : null;
+        const innerObj = Object.keys(applyCallObj).length > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
 
         if (innerObj) {
             reqObj[reqName] = innerObj;
@@ -142,7 +240,40 @@ const processRequisitionData = async (responseData, baseValues) => {
     return reqObj;
 };
 
-const processDataFields = async (element) => {
+const processRequisitionDataEdit = async (responseData, baseValues, options = {}) => {
+    const reqObj = {};
+
+    const promises = responseData.map(async (element) => {
+        const { nombre: reqName, id_postulado: applyCallId, id_profile: profileId, id_cliente: customerId, id_ciudad: cityId, id: entryOrderMid } = element;
+
+        const [ responseApplyCalls, 
+                responseProfile,
+                responseCostCenter,
+                responseContractBenefit
+            ] = await Promise.all([
+            entryOrder.consultApplyCallById(applyCallId),
+            entryOrder.consultProfile(profileId),
+            entryOrder.consultCostCenter(customerId, cityId),
+            entryOrder.consultContractBenefitByIdEntryOrderM(entryOrderMid)
+        ]);
+
+        const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};    
+        const profileObj = responseProfile && responseProfile.length > 0 ? buildInnerProfileObject(responseProfile) : {};
+        const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : {};
+        const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : {};
+
+        const innerObj = Object.keys(applyCallObj).length > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
+
+        if (innerObj) {
+            reqObj[reqName] = innerObj;
+        }
+    });
+
+    await Promise.all(promises);
+    return reqObj;
+};
+
+const processDataFields = async (element, options = {}) => {
     const { id_cliente: customerId } = element;
 
     const [ responseNatureCC, 
@@ -182,19 +313,21 @@ const processDataFields = async (element) => {
     }));
     }
 
-    const dataObj = buildInnerDataObj(natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, groupConceptObj);
+    const dataObj = buildInnerDataObj(natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, groupConceptObj, options);
     return dataObj;
 };
 
-export const getFieldValue = async (customerId) => {
+export const getFieldValueCreate = async (customerId) => {
     try {
 
-        const responseReq = await entryOrder.consultRequisition(customerId);
-        const baseValues = await entryOrder.consultBaseValues();
-
+        const [responseReq, baseValues] = await Promise.all([
+            entryOrder.consultRequisition(customerId),
+            entryOrder.consultBaseValues()
+        ]);
+        
         if (responseReq && responseReq.length > 0) {
-
-            const [dataObj, reqObj] = await Promise.all([ processDataFields(responseReq[0]), processRequisitionData(responseReq, baseValues) ]);
+            
+            const [dataObj, reqObj] = await Promise.all([ processDataFields(responseReq[0]), processRequisitionDataCreate(responseReq, baseValues) ]);
 
             const reqObjF = { requisicion: reqObj};
             const combinedObj = Object.assign({}, dataObj, reqObjF);
@@ -203,12 +336,90 @@ export const getFieldValue = async (customerId) => {
             return entOrdObj;
 
         } else {
-            console.error('Reporte requisiones vacio');
+            console.error('Tabla requision vacia');
             return null;
         }
 
     } catch (error) {
-        console.error('Error al obtener los valores del campo del formulario:', error.message);
+        console.error('Error al obtener los valores del formulario: getFieldValueCreate', error.message);
+        return null;
+    }
+};
+
+export const getFieldValueEdit = async (entryOrderMId) => {
+    try {
+        const [responseEntryOrderM, baseValues] = await Promise.all([
+            entryOrder.consultEntryOrderM(entryOrderMId),
+            entryOrder.consultBaseValues()
+        ]);
+
+        if (responseEntryOrderM && responseEntryOrderM.length > 0) {
+
+            const { 
+                fecha_ingreso, 
+                sitio_trabajo, 
+                sitio_presentacion, 
+                salario_integral, 
+                sabado_habil, 
+                observaciones, 
+                naturaleza_centro_costo, 
+                proyecto, 
+                linea_negocio, 
+                area, 
+                sub_centro_costo,
+                nivel_riesgo,
+                salario,
+                centro_costo,
+                id_postulado
+            } = responseEntryOrderM[0];
+
+            const options = { 
+                fecha_ingreso, 
+                sitio_trabajo, 
+                sitio_presentacion, 
+                salario_integral, 
+                sabado_habil, 
+                observaciones, 
+                naturaleza_centro_costo, 
+                proyecto, 
+                linea_negocio, 
+                area, 
+                sub_centro_costo,
+                nivel_riesgo,
+                salario,
+                centro_costo,
+                id_postulado
+            };
+
+            const responseReq = await entryOrder.consultRequisitionId(responseEntryOrderM[0].id_requisicion);
+
+            if (responseReq && responseReq.length > 0) {
+
+                responseEntryOrderM[0].tipo_jornada = responseReq[0].tipo_jornada;
+                responseEntryOrderM[0].tipo_contrato = responseReq[0].tipo_contrato;
+                responseEntryOrderM[0].id_profile = responseReq[0].id_profile;
+                responseEntryOrderM[0].nombre = responseReq[0].nombre;
+
+                const [dataObj, reqObj] = await Promise.all([ processDataFields(responseReq[0], options), processRequisitionDataEdit(responseEntryOrderM, baseValues, options) ]);
+    
+                const reqObjF = { requisicion: reqObj};
+                const combinedObj = Object.assign({}, dataObj, reqObjF);
+                const entOrdObj = { orden_ingreso: { campos: combinedObj } };
+
+                return entOrdObj;
+    
+            } else {
+                console.error('Tabla requisición vacía');
+                return null;
+            }
+
+        } else {
+            console.error('Tabla orden ingreso masivo vacía');
+            return null;
+        }
+
+    } catch (error) {
+        console.error('Error al obtener los valores del formulario: getFieldValueEdit', error.message);
         return null;
     }
 };
