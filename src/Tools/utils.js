@@ -53,8 +53,8 @@ export const requestPost = async (url, accessToken, data) => {
 }
 
 // Funcion para complementar la URL del frontend con el idCliente el idTask y el token
-export const createURLWithIdCustomerIdTask = (customerId, taskId, token = null) => {
-    return `?customer=${customerId}&task=${taskId}&token=${token}`;
+export const createURLWithIdCustomerIdTask = (customerId, taskId, contactId, token = null) => {
+    return `?customer=${customerId}&task=${taskId}&contact=${contactId}&token=${token}`;
 };
 
 // Funcion para complementar la URL del frontend con el idRecord el idTask y el token

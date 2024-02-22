@@ -18,6 +18,8 @@ async function transformJson(obj) {
         "tipo_contrato": "tipo_contrato_lp_agr_tip_cont",
         "tipo_jornada": "tipo_jornada_lp_agr_tip_jorn",
         "observaciones": "observaciones",
+        "contacto": "celular",
+        "tipo_confirmacion": "tipo_confirmacion",
         "naturaleza_cc": "natural_cen_cos_lp_nat_cen_cos",
         "proyecto_cc": "proyecto_lp_proy",
         "linea_negocio_cc": "linea_neg_lp_lin_neg",

@@ -137,6 +137,7 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
     // Verificar si el objeto options está vacío
     if (Object.keys(options).length === 0) {
         return {
+            id: null,
             fecha_ingreso: null,
             sitio_trabajo: null,
             sitio_presentacion: null,
@@ -153,6 +154,7 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
     }
 
     const {
+        id,
         fecha_ingreso,
         sitio_trabajo,
         sitio_presentacion,
@@ -192,6 +194,7 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
     }    
 
     return {
+        id,
         fecha_ingreso,
         sitio_trabajo,
         sitio_presentacion,
@@ -317,7 +320,7 @@ const processDataFields = async (element, options = {}) => {
     return dataObj;
 };
 
-export const getFieldValueCreate = async (customerId) => {
+export const getFieldValueCreate = async (customerId, contact) => {
     try {
 
         const [responseReq, baseValues] = await Promise.all([
@@ -329,8 +332,9 @@ export const getFieldValueCreate = async (customerId) => {
             
             const [dataObj, reqObj] = await Promise.all([ processDataFields(responseReq[0]), processRequisitionDataCreate(responseReq, baseValues) ]);
 
+            const contObj = { contacto: contact};
             const reqObjF = { requisicion: reqObj};
-            const combinedObj = Object.assign({}, dataObj, reqObjF);
+            const combinedObj = Object.assign({}, contObj,dataObj, reqObjF);
             const entOrdObj = { orden_ingreso: { campos: combinedObj } };
 
             return entOrdObj;
@@ -355,12 +359,13 @@ export const getFieldValueEdit = async (entryOrderMId) => {
 
         if (responseEntryOrderM && responseEntryOrderM.length > 0) {
 
-            const { 
-                fecha_ingreso, 
-                sitio_trabajo, 
-                sitio_presentacion, 
-                salario_integral, 
-                sabado_habil, 
+            const {
+                id,
+                fecha_ingreso,
+                sitio_trabajo,
+                sitio_presentacion,
+                salario_integral,
+                sabado_habil,
                 observaciones, 
                 naturaleza_centro_costo, 
                 proyecto, 
@@ -373,8 +378,13 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 id_postulado
             } = responseEntryOrderM[0];
 
+            const entryDate = new Date(fecha_ingreso);
+            const optionDate = { day: '2-digit', month: 'short', year: 'numeric' };
+            const formattedDate = entryDate.toLocaleDateString('en-GB', optionDate).replace(/ /g, '-');
+
             const options = { 
-                fecha_ingreso, 
+                id,
+                fecha_ingreso: formattedDate, 
                 sitio_trabajo, 
                 sitio_presentacion, 
                 salario_integral, 

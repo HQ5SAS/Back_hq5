@@ -29,3 +29,14 @@ export async function consultRecordWz(memberId, externalId, app) {
         throw createErrorResponse('Error al obtener registro en wz por ID', 400);
     }
 }
+
+export async function consultRecordWzById(Id) {
+    try {
+        const response = await wzQuery.wzRecordExistsById(Id);
+        return response;
+            
+    } catch (error) {
+        console.error('Error al obtener registro en wz por ID', error);
+        throw createErrorResponse('Error al obtener registro en wz por ID', 400);
+    }
+}

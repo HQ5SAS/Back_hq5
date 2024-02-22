@@ -3,6 +3,7 @@ async function validateJson(data) {
 
     // Keys esperadas en el objeto principal
     const expectedKeys = [
+        "id",
         "requisicion",
         "postulados",
         "centro_costo",
@@ -16,6 +17,8 @@ async function validateJson(data) {
         "tipo_contrato",
         "tipo_jornada",
         "observaciones",
+        "tipo_confirmacion",
+        "contacto",
         "naturaleza_cc",
         "proyecto_cc",
         "sub_centro_cc",

@@ -2,6 +2,7 @@ import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.
 import { entryOrder } from '../../Tools/taskName.js';
 import { consultTask } from '../../Lib/form.function.js';
 import { getFieldValueCreate } from '../../Lib/EntryOrder/entryOrderGet.function.js';
+import * as wzFunction from '../../Lib/woztell.function.js';
 
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
@@ -12,8 +13,8 @@ async function logAndRespond(res, message, statusCode, data = null) {
 async function processForm(req, res) {
     try {
 
-        const { customer, task } = req.query;
-        const requiredParams = ['customer', 'task'];
+        const { customer, task, contact } = req.query;
+        const requiredParams = ['customer', 'task', 'contact'];
         const missingParams = requiredParams.filter(param => !req.query[param]);
 
         if (missingParams.length > 0) {
@@ -24,8 +25,9 @@ async function processForm(req, res) {
         const { nombre: taskName } = taskRecord;
 
         if (taskName === entryOrder) {
-            
-            const fieldsValues = await getFieldValueCreate(customer);
+
+            // El contact que se recibe en las query es el id de la tabla wz
+            const fieldsValues = await getFieldValueCreate(customer, contact);
 
             if (fieldsValues === null) {
                 return logAndRespond(res, "Error en el proceso", 400);

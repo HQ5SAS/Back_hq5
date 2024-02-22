@@ -58,3 +58,31 @@ export const validateToken = async (req, res, next) => {
         return res.status(401).json(response);
     }
 };
+
+// Funcion para crear registros en Zoho creator
+const postZohoCreator = async (form, data) => {
+
+    const url = `https://creator.zoho.com/api/v2.1/hq5colombia/hq5/form/${form}`;
+    const token = getAccessToken(); 
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Zoho-oauthtoken ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        } else {
+            return null;
+        }
+
+    } catch (error) {
+        console.error('Error al crear registro en Zoho Creator:', error.message);
+    }
+};
