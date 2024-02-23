@@ -32,7 +32,6 @@ async function responseRequest(req, res) {
 
         const token = generateToken();
         const path = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id, recordContact[0].id, token);
-        console.log(path);
         const message = "";
 
         redirectMemberToNode(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, null, {

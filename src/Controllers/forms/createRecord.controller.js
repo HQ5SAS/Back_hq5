@@ -52,7 +52,6 @@ async function processForm(req, res) {
                 console.log('    ▶ Proceso de creacion');
                 console.log('       ▶ Creando registro orden ingreso\n');
                 // Llamar la funcion de insercion de registros
-                console.log(response.data);
                 responseZoho = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
             }
 

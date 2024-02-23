@@ -338,7 +338,6 @@ const processDataFields = async (element, accessToken) => {
 export const getFieldValue = async (customerId) => {
     try {
         const accessToken = await getAccessToken();
-        console.log(accessToken);
 
         if (!accessToken) {
             console.log('No se pudo obtener el Access Token');
