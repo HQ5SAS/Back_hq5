@@ -1,4 +1,5 @@
 import * as entryOrder from './entryOrderQuery.function.js';
+import { contactRecordExistsById } from '../../Database/contact.query.js';
 import { WORK_DAY_COM, WORK_DAY_DEST, WORK_DAY_DAYS } from '../../Database/fields.js';
 
 const buildInnerApplyCallsObject = (data) => {
@@ -334,7 +335,7 @@ export const getFieldValueCreate = async (customerId, contact) => {
 
             const contObj = { contacto: contact};
             const reqObjF = { requisicion: reqObj};
-            const combinedObj = Object.assign({}, contObj,dataObj, reqObjF);
+            const combinedObj = Object.assign({}, contObj, dataObj, reqObjF);
             const entOrdObj = { orden_ingreso: { campos: combinedObj } };
 
             return entOrdObj;
@@ -375,7 +376,8 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 nivel_riesgo,
                 salario,
                 centro_costo,
-                id_postulado
+                id_postulado,
+                id_contacto
             } = responseEntryOrderM[0];
 
             const entryDate = new Date(fecha_ingreso);
@@ -410,10 +412,20 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 responseEntryOrderM[0].id_profile = responseReq[0].id_profile;
                 responseEntryOrderM[0].nombre = responseReq[0].nombre;
 
-                const [dataObj, reqObj] = await Promise.all([ processDataFields(responseReq[0], options), processRequisitionDataEdit(responseEntryOrderM, baseValues, options) ]);
-    
+                const [
+                    dataObj, 
+                    reqObj,
+                    contObj
+                ] = await Promise.all([ 
+                    processDataFields(responseReq[0], options), 
+                    processRequisitionDataEdit(responseEntryOrderM, baseValues, options),
+                    contactRecordExistsById(id_contacto)
+                ]);
+
+                const contObjF = { contacto: contObj[0].id};
                 const reqObjF = { requisicion: reqObj};
-                const combinedObj = Object.assign({}, dataObj, reqObjF);
+                const combinedObj = Object.assign({}, contObjF, dataObj, reqObjF);
+                
                 const entOrdObj = { orden_ingreso: { campos: combinedObj } };
 
                 return entOrdObj;

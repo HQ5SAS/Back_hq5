@@ -47,3 +47,29 @@ export const updateContactWzIdById = async (contactId, wzId) => {
         throw error;
     }
 };
+
+// Función que realiza la consulta de contacto por id
+export const contactRecordExistsById = async (Id) => {
+    try {
+        const { results } = await dbConnection.query(`
+            SELECT 
+                id AS id2,
+                CAST(zh_id AS CHAR) AS id,
+                nombre AS nombre,
+                celular AS celular,
+                estado AS estado
+            FROM 
+                contacto
+            WHERE 
+                zh_id = ?
+            LIMIT 
+                1;
+        `, [Id, CLI_STATE_ACT]);
+
+        return results;
+
+    } catch (error) {
+        console.error('Error en la consulta de: contactRecordExistsById', error);
+        throw error;
+    }
+};

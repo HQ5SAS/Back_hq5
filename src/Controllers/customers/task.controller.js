@@ -25,11 +25,14 @@ async function responseRequest(req, res) {
 
         const { _id: memberId, externalId, app } = member;
         const wz_id = await woztellFunction.consultRecordWz(memberId, externalId, app);
+        const cel = parseInt(wz_id.externalId.substring(2));
+        const recordContact = await contactFunction.consultContactByCel(cel);
         const createRequestWzRecord = await taskFunction.createRequestWz(wz_id.id, customer, task);
         const requestWzRecord = await taskFunction.consultRequestWz(createRequestWzRecord);
 
         const token = generateToken();
-        const path = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id, wz_id.id, token);
+        const path = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id, recordContact[0].id, token);
+        console.log(path);
         const message = "";
 
         redirectMemberToNode(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, null, {

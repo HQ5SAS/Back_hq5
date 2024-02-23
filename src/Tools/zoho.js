@@ -86,3 +86,31 @@ export const postZohoCreator = async (form, data) => {
         console.error('Error al crear registro en Zoho Creator:', error.message);
     }
 };
+
+// Funcion para actualizar registros en Zoho creator (utilizando PATCH)
+export const patchZohoCreator = async (report, recordId, data) => {
+
+    const url = `https://creator.zoho.com/api/v2.1/hq5colombia/hq5/report/${report}/${recordId}`;
+    const token = await getAccessToken();
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Zoho-oauthtoken ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error('Error en la solicitud:', response.statusText);
+            return null;
+        }
+
+    } catch (error) {
+        console.error('Error al actualizar registro en Zoho Creator:', error.message);
+    }
+};

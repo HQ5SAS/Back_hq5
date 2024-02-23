@@ -26,7 +26,7 @@ async function processForm(req, res) {
 
         if (taskName === entryOrder) {
 
-            // El contact que se recibe en las query es el id de la tabla wz
+            // El contact que se recibe en las query es el id de la tabla contacto
             const fieldsValues = await getFieldValueCreate(customer, contact);
 
             if (fieldsValues === null) {

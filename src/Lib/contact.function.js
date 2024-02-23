@@ -28,3 +28,25 @@ export async function consultPermission(contactId) {
         throw createErrorResponse('Error al obtener permisos por contacto', 400);
     }
 }
+
+export async function consultContactByCel(cel) {
+    try {
+        const response = await contactQuery.contactRecordExistsByCel(cel);
+        return response;
+
+    } catch (error) {
+        console.error('Error al obtener contacto por número de celular:', error);
+        throw createErrorResponse('Error al obtener contacto por número de celular', 400);
+    }
+}
+
+export async function consultContactById(contactId) {
+    try {
+        const response = await contactQuery.contactRecordExistsById(contactId);
+        return response;
+
+    } catch (error) {
+        console.error('Error al obtener contacto por id:', error);
+        throw createErrorResponse('Error al obtener contacto id', 400);
+    }
+}

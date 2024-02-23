@@ -7,13 +7,9 @@ export const entryOrderMRecordExistsById = async (entryOrderMId) => {
             SELECT 
                 id AS id2, 
                 CAST(zh_id AS CHAR) AS id,
-                CAST(zh_requisicion AS CHAR) AS id_requisicion,
-                periodicidad_pago AS periodicidad,
                 fecha_ingreso AS fecha_ingreso,
                 sitio_trabajo AS sitio_trabajo,
                 sitio_presentacion AS sitio_presentacion,
-                nivel_riesto AS nivel_riesgo,
-                salario_base AS salario,
                 salario_integral AS salario_integral,
                 sabado_habil AS sabado_habil,
                 observaciones AS observaciones,
@@ -22,7 +18,11 @@ export const entryOrderMRecordExistsById = async (entryOrderMId) => {
                 CAST(zh_linea_negocio AS CHAR) AS linea_negocio,
                 CAST(zh_area AS CHAR) AS area,
                 CAST(zh_subcentro_costo AS CHAR) AS sub_centro_costo,
-                CAST(zh_centro_costo AS CHAR) AS centro_costo
+                nivel_riesto AS nivel_riesgo,
+                salario_base AS salario,
+                CAST(zh_centro_costo AS CHAR) AS centro_costo,
+                CAST(zh_requisicion AS CHAR) AS id_requisicion,
+                CAST(zh_contacto AS CHAR) AS id_contacto
             FROM
                 orden_ingreso_masivo 
             WHERE 

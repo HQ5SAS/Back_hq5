@@ -1,7 +1,7 @@
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
-import { postZohoCreator } from '../../Tools/zoho.js';
+import { postZohoCreator, patchZohoCreator } from '../../Tools/zoho.js';
 import { setFieldsValue } from '../../Lib/EntryOrder/entryOrderPost.function.js';
-import { consultRecordWzById } from '../../Lib/woztell.function.js';
+import { consultContactById } from '../../Lib/contact.function.js';
 
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
@@ -22,8 +22,8 @@ async function processForm(req, res) {
         if(requestBody.data.orden_ingreso)
         {
             // Convertir el contacto a celular
-            const cel = await consultRecordWzById(requestBody.data.orden_ingreso.campos.contacto);
-            requestBody.data.orden_ingreso.campos.contacto = cel.externalId;
+            const recordContact = await consultContactById(requestBody.data.orden_ingreso.campos.contacto);
+            requestBody.data.orden_ingreso.campos.contacto = `57${recordContact[0].celular}`;
             requestBody.data.orden_ingreso.campos.tipo_confirmacion = "Confirmacion por Whatsapp";
             const response = await setFieldsValue(requestBody);
             let responseZoho = {};
@@ -31,12 +31,20 @@ async function processForm(req, res) {
             console.log("\n▶ Validando proceso si es creacion o edicion ...");
             if(requestBody.data.orden_ingreso.campos.id !== null)
             {
+                // Modificar orden de ingreso masivo
                 console.log('    ▶ Proceso de edicion');
-                // Insertar registros ... Aplica para las prediligenciadas y las no prediligenciadas
-                // Insertar orden de ingreso masivo
                 console.log('       ▶ Modificando registro orden ingreso...');
-                // Insertar beneficios de contrato
-                console.log('       ▶ Modificando registros beneficios ...\n');
+                // Eliminar keys de elementos no editables por seguridad en la manipulación de los datos de las ordenes de ingreso
+                delete response.data.data.id_req_lp_gen_req;
+                delete response.data.data.postulaciones_lp_apli_conv;
+                delete response.data.data.nivel_de_riesgo;
+                delete response.data.data.sabado_habil;
+                delete response.data.data.tipo_contrato_lp_agr_tip_cont;
+                delete response.data.data.tipo_jornada_lp_agr_tip_jorn;
+                delete response.data.data.tipo_confirmacion;
+                delete response.data.data.celular;
+                // Llamar la funcion de modificacion de registros
+                responseZoho = await patchZohoCreator('Orden_de_ingreso_Masivo', requestBody.data.orden_ingreso.campos.id ,response.data);
             }
             else
             {
@@ -44,6 +52,7 @@ async function processForm(req, res) {
                 console.log('    ▶ Proceso de creacion');
                 console.log('       ▶ Creando registro orden ingreso\n');
                 // Llamar la funcion de insercion de registros
+                console.log(response.data);
                 responseZoho = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
             }
 

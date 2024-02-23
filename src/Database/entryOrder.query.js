@@ -22,7 +22,7 @@ export const entryOrderRecordExistsByIdMas = async (entryOrderMId) => {
         return results;
         
     } catch (error) {
-        console.error('Error en la consulta de: entryOrderMRecordExistsById', error);
+        console.error('Error en la consulta de: entryOrderRecordExistsByIdMas', error);
         throw error;
     }
 };
