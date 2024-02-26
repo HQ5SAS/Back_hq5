@@ -13,8 +13,8 @@ router.post('/validateContact', validateToken, contactController.validateContact
 // Validar servicios que tiene el contacto de acuerdo al cliente (Customers - Whatsapp)
 router.post('/consultServiceClient', validateToken, serviClientController.consultServiceClient);
 
-// Servicio generar orden de ingreso (Customers - Whatsapp)
-router.post('/task1', validateToken, taskController.responseRequest);
+// Servicio del area de experiencia (Customers - Whatsapp)
+router.post('/task', validateToken, taskController.responseRequest);
 
 // Confirmar orden de ingreso (Servicio 1) (Customers - Whatsapp)
 router.post('/confirmEntryOrder', validateToken, entryOrderController.confirmEntryOrderCustomer);
