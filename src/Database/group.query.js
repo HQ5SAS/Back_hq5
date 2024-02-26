@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para verificar si existe un registro en la tabla grupo por categoría del grupo
 export const groupRecordExistsByGroup = async () => {
     try {

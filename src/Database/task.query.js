@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para verificar si existe un registro en la tabla tarea_bot
 export const taskRecordExistsById = async (taskId) => {
     try {

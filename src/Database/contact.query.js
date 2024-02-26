@@ -1,8 +1,6 @@
 import { dbConnection } from './connection.js';
 import { CLI_STATE_ACT } from './fields.js';
 
-// OK
-
 // Función que realiza la consulta del contacto
 export const contactRecordExistsByCel = async (cel) => {
     try {
@@ -16,9 +14,13 @@ export const contactRecordExistsByCel = async (cel) => {
                 cliente.id AS id_cliente2,
                 CAST(cliente.zh_id AS CHAR) AS id_cliente,
                 cliente.cliente AS cliente
-            FROM contacto
-            JOIN cliente ON contacto.zh_cliente = cliente.zh_id
-            WHERE contacto.celular = ? AND cliente.estado = ?;
+            FROM 
+                contacto
+            JOIN 
+                cliente ON contacto.zh_cliente = cliente.zh_id
+            WHERE 
+                contacto.celular = ? 
+                AND cliente.estado = ?;
         `, [cel, CLI_STATE_ACT]);
 
         return results;

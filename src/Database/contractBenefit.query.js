@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para obtener los beneficios del contrato por requisicion
 export const contractBenefitRecordExistsByIdReq = async (reqId) => {
     try {
@@ -29,7 +27,8 @@ export const contractBenefitRecordExistsByIdReq = async (reqId) => {
         JOIN
             perfil ON requisicion.zh_perfil = perfil.zh_id
         WHERE 
-            zh_requisicion = ?;
+            beneficio_contrato.zh_requisicion = ?
+            AND concepto.zh_id != 3960020000007732275;
         `, [reqId]);
 
         return results;
@@ -59,7 +58,8 @@ export const contractBenefitRecordExistsByIdEntryOrderM = async (entryOrderMId) 
         JOIN 
             concepto ON beneficio_contrato.zh_concepto = concepto.zh_id
         WHERE 
-            zh_orden_ingreso_masivo = ?;
+            beneficio_contrato.zh_orden_ingreso_masivo = ?
+            AND concepto.zh_id != 3960020000007732275;
         `, [entryOrderMId]);
         
         return results;

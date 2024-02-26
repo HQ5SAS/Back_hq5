@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para verificar si existe un concepto en la tabla concepto por id grupo y está marcado como válido
 export const conceptRecordExistsByIdGroup = async (groupId) => {
     try {

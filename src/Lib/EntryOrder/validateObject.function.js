@@ -1,7 +1,11 @@
-// Validacion de Json
-async function validateJson(data) {
+const ERROR_MESSAGES = {
+    requiredKeyMissing: key => `La clave "${key}" es requerida y está ausente.`,
+    missingNestedKeys: (key, missingKeys) => `Faltan claves en el objeto ${key}: ${missingKeys.join(', ')}`,
+    arrayMissingElement: fieldName => `La lista ${fieldName} debe tener al menos un elemento`,
+    arrayElementMissingField: (fieldName, nestedField) => `El elemento en la lista ${fieldName} debe tener la clave "${nestedField}"`
+};
 
-    // Keys esperadas en el objeto principal
+async function validateJson(data) {
     const expectedKeys = [
         "id",
         "requisicion",
@@ -27,16 +31,14 @@ async function validateJson(data) {
         "beneficios_contrato"
     ];
 
-    // Keys esperadas en objetos anidados
     const expectedNestedKeys = {
         "requisicion": ["id"],
         "centro_costo": ["id", "periodicidad", "dias_pago"],
-        "salario_basico": ["valor"],
+        "salario_basico": ["valor", "subsidio_transporte_required"],
         "tipo_contrato": ["id"],
         "tipo_jornada": ["id"]
     };
 
-    // Validación adicional para otras claves
     const validationRules = {
         "postulados": {
             isArray: true,
@@ -44,52 +46,52 @@ async function validateJson(data) {
         }
     };
 
-    // Función para validar claves anidadas
-    const validateNestedKeys = (nestedObject, expectedNestedKeys) =>
-        expectedNestedKeys.filter(key => !Object.keys(nestedObject).includes(key));
+    const missingKeys = expectedKeys.filter(key => isKeyMissing(key, data, expectedNestedKeys, validationRules));
 
-    // Función para validar una clave específica según sus reglas
-    const validateField = (fieldName, fieldValue, rules) => {
-        if (rules.isArray && (!Array.isArray(fieldValue) || fieldValue.length === 0)) {
-            console.log(`La lista ${fieldName} debe tener al menos un elemento`);
-            return false;
-        }
-
-        if (rules.hasRequiredField && !fieldValue[0]?.hasOwnProperty(rules.hasRequiredField)) {
-            console.log(`El elemento en la lista ${fieldName} debe tener la clave "${rules.hasRequiredField}"`);
-            return false;
-        }
-
-        return true;
-    };
-
-    // Claves reales presentes en el objeto data
-    const keysInData = Object.keys(data);
-
-    // Filtra las claves esperadas que no están presentes en el objeto data
-    const missingKeys = expectedKeys.filter(key => {
-        if (keysInData.includes(key)) {
-
-            // Si la clave es un objeto anidado, valida sus claves internas
-            if (typeof data[key] === 'object' && expectedNestedKeys[key]) {
-                const missingNestedKeys = validateNestedKeys(data[key], expectedNestedKeys[key]);
-                if (missingNestedKeys.length > 0) {
-                    console.log(`Faltan claves en el objeto ${key}: ${missingNestedKeys.join(', ')}`);
-                    return true;
-                }
-            } else if (validationRules[key] && !validateField(key, data[key], validationRules[key])) {
-                return true;
-            }
-            return false;
-        }
-        return true;
-    });
-
-    // Retorna un objeto indicando si el objeto data es válido y las claves faltantes
     return {
         valid: missingKeys.length === 0,
         missingKeys: missingKeys
     };
+}
+
+function isKeyMissing(key, data, expectedNestedKeys, validationRules) {
+
+    if (!(key in data)) {
+        console.log(ERROR_MESSAGES.requiredKeyMissing(key));
+        return true;
+    }
+
+    const fieldValue = data[key];
+
+    if (typeof fieldValue === 'object' && expectedNestedKeys[key]) {
+        const missingNestedKeys = getMissingNestedKeys(fieldValue, expectedNestedKeys[key]);
+        if (missingNestedKeys.length > 0) {
+            console.log(ERROR_MESSAGES.missingNestedKeys(key, missingNestedKeys));
+            return true;
+        }
+    } else if (validationRules[key] && !validateField(key, fieldValue, validationRules[key])) {
+        return true;
+    }
+
+    return false;
+}
+
+function getMissingNestedKeys(fieldValue, expectedKeys) {
+    return expectedKeys.filter(nestedKey => !(nestedKey in fieldValue));
+}
+
+function validateField(fieldName, fieldValue, rules) {
+    if (rules.isArray && !(Array.isArray(fieldValue) && fieldValue.length > 0)) {
+        console.log(ERROR_MESSAGES.arrayMissingElement(fieldName));
+        return false;
+    }
+
+    if (rules.hasRequiredField && !(fieldValue[0]?.hasOwnProperty(rules.hasRequiredField))) {
+        console.log(ERROR_MESSAGES.arrayElementMissingField(fieldName, rules.hasRequiredField));
+        return false;
+    }
+
+    return true;
 }
 
 export { validateJson };

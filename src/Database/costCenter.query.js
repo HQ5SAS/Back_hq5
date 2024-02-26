@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para verificar si existe un registro en la tabla centro_costo por id cliente
 export const costCenterRecordExistsByIdCustomerIdCity = async (customerId, cityId) => {
     try {
@@ -15,7 +13,9 @@ export const costCenterRecordExistsByIdCustomerIdCity = async (customerId, cityI
             FROM 
                 centro_costo 
             WHERE 
-                zh_cliente = ? AND estado = '1' AND zh_ciudad = ?;
+                zh_cliente = ? 
+                AND estado = '1' 
+                AND zh_ciudad = ?;
         `, [customerId, cityId]);
 
         return results;

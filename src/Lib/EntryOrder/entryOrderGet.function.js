@@ -63,8 +63,9 @@ const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerC
     const { id: id, salario: salary, tipo_contrato: typeContract, tipo_jornada: typeWorkDay } = element;
     const { salario: salaryBase, subsidio_transporte: subsidyTransport} = baseValues[0];
 
-    const salaryMin = (typeWorkDay.includes(WORK_DAY_COM, WORK_DAY_DEST, WORK_DAY_DAYS)) ? parseInt(salaryBase) : 0;
-    const subsidyTransportRequired = salary > (parseInt(salaryBase) * 2);
+    const isTypeWorkDayMatching = (typeWorkDay === WORK_DAY_COM || typeWorkDay === WORK_DAY_DEST || typeWorkDay === WORK_DAY_DAYS);
+    const salaryMin = isTypeWorkDayMatching  ? parseInt(salaryBase) : 0;
+    const subsidyTransportRequired = isTypeWorkDayMatching && (salary < (parseInt(salaryBase) * 2));
     const salaryMax = 50000000;
 
     const salaryBasic = {
@@ -214,10 +215,11 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
 const processRequisitionDataCreate = async (responseData, baseValues, options = {}) => {
     const reqObj = {};
 
-    const promises = responseData.map(async (element) => {
+    for (const element of responseData) {
         const { nombre: reqName, id: reqId, id_profile: profileId, id_cliente: customerId, id_ciudad: cityId } = element;
 
-        const [ responseApplyCalls, 
+        const [
+                responseApplyCalls,
                 responseProfile,
                 responseCostCenter,
                 responseContractBenefit
@@ -227,30 +229,31 @@ const processRequisitionDataCreate = async (responseData, baseValues, options = 
             entryOrder.consultCostCenter(customerId, cityId),
             entryOrder.consultContractBenefit(reqId)
         ]);
-
-        const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};    
+      
+        const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};
         const profileObj = responseProfile && responseProfile.length > 0 ? buildInnerProfileObject(responseProfile) : {};
         const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : {};
         const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : {};
 
-        const innerObj = Object.keys(applyCallObj).length > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
-
+        const applyCallObjLength = Object.keys(applyCallObj).length;
+        const innerObj = applyCallObjLength > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
+      
         if (innerObj) {
-            reqObj[reqName] = innerObj;
+          reqObj[reqName] = innerObj;
         }
-    });
+      }
 
-    await Promise.all(promises);
     return reqObj;
 };
 
 const processRequisitionDataEdit = async (responseData, baseValues, options = {}) => {
     const reqObj = {};
 
-    const promises = responseData.map(async (element) => {
+    for (const element of responseData) {
         const { nombre: reqName, id_postulado: applyCallId, id_profile: profileId, id_cliente: customerId, id_ciudad: cityId, id: entryOrderMid } = element;
 
-        const [ responseApplyCalls, 
+        const [ 
+                responseApplyCalls, 
                 responseProfile,
                 responseCostCenter,
                 responseContractBenefit
@@ -260,20 +263,20 @@ const processRequisitionDataEdit = async (responseData, baseValues, options = {}
             entryOrder.consultCostCenter(customerId, cityId),
             entryOrder.consultContractBenefitByIdEntryOrderM(entryOrderMid)
         ]);
-
+    
         const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};    
         const profileObj = responseProfile && responseProfile.length > 0 ? buildInnerProfileObject(responseProfile) : {};
         const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : {};
         const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : {};
 
-        const innerObj = Object.keys(applyCallObj).length > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
-
+        const applyCallObjLength = Object.keys(applyCallObj).length;
+        const innerObj = applyCallObjLength > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
+      
         if (innerObj) {
-            reqObj[reqName] = innerObj;
+          reqObj[reqName] = innerObj;
         }
-    });
+      }
 
-    await Promise.all(promises);
     return reqObj;
 };
 
@@ -331,7 +334,13 @@ export const getFieldValueCreate = async (customerId, contact) => {
         
         if (responseReq && responseReq.length > 0) {
             
-            const [dataObj, reqObj] = await Promise.all([ processDataFields(responseReq[0]), processRequisitionDataCreate(responseReq, baseValues) ]);
+            const [
+                dataObj, 
+                reqObj
+            ] = await Promise.all([ 
+                processDataFields(responseReq[0]), 
+                processRequisitionDataCreate(responseReq, baseValues) 
+            ]);
 
             const contObj = { contacto: contact};
             const reqObjF = { requisicion: reqObj};
@@ -353,7 +362,10 @@ export const getFieldValueCreate = async (customerId, contact) => {
 
 export const getFieldValueEdit = async (entryOrderMId) => {
     try {
-        const [responseEntryOrderM, baseValues] = await Promise.all([
+        const [
+                responseEntryOrderM, 
+                baseValues
+            ] = await Promise.all([
             entryOrder.consultEntryOrderM(entryOrderMId),
             entryOrder.consultBaseValues()
         ]);

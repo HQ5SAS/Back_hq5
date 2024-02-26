@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para verificar si existe un registro en la tabla proyecto por id cliente
 export const projectRecordExistsByIdCustomer = async (customerId) => {
     try {

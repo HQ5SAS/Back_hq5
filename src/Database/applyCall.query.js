@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para verificar si existe un registro en la tabla aplicar_convocatorias por zh_requisicion
 export const applyCallRecordExistsByIdReq = async (reqId) => {
     try {

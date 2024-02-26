@@ -6,15 +6,13 @@ import { verifyTokenMiddleware } from '../Tools/utils.js';
 
 const router = express.Router();
 
-// Falta agregar la validacion de token
-
 // Obtener los valores a cargar en los campos del formulario frontend web (Creacion de registro)
-router.get('/create', newRecord.processForm);
+router.get('/create', verifyTokenMiddleware, newRecord.processForm);
 
 // Obtener los valores a cargar en los campos del formulario frontend web (Edicion registro)
 router.get('/edit', verifyTokenMiddleware, editRecord.processForm);
 
-// Crear registro de respuesta en Zoho, y luego lo aparte del ciclo de sync
+// Crear registro de respuesta en Zoho, y luego ejecutar la sincronización de datos (Success form)
 router.post('/', verifyTokenMiddleware, createRecord.processForm);
 
 export default router;

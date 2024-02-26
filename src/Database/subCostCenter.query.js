@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para verificar si existe un registro en la tabla subcentro_costo por id cliente
 export const subCostCenterRecordExistsByIdCustomer = async (customerId) => {
     try {

@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función que realiza la consulta de los permisos del contacto
 export const permitRecordExistsByContact = async (contactId) => {
     try {

@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para extraer el valor del salario minimo legal vigente y el auxilio de transporte por año
 export const baseValuesByYear = async () => {
     try {

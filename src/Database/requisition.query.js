@@ -20,7 +20,10 @@ export const requisitionRecordExistsByIdCustomer = async (customerId) => {
             JOIN
                 perfil ON requisicion.zh_perfil = perfil.zh_id
             WHERE
-                requisicion.zh_cliente = ? AND requisicion.estado = 'ACEPTADA'
+                requisicion.zh_cliente = ? 
+                AND requisicion.estado = 'ACEPTADA'
+            ORDER BY 
+                requisicion.creacion DESC;
         `;
 
         const params = [customerId];

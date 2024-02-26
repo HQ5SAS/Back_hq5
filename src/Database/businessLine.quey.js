@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// OK
-
 // Función para verificar si existe un registro en la tabla linea de negocio por id cliente
 export const businessLineRecordExistsByIdCustomer = async (customerId) => {
     try {
