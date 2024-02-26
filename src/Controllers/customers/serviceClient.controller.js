@@ -28,7 +28,7 @@ async function consultServiceClient(req, res) {
         const permission = await serviceClientFunction.consultPermissionClient(cel, customer);
 
         if (!permission || permission.length === 0) {
-            redirectMemberToNode(process.env.WZ_NODE_NOT_PERM_CONT, wz_id.memberId, null, {});
+            redirectMemberToNode(process.env.WZ_NODE_NOT_PERM_CONT_CUST, wz_id.memberId, null, {});
             return;
         }
 
