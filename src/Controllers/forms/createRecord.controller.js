@@ -63,14 +63,14 @@ async function processForm(req, res) {
                 delete response.data.data.tipo_confirmacion;
                 delete response.data.data.celular;
                 // Llamar la funcion de modificacion de registros
-                responseZoho = await patchZohoCreator('Orden_de_ingreso_Masivo', requestBody.data.orden_ingreso.campos.id ,response.data);
+                // responseZoho = await patchZohoCreator('Orden_de_ingreso_Masivo', requestBody.data.orden_ingreso.campos.id ,response.data);
             }
             else
             {
                 // Insertar orden de ingreso masivo
                 console.log('Proceso de creacion');
                 // Llamar la funcion de insercion de registros
-                responseZoho = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
+                // responseZoho = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
             }
 
             return logAndRespond(res, response.message, response.status, responseZoho);
