@@ -2,7 +2,6 @@ import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.
 import { entryOrder } from '../../Tools/taskName.js';
 import { consultTask } from '../../Lib/form.function.js';
 import { getFieldValueCreate } from '../../Lib/EntryOrder/entryOrderGet.function.js';
-import * as wzFunction from '../../Lib/woztell.function.js';
 
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);

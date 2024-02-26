@@ -21,7 +21,17 @@ export const requestWzRecordInsert = async (wzId, customerId, taskId) => {
 // Función para verificar la existencia del registro en las últimas 24 horas tabla solicitud_wz
 export const requestWzRecordExists = async (wzId, customerId, taskId) => {
     try {
-        const { results } = await dbConnection.query('SELECT id FROM solicitud_wz WHERE fk_wz_id = ? AND zh_cliente = ? AND zh_tarea_bot = ? AND creacion >= NOW() - INTERVAL 1 DAY', [wzId, customerId, taskId]);
+        const { results } = await dbConnection.query(`
+                SELECT 
+                    id 
+                FROM 
+                    solicitud_wz 
+                WHERE 
+                    fk_wz_id = ? 
+                    AND zh_cliente = ? 
+                    AND zh_tarea_bot = ? 
+                    AND creacion >= NOW() - INTERVAL 1 MINUTE;
+                `, [wzId, customerId, taskId]);
 
         if (results && results.length > 0) {
             return { exists: true, id: results[0].id };
