@@ -125,12 +125,13 @@ const parseDuration = (duration) => {
 };
 
 // Función para generar un nuevo token
-export const generateToken = (requestId = null, recordId = null) => {
+export const generateToken = (requestId = null, recordId = null, taskId = null) => {
     const tokenData = { 
         ...DEFAULT_TOKEN_DATA, 
         exp: Date.now() + parseDuration(DEFAULT_TOKEN_DATA.expiresIn), 
         requestId: requestId, 
-        recordId: recordId 
+        recordId: recordId,
+        taskId: taskId
     };
     const token = jwt.sign(tokenData, SECRET_KEY, { algorithm: 'HS256' });
     console.log(token);

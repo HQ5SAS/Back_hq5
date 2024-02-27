@@ -12,20 +12,23 @@ async function logAndRespond(res, message, statusCode, data = null) {
 async function processForm(req, res) {
     try {
 
-        const { record, task } = req.query;
-        const requiredParams = ['record', 'task'];
-        const missingParams = requiredParams.filter(param => !req.query[param]);
+        console.log(req.decoded.taskId);
+        console.log(req.decoded.recordId);
 
-        if (missingParams.length > 0) {
-        return logAndRespond(res, `Faltan parámetros obligatorios: ${missingParams.join(', ')}`, 400);
-        }
+        // const { record, task } = req.query;
+        // const requiredParams = ['record', 'task'];
+        // const missingParams = requiredParams.filter(param => !req.query[param]);
 
-        const taskRecord = await consultTask(task);
+        // if (missingParams.length > 0) {
+        // return logAndRespond(res, `Faltan parámetros obligatorios: ${missingParams.join(', ')}`, 400);
+        // }
+
+        const taskRecord = await consultTask(req.decoded.taskId);
         const { nombre: taskName } = taskRecord;
 
         if (taskName === entryOrder) {
             
-            const fieldsValues = await getFieldValueEdit(record);
+            const fieldsValues = await getFieldValueEdit(req.decoded.recordId);
 
             if (fieldsValues === null) {
                 return logAndRespond(res, "Error en el proceso", 400);
