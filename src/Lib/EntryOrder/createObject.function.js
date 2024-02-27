@@ -63,8 +63,8 @@ export async function createNewReqObject(data) {
         return { "data": newObject };
         
     } catch (error) {
-        console.error("Error al crear nuevo objeto de requisición:", error);
-        throw new Error("Error al crear nuevo objeto de requisición");
+        console.error("Error al crear el objeto principal de orden de ingreso: ", error);
+        throw new Error("Error al crear el objeto principal de orden de ingreso");
     }
 }
 
