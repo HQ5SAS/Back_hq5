@@ -27,8 +27,6 @@ async function processForm(req, res) {
             requestBody.data.orden_ingreso.campos.contacto = `57${recordContact[0].celular}`;
             requestBody.data.orden_ingreso.campos.tipo_confirmacion = "Confirmacion por Whatsapp";
 
-            console.log(`Contacto: ${requestBody.data.orden_ingreso.campos.contacto}`);
-
             // Verificar si ya hay beneficios_contrato, si no existe, crear un array
             if (!requestBody.data.orden_ingreso.campos.beneficios_contrato) {
                 requestBody.data.orden_ingreso.campos.beneficios_contrato = [];
@@ -48,7 +46,6 @@ async function processForm(req, res) {
 
             // Procesar el objeto de solicitud para realizar la solicitud de respuesta a Zoho Creator
             const response = await setFieldsValue(requestBody.data.orden_ingreso.campos);
-            console.log(`response: ${response}`);
             let responseZoho = {};
             
             // Valida el proceso si es creación o edición de registros de orden de ingreso masiva
