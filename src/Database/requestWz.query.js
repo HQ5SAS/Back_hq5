@@ -24,6 +24,7 @@ export const requestWzRecordExistsById = async (id) => {
         const { results } = await dbConnection.query(`
             SELECT 
                 solicitud_wz.id AS id,
+                CONVERT(solicitud_wz.fk_wz_id, CHAR) AS wz_id, 
                 CONVERT(solicitud_wz.zh_cliente, CHAR) AS cliente_id, 
                 CONVERT(solicitud_wz.zh_tarea_bot, CHAR) AS tarea_id,
                 cliente.cliente AS cliente_nombre, 
@@ -46,10 +47,11 @@ export const requestWzRecordExistsById = async (id) => {
                 cliente_id: null, 
                 tarea_id: null,
                 cliente_nombre: null,
-                tarea_nombre: null
+                tarea_nombre: null,
+                wz_id: null
             };
         } else {
-            const { id, cliente_id, tarea_id, cliente_nombre, tarea_nombre } = results[0];
+            const { id, cliente_id, tarea_id, cliente_nombre, tarea_nombre, wz_id } = results[0];
             return {
                 exists: true,
                 id: id,
@@ -57,6 +59,7 @@ export const requestWzRecordExistsById = async (id) => {
                 tarea_id: tarea_id,
                 cliente_nombre: cliente_nombre,
                 tarea_nombre: tarea_nombre,
+                wz_id: wz_id
             };
         }
     } catch (error) {

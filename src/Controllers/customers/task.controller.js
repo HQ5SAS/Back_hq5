@@ -1,7 +1,7 @@
 import * as taskFunction from '../../Lib/task.function.js';
 import * as woztellFunction from '../../Lib/woztell.function.js';
 import * as contactFunction from '../../Lib/contact.function.js';
-import { createErrorResponse, createCustomersResponse, createURLWithIdCustomerIdTask, generateToken } from '../../Tools/utils.js';
+import { createErrorResponse, createCustomersResponse, createURLWithToken, generateToken } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import dotenv from 'dotenv';
 
@@ -25,17 +25,16 @@ async function responseRequest(req, res) {
         // Respuesta a la solicitud realizada
         logAndRespond(res, 'Solicitud procesada correctamente', 200);     
 
+        // Porcesar data y generar path de URL
         const { _id: memberId, externalId, app } = member;
         const wz_id = await woztellFunction.consultRecordWz(memberId, externalId, app);
-        const cel = parseInt(wz_id.externalId.substring(2));
-
+        //const cel = parseInt(wz_id.externalId.substring(2));
         // Pendiente de aca en adelante validar lo de las solicitudes ...
-        const recordContact = await contactFunction.consultContactByCel(cel);
+        //const recordContact = await contactFunction.consultContactByCel(cel);
         const createRequestWzRecord = await taskFunction.createRequestWz(wz_id.id, customer, task);
         const requestWzRecord = await taskFunction.consultRequestWz(createRequestWzRecord);
-
         const token = generateToken(requestWzRecord.id);
-        const path = createURLWithIdCustomerIdTask(requestWzRecord.cliente_id, requestWzRecord.tarea_id, recordContact[0].id, token);
+        const path = createURLWithToken(token);
         const message = "";
 
         redirectMemberToNode(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, null, {
