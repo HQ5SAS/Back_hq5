@@ -125,9 +125,15 @@ const parseDuration = (duration) => {
 };
 
 // Función para generar un nuevo token
-export const generateToken = () => {
-    const tokenData = { ...DEFAULT_TOKEN_DATA, exp: Date.now() + parseDuration(DEFAULT_TOKEN_DATA.expiresIn) };
+export const generateToken = (requestId = null, recordId = null) => {
+    const tokenData = { 
+        ...DEFAULT_TOKEN_DATA, 
+        exp: Date.now() + parseDuration(DEFAULT_TOKEN_DATA.expiresIn), 
+        requestId: requestId, 
+        recordId: recordId 
+    };
     const token = jwt.sign(tokenData, SECRET_KEY, { algorithm: 'HS256' });
+    console.log(token);
     return token;
 };
 
@@ -172,6 +178,7 @@ export const verifyTokenMiddleware = async (req, res, next) => {
         }
 
         req.decoded = tokenResult.decoded;
+        console.log(req.decoded);
         next();
         
     } catch (error) {

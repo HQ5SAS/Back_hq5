@@ -3,7 +3,7 @@ import contactController from '../Controllers/customers/contact.controller.js';
 import serviClientController from '../Controllers/customers/serviceClient.controller.js';
 import taskController from '../Controllers/customers/task.controller.js';
 import entryOrderController from '../Controllers/customers/entryOrder.controller.js';
-import {validateToken} from '../Tools/woztell.js';
+import { validateToken } from '../Tools/woztell.js';
 
 const router = express.Router();
 

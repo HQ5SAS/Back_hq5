@@ -6,22 +6,17 @@ dotenv.config({ path: '.env' });
 
 // Función para validar el token de Woztell
 export const validateToken = async (req, res, next) => {
-    try{
+    try {
         const secretKey = process.env.WZ_SECRET_KEY;
         const token = req.header('Authorization');
+
         if (!token) {
             return res.status(401).json({ error: true, statusCode: 401, message: 'Token no proporcionado', data: null });
         }
-        const decoded = await new Promise((resolve, reject) => {
-            jwt.verify(token.replace('Bearer ', ''), secretKey, (err, decoded) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(decoded);
-                }
-            });
-        });
+
+        const decoded = await jwt.verify(token.replace('Bearer ', ''), secretKey);
         next();
+        
     } catch (error) {
         return res.status(401).json({ error: true, statusCode: 401, message: 'Token inválido', data: null });
     }

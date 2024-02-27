@@ -12,13 +12,7 @@ export async function createRequestWz(wzId, customerId, taskId) {
             taskQuery.taskRecordExistsById(taskId),
         ]);
 
-        const { exists, id } = await requestWzQuery.requestWzRecordExists(wzRecord.id, customerRecord.id, taskRecord.id);
-
-        if (!exists) {
-            const { id } = await requestWzQuery.requestWzRecordInsert(wzRecord.id, customerRecord.id, taskRecord.id);
-            return id;
-        }
-
+        const { id } = await requestWzQuery.requestWzRecordInsert(wzRecord.id, customerRecord.id, taskRecord.id);
         return id;
 
     } catch (error) {

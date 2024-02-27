@@ -16,25 +16,27 @@ async function logAndRespond(res, message, statusCode, data = null) {
 async function validateContact(req, res) {
     try {
 
+        // Validar cuerpo de la solicitud
         const { member } = req.body;
         if (!member) {
             return logAndRespond(res, 'Clave (member) no encontrada en el cuerpo de la solicitud', 400);
         }
 
+        // Respuesta a la solicitud realizada
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
         
         const { _id: memberId, externalId, app } = member;
-
         const wz_id = await woztellFunction.consultRecordWz(memberId, externalId, app);
-        
         const cel = parseInt(wz_id.externalId.substring(2));
         const contact = await contactFunction.consultContact(cel, wz_id.id);
 
+        // Si no existe el contacto, redireccionarlo en Woztell
         if (!contact || contact.length === 0) {
             redirectMemberToNode(process.env.WZ_NODE_UNREG_CONT, wz_id.memberId, null, {});
             return;
         }
 
+        // Si existe más de un contacto, redireccionarlo en Woztell
         if (contact.length > 1) {
             const customerMap = new Map(contact.map(item => [item.id_cliente, item.cliente]));
             const mapData = Object.fromEntries([...customerMap.entries()].map(([id, cliente], index) => [index + 1, `${id}`]));
@@ -48,7 +50,8 @@ async function validateContact(req, res) {
         }
 
         const contactRecord = contact[0];
-
+        
+        // Si existe un sólo contacto inactivo, redireccionarlo en Woztell
         if (!contactRecord || contactRecord.estado !== CONT_STATE_ACT) {
             redirectMemberToNode(process.env.WZ_NODE_NOT_ACT_CONT, wz_id.memberId, null, {});
             return;
@@ -56,6 +59,7 @@ async function validateContact(req, res) {
 
         const permission = await contactFunction.consultPermission(contactRecord.id);
 
+        // Si el contacto no tiene permisos, redireccionarlo en Woztell
         if (!permission || permission.length === 0) {
             redirectMemberToNode(process.env.WZ_NODE_NOT_PERM_CONT, wz_id.memberId, null, {});
             return;
@@ -63,6 +67,7 @@ async function validateContact(req, res) {
 
         const permissionInactive = permission.every(permit => permit.estado === PERM_STATE_INACT);
         
+        // Si el contacto tiene todos los permisos inactivos, redireccionarlo en Woztell
         if (permissionInactive) {
             redirectMemberToNode(process.env.WZ_NODE_NOT_PERM_ACT_CONT, wz_id.memberId, null, {});
             return;
@@ -73,6 +78,7 @@ async function validateContact(req, res) {
         const mapData = Object.fromEntries([...optionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
         const message = [...optionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
         
+        // Si el contacto tiene permisos activos, redireccionarlo en Woztell
         redirectMemberToNode(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, null, {
             customer: contactRecord.zh_id_cliente,
             task: { ...mapData },

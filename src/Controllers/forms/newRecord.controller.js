@@ -12,6 +12,7 @@ async function logAndRespond(res, message, statusCode, data = null) {
 async function processForm(req, res) {
     try {
 
+        console.log(req.decoded);
         const { customer, task, contact } = req.query;
         const requiredParams = ['customer', 'task', 'contact'];
         const missingParams = requiredParams.filter(param => !req.query[param]);

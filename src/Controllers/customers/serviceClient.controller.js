@@ -15,11 +15,14 @@ async function logAndRespond(res, message, statusCode, data = null) {
 
 async function consultServiceClient(req, res) {
     try {
+
+        // Validar cuerpo de la solicitud
         const { member, customer } = req.body;
         if (!member || !customer) {
             return logAndRespond(res, 'Clave (member) o (customer) no encontrada en el cuerpo de la solicitud', 400);
         }
 
+        // Respuesta a la solicitud realizada
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
 
         const { _id: id, externalId, app } = member;
@@ -27,6 +30,7 @@ async function consultServiceClient(req, res) {
         const cel = parseInt(wz_id.externalId.substring(2));
         const permission = await serviceClientFunction.consultPermissionClient(cel, customer);
 
+        // Si el contacto no tiene permisos, redireccionarlo en Woztell
         if (!permission || permission.length === 0) {
             redirectMemberToNode(process.env.WZ_NODE_NOT_PERM_CONT_CUST, wz_id.memberId, null, {});
             return;
@@ -34,6 +38,7 @@ async function consultServiceClient(req, res) {
 
         const permissionInactive = permission.every(permit => permit.estado === PERM_STATE_INACT);
         
+        // Si el contacto tiene todos los permisos inactivos, redireccionarlo en Woztell
         if (permissionInactive) {
             redirectMemberToNode(process.env.WZ_NODE_NOT_PERM_ACT_CONT, wz_id.memberId, null, {});
             return;
@@ -44,6 +49,7 @@ async function consultServiceClient(req, res) {
         const mapData = Object.fromEntries([...optionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
         const message = [...optionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
         
+        // Si el contacto tiene permisos activos, redireccionarlo en Woztell
         redirectMemberToNode(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, null, {
             customer: customer,
             task: { ...mapData },
