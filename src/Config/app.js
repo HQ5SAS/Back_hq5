@@ -6,7 +6,6 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, join } from 'path';
 import { readdir } from 'fs/promises';
 import { dbConnection } from '../Database/connection.js';
-import { log } from 'console';
 
 dotenv.config({ path: '.env' });
 
@@ -33,7 +32,6 @@ const importRoutes = async () => {
             const { default: routes } = await import(fileUrl);
             const routeName = file.replace('.routes.js', '').toLowerCase();
             router.use(`/api/v1/${routeName}`, routes);
-            // console.log(`Ruta > ${routeName}`);
         }));
 
     } catch (error) {

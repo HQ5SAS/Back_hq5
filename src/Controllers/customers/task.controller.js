@@ -1,5 +1,5 @@
 import * as taskFunction from '../../Lib/task.function.js';
-import * as woztellFunction from '../../Lib/woztell.function.js';
+import * as woztellFunction from '../../Lib/wz.function.js';
 import * as contactFunction from '../../Lib/contact.function.js';
 import { createErrorResponse, createCustomersResponse, createURLWithToken, generateToken } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';

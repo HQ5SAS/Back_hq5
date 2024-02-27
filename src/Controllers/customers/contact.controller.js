@@ -1,4 +1,4 @@
-import * as woztellFunction from '../../Lib/woztell.function.js';
+import { consultRecordWz } from '../../Lib/wz.function.js';
 import * as contactFunction from '../../Lib/contact.function.js';
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
@@ -22,11 +22,12 @@ async function validateContact(req, res) {
             return logAndRespond(res, 'Clave (member) no encontrada en el cuerpo de la solicitud', 400);
         }
 
-        // Respuesta a la solicitud realizada
+        // Realizar respuesta a la solicitud
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
-        
+
+        // Consultar registros asociados en las tablas de la db HQ5
         const { _id: memberId, externalId, app } = member;
-        const wz_id = await woztellFunction.consultRecordWz(memberId, externalId, app);
+        const wz_id = await consultRecordWz(memberId, externalId, app);
         const cel = parseInt(wz_id.externalId.substring(2));
         const contact = await contactFunction.consultContact(cel, wz_id.id);
 

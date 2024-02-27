@@ -1,28 +1,24 @@
 import * as wzQuery from '../Database/wz.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
+// Optimizado
+
+// Funcion para consultar registros de Woztell y si existe los crea en la tabla wz de la db HQ5
 export async function consultRecordWz(memberId, externalId, app) {
     try {
         const response = await wzQuery.wzRecordExistsByMemberId(memberId);
 
         if (!response.exists) {
+            const insertRecord  = await wzQuery.wzRecordInsert(memberId, externalId, app);
 
-            try {
-                const insert = await wzQuery.wzRecordInsert(memberId, externalId, app);
-
-                if (!insert || !insert.id) {
-                    throw new Error('Error en la inserción de registros en wz');
-                }
-                const response = await wzQuery.wzRecordExistsById(insert.id);
-                return response;
-
-            } catch (error) {
-                throw error;
+            if (!insertRecord  || !insertRecord.id) {
+                throw new Error('Error al insertar un registro en la tabla wz');
             }
-            
-        } else {
-            return response;   
+
+            return await wzQuery.wzRecordExistsById(insertRecord.id);
         }
+
+        return response;
 
     } catch (error) {
         console.error('Error al obtener registro en wz por ID', error);
@@ -30,11 +26,11 @@ export async function consultRecordWz(memberId, externalId, app) {
     }
 }
 
-export async function consultRecordWzById(Id) {
+// Funcion para consultar registros de Woztell en la tabla wz de la db HQ5
+export async function consultRecordWzById(id) {
     try {
-        const response = await wzQuery.wzRecordExistsById(Id);
-        return response;
-            
+        return await wzQuery.wzRecordExistsById(id);
+
     } catch (error) {
         console.error('Error al obtener registro en wz por ID', error);
         throw createErrorResponse('Error al obtener registro en wz por ID', 400);

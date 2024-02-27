@@ -1,5 +1,5 @@
 import * as serviceClientFunction from '../../Lib/serviceClient.function.js';
-import * as woztellFunction from '../../Lib/woztell.function.js';
+import * as woztellFunction from '../../Lib/wz.function.js';
 import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import { PERM_STATE_ACT, PERM_STATE_INACT } from '../../Database/fields.js';
