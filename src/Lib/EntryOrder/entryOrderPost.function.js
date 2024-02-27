@@ -6,13 +6,16 @@ export async function setFieldsValue(data) {
     try {
         // Validar objeto principal
         const validationResult = await validateJson(data);
+        console.log(`Validar json ${validationResult}`);
 
         if (validationResult.valid) {
             // Transformar beneficios de contrato
             data.beneficios_contrato = await Promise.all(data.beneficios_contrato.map(async beneficio => await transformJson(await createNewBenObject(beneficio))));
+            console.log(`Beneficios ${data.beneficios_contrato}`);
 
             // Transformar objeto principal
             const combinedObject = await transformJson(await createNewReqObject(data));
+            console.log(`Objeto final ${combinedObject}`);
 
             return {
                 status: 200,
