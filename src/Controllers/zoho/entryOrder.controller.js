@@ -20,7 +20,7 @@ async function notifyEntryOrderCustomer(req, res, node) {
         if (!data || !data.message || !data.id || !data.recipientId) {
             return logAndRespond(res, 'Las claves (message), (id) o (recipientId) no se encontraron en el cuerpo de la solicitud', 400);
         }
-
+            
         const { id: taskId } = await consultTask(entryOrder);
         const token = generateToken(null, data.id, taskId);
         req.body.data.path = `orden-ingreso${createURLWithToken(token)}`;

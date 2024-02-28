@@ -47,7 +47,7 @@ export async function processZohoResponse(campos, response) {
             celular, 
             ...editableData 
         } = response.data.data;
-        console.log(response.data);
+        console.log(editableData);
         // Llamar la funcion de modificacion de registros
         const edit = await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, editableData);
         console.log(edit);
