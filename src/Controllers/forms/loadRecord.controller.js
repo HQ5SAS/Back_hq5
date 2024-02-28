@@ -27,7 +27,7 @@ async function processForm(req, res) {
 
         const { requestId, taskId, recordId } = req.decoded;
 
-        if (!requestId) {
+        if (requestId !== null && recordId !== undefined) {
             const { nombre: taskName } = await consultTask(taskId);
 
             if (taskName === entryOrder) {
