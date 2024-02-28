@@ -56,9 +56,11 @@ export async function processZohoResponse(campos, response) {
             delete editableData.sub_centro_costo_lp_cen_cos;
         }
 
+        const data = {"data":editableData};
+
         console.log(editableData);
         // Llamar la funcion de modificacion de registros
-        const edit = await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, editableData);
+        const edit = await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, data);
         console.log(edit);
         return edit;
         // return {};
