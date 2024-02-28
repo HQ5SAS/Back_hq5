@@ -26,9 +26,11 @@ async function processForm(req, res) {
     try {
         const { requestId, taskId, recordId } = req.decoded;
 
-        if (requestId === null || recordId === undefined) {
-            const { nombre: taskName } = await consultTask(taskId);
+        console.log(requestId, taskId, recordId);
 
+        if (requestId === null || requestId === undefined) {
+            const { nombre: taskName } = await consultTask(taskId);
+            
             if (taskName === entryOrder) {
                 const fieldsValues = await getFieldValueEdit(recordId);
                 return respondWithFieldsValues(res, fieldsValues);

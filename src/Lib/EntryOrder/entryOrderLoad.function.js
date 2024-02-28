@@ -452,6 +452,8 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                     contactRecordExistsById(id_contacto)
                 ]);
 
+                console.log(id_contacto);
+
                 const contObjF = { contacto: contObj[0].id};
                 const reqObjF = { requisicion: reqObj};
                 const combinedObj = Object.assign({}, contObjF, dataObj, reqObjF);

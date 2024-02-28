@@ -9,6 +9,7 @@ import { postZohoCreator, patchZohoCreator } from '../../Tools/zoho.js';
 export async function updateContactAndConfirmation(campos) {
     const { contacto } = campos;
     const recordContact = await consultContactById(contacto);
+    campos.contacto_id = recordContact[0].id;
     campos.contacto = `57${recordContact[0].celular}`;
     campos.tipo_confirmacion = "Confirmacion por Whatsapp";
 }
