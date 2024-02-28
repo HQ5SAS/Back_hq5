@@ -23,7 +23,7 @@ async function notifyEntryOrderCustomer(req, res, node) {
 
         const { id: taskId } = await consultTask(entryOrder);
         const token = generateToken(null, data.id, taskId);
-        req.body.data.path = createURLWithToken(token);
+        req.body.data.path = `orden-ingreso${createURLWithToken(token)}`;
 
         redirectMemberToNode(node, null, data.recipientId, req.body);
         logAndRespond(res, 'Solicitud procesada correctamente', 200);

@@ -31,7 +31,7 @@ async function responseRequest(req, res) {
         const createRequestWzRecord = await createRequestWz(wz_id.id, customer, task);
         const requestWzRecord = await consultRequestWz(createRequestWzRecord);
         const token = generateToken(requestWzRecord.id, null, null);
-        const path = createURLWithToken(token);
+        const path = `orden-ingreso${createURLWithToken(token)}`;
         const message = "";
 
         // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
