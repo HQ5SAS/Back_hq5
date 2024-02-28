@@ -47,6 +47,15 @@ export async function processZohoResponse(campos, response) {
             celular, 
             ...editableData 
         } = response.data.data;
+
+        if(editableData.area_lp_area === undefined || editableData.area_lp_area === null){
+            delete editableData.area_lp_area;
+        }
+
+        if(editableData.sub_centro_costo_lp_cen_cos === undefined || editableData.sub_centro_costo_lp_cen_cos === null){
+            delete editableData.sub_centro_costo_lp_cen_cos;
+        }
+
         console.log(editableData);
         // Llamar la funcion de modificacion de registros
         const edit = await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, editableData);
