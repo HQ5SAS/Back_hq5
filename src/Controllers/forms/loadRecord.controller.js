@@ -28,8 +28,7 @@ async function processForm(req, res) {
         const { requestId, taskId, recordId } = req.decoded;
 
         if (!requestId) {
-            const taskRecord = await consultTask(taskId);
-            const { nombre: taskName } = taskRecord;
+            const { nombre: taskName } = await consultTask(taskId);
 
             if (taskName === entryOrder) {
                 const fieldsValues = await getFieldValueEdit(recordId);
@@ -42,11 +41,9 @@ async function processForm(req, res) {
             const wzRecord = await consultRecordWzById(requestRecord.wz_id);
             const contact = await consultContactByCel(parseInt(wzRecord.externalId.substring(2)));
 
-            const taskRecord = await consultTask(requestRecord.tarea_id);
-            const { nombre: taskName } = taskRecord;
+            const { nombre: taskName } = await consultTask(requestRecord.tarea_id);
     
             if (taskName === entryOrder) {
-                // El contact que se recibe en las query es el id de la tabla contacto
                 const fieldsValues = await getFieldValueCreate(requestRecord.cliente_id, contact[0].id);
                 return respondWithFieldsValues(res, fieldsValues);
             }
