@@ -65,6 +65,7 @@ export async function setFieldsValue(data) {
         const validationResult = await validateJson(data);
 
         if (validationResult.valid) {
+            console.log(data.beneficios_contrato);
             data.beneficios_contrato = await Promise.all(data.beneficios_contrato.map(async beneficio => await transformJson(await createNewBenObject(beneficio))));
             console.log(data.beneficios_contrato);
             const combinedObject = await transformJson(await createNewReqObject(data));
