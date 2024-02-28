@@ -58,9 +58,9 @@ export async function processZohoResponse(campos, response) {
         console.log('Proceso de creacion');
         // Llamar la funcion de insercion de registros
         const create = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
-        console.log(create);
-        return create;
         console.log(response.data);
+        console.log(create.error[0].alert_message);
+        return create;
         // return {};
     }
 }
