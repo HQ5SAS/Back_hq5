@@ -49,13 +49,17 @@ export async function processZohoResponse(campos, response) {
         } = response.data.data;
         console.log(response.data);
         // Llamar la funcion de modificacion de registros
-        return await await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, editableData);
+        const edit = await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, editableData);
+        console.log(edit);
+        return edit;
         // return {};
         
     } else {
         console.log('Proceso de creacion');
         // Llamar la funcion de insercion de registros
-        return await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
+        const create = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
+        console.log(create);
+        return create;
         console.log(response.data);
         // return {};
     }
