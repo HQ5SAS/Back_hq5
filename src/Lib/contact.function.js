@@ -1,27 +1,28 @@
-import * as permitQuery from '../Database/permit.quey.js';
-import * as contactQuery from '../Database/contact.query.js';
+import { permitRecordExistsByContact } from '../Database/permit.quey.js';
+import { contactRecordExistsByCel, updateContactWzIdById, contactRecordExistsById } from '../Database/contact.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
+// Funcion para consultar registros en la tabla contacto por su cel y wzId (celular, fk_wz_id) y los actualiza con su registro en la tabla wz
 export async function consultContact(cel, wzId) {
     try {
-        const response = await contactQuery.contactRecordExistsByCel(cel);
+        const response = await contactRecordExistsByCel(cel);
         
         for (const contact of response) {
-            await contactQuery.updateContactWzIdById(contact.id, wzId);
+            await updateContactWzIdById(contact.id, wzId);
         }
 
         return response;
 
     } catch (error) {
-        console.error('Error al obtener contacto por número de celular:', error);
-        throw createErrorResponse('Error al obtener contacto por número de celular', 400);
+        console.error('Error al obtener contacto por número de celular y woztell id:', error);
+        throw createErrorResponse('Error al obtener contacto por número de celular y woztell id', 400);
     }
 }
 
+// Funcion para consultar registros en la tabla permiso por su contactId (zh_contacto)
 export async function consultPermission(contactId) {
     try {
-        const response = await permitQuery.permitRecordExistsByContact(contactId);
-        return response;
+        return await permitRecordExistsByContact(contactId);
         
     } catch (error) {
         console.error('Error al obtener permisos por contacto:', error);
@@ -29,10 +30,10 @@ export async function consultPermission(contactId) {
     }
 }
 
+// Funcion para consultar registros en la tabla contacto por su celular (celular)
 export async function consultContactByCel(cel) {
     try {
-        const response = await contactQuery.contactRecordExistsByCel(cel);
-        return response;
+        return await contactRecordExistsByCel(cel);
 
     } catch (error) {
         console.error('Error al obtener contacto por número de celular:', error);
@@ -40,10 +41,10 @@ export async function consultContactByCel(cel) {
     }
 }
 
+// Funcion para consultar registros en la tabla contacto por contactId (zh_id)
 export async function consultContactById(contactId) {
     try {
-        const response = await contactQuery.contactRecordExistsById(contactId);
-        return response;
+        return await contactRecordExistsById(contactId);
 
     } catch (error) {
         console.error('Error al obtener contacto por id:', error);

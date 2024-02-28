@@ -1,6 +1,6 @@
 import { dbConnection } from './connection.js';
 
-// Función para verificar si existe un registro en la tabla requisicion por zh_cliente
+// Función para verificar si existe un registro en la tabla requisicion por customerId (zh_cliente)
 export const requisitionRecordExistsByIdCustomer = async (customerId) => {
     try {
         const sql = `
@@ -34,13 +34,14 @@ export const requisitionRecordExistsByIdCustomer = async (customerId) => {
         } else {
             throw new Error('Error en la consulta de: requisitionRecordExistsByIdCustomer');
         }
+
     } catch (error) {
         console.error('Error en la consulta de: requisitionRecordExistsByIdCustomer', error);
         throw error;
     }
 };
 
-// Función para verificar si existe un registro en la tabla requisicion por zh_id
+// Función para verificar si existe un registro en la tabla requisicion por requisitionId (zh_id)
 export const requisitionRecordExistsById = async (requisitionId) => {
     try {
         const sql = `
@@ -73,6 +74,7 @@ export const requisitionRecordExistsById = async (requisitionId) => {
         } else {
             throw new Error('Error en la consulta de: requisitionRecordExistsById');
         }
+        
     } catch (error) {
         console.error('Error en la consulta de: requisitionRecordExistsById', error);
         throw error;

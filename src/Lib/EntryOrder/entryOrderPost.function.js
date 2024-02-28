@@ -2,16 +2,13 @@ import { validateJson } from './validateObject.function.js';
 import { createNewReqObject, createNewBenObject } from './createObject.function.js';
 import { transformJson } from './transformObject.function.js';
 
+// Funcion para procesar el objeto de respuesta en el success del frontend
 export async function setFieldsValue(data) {
     try {
-        // Validar objeto principal
         const validationResult = await validateJson(data);
 
         if (validationResult.valid) {
-            // Transformar beneficios de contrato
             data.beneficios_contrato = await Promise.all(data.beneficios_contrato.map(async beneficio => await transformJson(await createNewBenObject(beneficio))));
-
-            // Transformar objeto principal
             const combinedObject = await transformJson(await createNewReqObject(data));
 
             return {

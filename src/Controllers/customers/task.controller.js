@@ -1,21 +1,21 @@
-import * as taskFunction from '../../Lib/task.function.js';
-import * as woztellFunction from '../../Lib/wz.function.js';
-import * as contactFunction from '../../Lib/contact.function.js';
+import { createRequestWz, consultRequestWz } from '../../Lib/task.function.js';
+import { consultRecordWz } from '../../Lib/wz.function.js';
 import { createErrorResponse, createCustomersResponse, createURLWithToken, generateToken } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
+// Funcion para acceder al metodo de respuesta estandar en utils.js
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
     res.status(statusCode).json(response);
     return response;
 }
 
+// Funcion para crear el path de la tarea que solicito el cliente a traves de whatsapp
 async function responseRequest(req, res) {
     try {
-
         // Validar cuerpo de la solicitud
         const { member, customer, task } = req.body;
         if (!member || !customer || !task) {
@@ -25,18 +25,16 @@ async function responseRequest(req, res) {
         // Respuesta a la solicitud realizada
         logAndRespond(res, 'Solicitud procesada correctamente', 200);     
 
-        // Porcesar data y generar path de URL
+        // Procesar data y generar path de URL
         const { _id: memberId, externalId, app } = member;
-        const wz_id = await woztellFunction.consultRecordWz(memberId, externalId, app);
-        //const cel = parseInt(wz_id.externalId.substring(2));
-        // Pendiente de aca en adelante validar lo de las solicitudes ...
-        //const recordContact = await contactFunction.consultContactByCel(cel);
-        const createRequestWzRecord = await taskFunction.createRequestWz(wz_id.id, customer, task);
-        const requestWzRecord = await taskFunction.consultRequestWz(createRequestWzRecord);
-        const token = generateToken(requestWzRecord.id);
+        const wz_id = await consultRecordWz(memberId, externalId, app);
+        const createRequestWzRecord = await createRequestWz(wz_id.id, customer, task);
+        const requestWzRecord = await consultRequestWz(createRequestWzRecord);
+        const token = generateToken(requestWzRecord.id, null, null);
         const path = createURLWithToken(token);
         const message = "";
 
+        // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
         redirectMemberToNode(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, null, {
             customer: customer,
             task: task,
@@ -45,7 +43,6 @@ async function responseRequest(req, res) {
             path: path,
             message: message
         });
-        return;
 
     } catch (error) {
         console.error('Error en la consulta de la tarea de orden de ingreso:', error);
@@ -54,5 +51,6 @@ async function responseRequest(req, res) {
     }
 }
 
+// Controlador para crear los path de las tareas del cliente que solicito a traves de whatsapp
 const requestsController = { responseRequest };
 export default requestsController;

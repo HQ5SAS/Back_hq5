@@ -3,6 +3,8 @@ import { entryOrder } from '../../Tools/taskName.js';
 import { consultTask } from '../../Lib/form.function.js';
 import { getFieldValueEdit } from '../../Lib/EntryOrder/entryOrderGet.function.js';
 
+// Se puede eliminar de one pro
+
 async function logAndRespond(res, message, statusCode, data = null) {
     const response = createCustomersResponse(message, statusCode, data);
     res.status(statusCode).json(response);

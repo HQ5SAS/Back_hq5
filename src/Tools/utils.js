@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { taskRecordExistsByName } from '../Database/task.query.js';
 
 dotenv.config({ path: '.env' });
 
@@ -43,8 +44,8 @@ export const requestPost = async (url, accessToken, data) => {
             throw new Error(`Error en la solicitud: ${respuesta.status} ${respuesta.statusText}`);
         }
 
-        const resultado = await respuesta.json();
-        return resultado;
+        const response = await respuesta.json();
+        return response;
 
     } catch (error) {
         console.error('Error al realizar la solicitud:', error);
@@ -52,46 +53,12 @@ export const requestPost = async (url, accessToken, data) => {
     }
 }
 
-// Funcion para complementar la URL del frontend con el idCliente el idTask y el token
+// Funcion para complementar la URL del frontend con token (JWT contiene la data)
 export const createURLWithToken = (token = null) => {
     return `?token=${token}`;
 };
 
-// Funcion para complementar la URL del frontend con el idRecord el idTask y el token
-export const createURLWithIdRecordIdTask = (recordId, taskId, token = null) => {
-    return `?record=${recordId}&task=${taskId}&token=${token}`;
-};
-
-// Funcion para acortar las url con rebranly
-export const shortenUrl  = async (title, destination) => {
-    try {
-        const apiUrl = process.env.REBRAN_URL;
-        const apiKey = process.env.REBRAN_KEY;
-
-        const requestBody = {
-            title: title,
-            slashtag: null,
-            destination: destination,
-        };
-
-        const response = await fetch(`${apiUrl}?apikey=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-        });
-
-        const data = await response.json();
-        return data;
-
-    } catch (error) {
-        console.error('Error:', error);
-        throw new Error('Error al realizar la consulta en Rebrandly');
-    }
-}
-
-// Datos por defecto del token
+// Datos por defecto del token del frontend
 const SECRET_KEY = process.env.SECRET_KEY_SERVICE;
 const DEFAULT_TOKEN_DATA = {
     user: process.env.USER_SERVICE,
@@ -124,7 +91,7 @@ const parseDuration = (duration) => {
     return value * units[unit];
 };
 
-// Función para generar un nuevo token
+// Función para generar un nuevo token del frontend
 export const generateToken = (requestId = null, recordId = null, taskId = null) => {
     const tokenData = { 
         ...DEFAULT_TOKEN_DATA, 
@@ -133,6 +100,7 @@ export const generateToken = (requestId = null, recordId = null, taskId = null) 
         recordId: recordId,
         taskId: taskId
     };
+
     const token = jwt.sign(tokenData, SECRET_KEY, { algorithm: 'HS256' });
     console.log(token);
     return token;
@@ -169,7 +137,8 @@ export const verifyTokenMiddleware = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token) {
-            return res.status(401).json({ error: true, statusCode: 401, message: 'Token no proporcionado', data: null });
+            const response = createErrorResponse('Token no proporcionado', 401);
+            return res.status(401).json(response);
         }
 
         const tokenResult = await validateToken(token);
@@ -188,11 +157,9 @@ export const verifyTokenMiddleware = async (req, res, next) => {
 };
 
 // Funcion para obtener el id de la tarea en la tabla tarea_bot por nombre
-import * as taskQuery from '../Database/task.query.js';
 export const consultTask = async (taskName) => {
     try {
-        const response = await taskQuery.taskRecordExistsByName(taskName);
-        return response;
+        return await taskRecordExistsByName(taskName);
         
     } catch (error) {
         console.error('Error al consultar la tabla tarea_bot:', error);

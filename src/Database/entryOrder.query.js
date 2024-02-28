@@ -1,6 +1,6 @@
 import { dbConnection } from './connection.js';
 
-// Función para consultar registros en la tabla orden_ingreso por zh_ord_ingreso_masivo
+// Función para consultar registros en la tabla orden_ingreso por entryOrderMId (zh_ord_ingreso_masivo)
 export const entryOrderRecordExistsByIdMas = async (entryOrderMId) => {
     try {
         const sql = `

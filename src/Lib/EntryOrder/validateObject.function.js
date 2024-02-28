@@ -1,3 +1,4 @@
+// Mensaje de error
 const ERROR_MESSAGES = {
     requiredKeyMissing: key => `La clave "${key}" es requerida y está ausente.`,
     missingNestedKeys: (key, missingKeys) => `Faltan claves en el objeto ${key}: ${missingKeys.join(', ')}`,
@@ -5,7 +6,8 @@ const ERROR_MESSAGES = {
     arrayElementMissingField: (fieldName, nestedField) => `El elemento en la lista ${fieldName} debe tener la clave "${nestedField}"`
 };
 
-async function validateJson(data) {
+// Funcion para validar el objeto Json de entrada en el post del frontend
+export async function validateJson(data) {
     const expectedKeys = [
         "id",
         "requisicion",
@@ -54,6 +56,7 @@ async function validateJson(data) {
     };
 }
 
+// Funcion para validar las llaves primarias y secundarias del objeto Json de entrada en el post del frontend
 function isKeyMissing(key, data, expectedNestedKeys, validationRules) {
 
     if (!(key in data)) {
@@ -69,6 +72,7 @@ function isKeyMissing(key, data, expectedNestedKeys, validationRules) {
             console.log(ERROR_MESSAGES.missingNestedKeys(key, missingNestedKeys));
             return true;
         }
+        
     } else if (validationRules[key] && !validateField(key, fieldValue, validationRules[key])) {
         return true;
     }
@@ -76,10 +80,12 @@ function isKeyMissing(key, data, expectedNestedKeys, validationRules) {
     return false;
 }
 
+// Funcion para validar las llaves anidadas del objeto Json de entrada en el post del frontend
 function getMissingNestedKeys(fieldValue, expectedKeys) {
     return expectedKeys.filter(nestedKey => !(nestedKey in fieldValue));
 }
 
+// Funcion para validar los campos adicionales del objeto Json de entrada en el post del frontend
 function validateField(fieldName, fieldValue, rules) {
     if (rules.isArray && !(Array.isArray(fieldValue) && fieldValue.length > 0)) {
         console.log(ERROR_MESSAGES.arrayMissingElement(fieldName));
@@ -93,5 +99,3 @@ function validateField(fieldName, fieldValue, rules) {
 
     return true;
 }
-
-export { validateJson };

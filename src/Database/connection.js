@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
+// Clase para conexión con base de datos usando mysql2
 class DatabaseConnection {
     constructor() {
         this.connection = mysql.createPool({

@@ -1,7 +1,7 @@
 import { consultBaseValues } from './entryOrderQuery.function.js';
 
+// Funcion para generar un objeto en beneficios del contrato para el concepto de subsidio de transporte legal
 export async function getLegalTransportSubsidy () {
-    
     const recordBaseValues = await consultBaseValues();
     const { subsidio_transporte: subsidyTransport } = recordBaseValues[0];
 

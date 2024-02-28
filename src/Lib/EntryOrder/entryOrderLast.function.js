@@ -2,6 +2,8 @@ import { getAccessToken } from '../../Tools/zoho.js';
 import fetch from 'node-fetch';
 import fs from 'fs/promises';
 
+// Es posible eliminar este archivo era el primero para integracion con Zoho creator - Delete de one
+
 const BASE_URL_HQ5 = 'https://creator.zoho.com/api/v2.1/hq5colombia/hq5/report/';
 const BASE_URL_COM = 'https://creator.zoho.com/api/v2.1/hq5colombia/compensacionhq5/report/';
 

@@ -1,7 +1,5 @@
 import { dbConnection } from './connection.js';
 
-// Optimizado
-
 // Función para insertar registros en la tabla wz (Woztell)
 export const wzRecordInsert = async (memberId, externalId, app) => {
     try {

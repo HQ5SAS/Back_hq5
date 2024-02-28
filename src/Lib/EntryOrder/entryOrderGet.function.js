@@ -2,47 +2,58 @@ import * as entryOrder from './entryOrderQuery.function.js';
 import { contactRecordExistsById } from '../../Database/contact.query.js';
 import { WORK_DAY_COM, WORK_DAY_DEST, WORK_DAY_DAYS } from '../../Database/fields.js';
 
+// Funcion para generar objeto de aplicar convocatorias
 const buildInnerApplyCallsObject = (data) => {
     return data.reduce((obj, { id, documento, nombre }) => ({ ...obj, [documento]: { id, nombre } }), {});
 };
 
+// Funcion para generar objeto de centro de costo
 const buildInnerCenterCostObject = (data) => {
     return data.reduce((obj, { id, nombre, periodicidad, dias_pago }) => ({ ...obj, [nombre]: { id, periodicidad, dias_pago } }), {});
 };
 
+// Funcion para generar objeto de perfil
 const buildInnerProfileObject = (data) => {
     const { nombre, id, nivel_riesgo } = (data && data[0]) || {};
     return { id, nombre, nivel_riesgo };
 };
 
+// Funcion para generar objeto de naturaleza centro de costo
 const buildInnerNatureCenterCostObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
-const buildInnerProyectCCObject = (data) => {
+// Funcion para generar objeto de proyecto
+const buildInnerProyectObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
+// Funcion para generar objeto de linea de negocio
 const buildInnerBusinessLineObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
+// Funcion para generar objeto de area
 const buildInnerAreaObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
+// Funcion para generar objeto de subcentro de costo
 const buildInnerSubCenterObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
+// Funcion para generar objeto de grupo de concepto
 const buildInnerGroupConceptObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id, nombre } }), {});
 };
 
+// Funcion para generar objeto de concepto
 const buildInnerConceptObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id, valor: 0, metodologia_pago: ['Proporcional días laborados', 'Valor fijo mes'] } }), {});
 };
 
+// Funcion para generar objeto de beneficio de contrato
 const buildInnerContractBenefitObject = (data) => {
     return data.map(({ id, id_grupo, n_grupo, id_concepto, n_concepto, valor, m_pago, id_req, id_perfil, n_perfil }) => ({
         id,
@@ -58,6 +69,7 @@ const buildInnerContractBenefitObject = (data) => {
     }));
 };
 
+// Funcion para generar objeto de requisicion
 const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) => {
 
     const { id: id, salario: salary, tipo_contrato: typeContract, tipo_jornada: typeWorkDay } = element;
@@ -134,6 +146,7 @@ const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerC
     };
 };
 
+// Funcion para generar objeto de data global
 const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, groupConceptObj, options) => {
 
     // Verificar si el objeto options está vacío
@@ -212,6 +225,7 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
     };
 };
 
+// Funcion para procesar los datos de la requisicion en la creacion de ordenes de ingreso masivas
 const processRequisitionDataCreate = async (responseData, baseValues, options = {}) => {
     const reqObj = {};
 
@@ -246,6 +260,7 @@ const processRequisitionDataCreate = async (responseData, baseValues, options = 
     return reqObj;
 };
 
+// Funcion para procesar los datos de la requisicion en la edicion de ordenes de ingreso masivas
 const processRequisitionDataEdit = async (responseData, baseValues, options = {}) => {
     const reqObj = {};
 
@@ -280,6 +295,7 @@ const processRequisitionDataEdit = async (responseData, baseValues, options = {}
     return reqObj;
 };
 
+// Funcion para procesar las consultas globales de los campos
 const processDataFields = async (element, options = {}) => {
     const { id_cliente: customerId } = element;
 
@@ -299,7 +315,7 @@ const processDataFields = async (element, options = {}) => {
     ]);
 
     const natureCCObj = responseNatureCC && responseNatureCC.length > 0 ? buildInnerNatureCenterCostObject(responseNatureCC) : {};
-    const proyectCCObj = responseProyectoCC && responseProyectoCC.length > 0 ? buildInnerProyectCCObject(responseProyectoCC) : {};
+    const proyectCCObj = responseProyectoCC && responseProyectoCC.length > 0 ? buildInnerProyectObject(responseProyectoCC) : {};
     const businessLineObj = responseBusinessLine && responseBusinessLine.length > 0 ? buildInnerBusinessLineObject(responseBusinessLine) : {};
     const areaObj = responseArea && responseArea.length > 0 ? buildInnerAreaObject(responseArea) : {};
     const subCenterObj = responseSubCenter && responseSubCenter.length > 0 ? buildInnerSubCenterObject(responseSubCenter) : {};
@@ -324,6 +340,7 @@ const processDataFields = async (element, options = {}) => {
     return dataObj;
 };
 
+// Funcion para obtener los campos de las ordenes de ingreso masivas en el proceso de creacion
 export const getFieldValueCreate = async (customerId, contact) => {
     try {
 
@@ -360,6 +377,7 @@ export const getFieldValueCreate = async (customerId, contact) => {
     }
 };
 
+// Funcion para obtener los campos de las ordenes de ingreso masivas en el proceso de edicion
 export const getFieldValueEdit = async (entryOrderMId) => {
     try {
         const [

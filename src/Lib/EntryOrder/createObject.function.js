@@ -1,4 +1,4 @@
-// Crea un nuevo objeto para representar una requisición.
+// Crea un nuevo objeto para representar una requisición
 export async function createNewReqObject(data) {
     try {
         const {

@@ -1,6 +1,6 @@
 import { dbConnection } from './connection.js';
 
-// Función para verificar si existe un registro en la tabla aplicar_convocatorias por zh_requisicion
+// Función para verificar si existe un registro en la tabla aplicar_convocatorias por reqId (zh_requisicion)
 export const applyCallRecordExistsByIdReq = async (reqId) => {
     try {
         const { results } = await dbConnection.query(`
@@ -23,13 +23,14 @@ export const applyCallRecordExistsByIdReq = async (reqId) => {
         `, [reqId]);
 
         return results;
+        
     } catch (error) {
         console.error('Error en la consulta de: applyCallRecordExistsByIdReq', error);
         throw error;
     }
 };
 
-// Función para verificar si existe un registro en la tabla aplicar_convocatorias por zh_id
+// Función para verificar si existe un registro en la tabla aplicar_convocatorias por Id (zh_id)
 export const applyCallRecordExistsById = async (Id) => {
     try {
         const { results } = await dbConnection.query(`

@@ -1,7 +1,7 @@
 import { dbConnection } from './connection.js';
 import { CLI_STATE_ACT } from './fields.js';
 
-// Función que realiza la consulta del contacto
+// Función que realiza la consulta del contacto por cel (contacto.celular)
 export const contactRecordExistsByCel = async (cel) => {
     try {
         const { results } = await dbConnection.query(`
@@ -24,6 +24,7 @@ export const contactRecordExistsByCel = async (cel) => {
         `, [cel, CLI_STATE_ACT]);
 
         return results;
+        
     } catch (error) {
         console.error('Error en la consulta de: contactRecordExistsByCel', error);
         throw error;
@@ -41,16 +42,18 @@ export const updateContactWzIdById = async (contactId, wzId) => {
 
         if (results.affectedRows > 0) {
             return results;
+
         } else {
-            throw new Error('Error en la actualización de contacto');
+            throw new Error('Error en la actualización de contacto: updateContactWzIdById');
         }
+
     } catch (error) {
-        console.error('Error en la actualización de contacto', error);
+        console.error('Error en la actualización de contacto: updateContactWzIdById', error);
         throw error;
     }
 };
 
-// Función que realiza la consulta de contacto por id
+// Función que realiza la consulta de contacto por Id (zh_id)
 export const contactRecordExistsById = async (Id) => {
     try {
         const { results } = await dbConnection.query(`

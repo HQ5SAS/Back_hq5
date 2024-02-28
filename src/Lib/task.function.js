@@ -1,15 +1,20 @@
-import * as wzQuery from '../Database/wz.query.js';
-import * as customerQuery from '../Database/customer.query.js';
-import * as taskQuery from '../Database/task.query.js';
-import * as requestWzQuery from '../Database/requestWz.query.js';
+import { wzRecordExistsById } from '../Database/wz.query.js';
+import { customerRecordExistsById } from '../Database/customer.query.js';
+import { taskRecordExistsById } from '../Database/task.query.js';
+import { requestWzRecordExistsById } from '../Database/requestWz.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
+// Funcion para crear las solicitudes woztell (solicitud_wz) por wz_id, cleinte_id, tarea_bot_id
 export async function createRequestWz(wzId, customerId, taskId) {
     try {
-        const [wzRecord, customerRecord, taskRecord] = await Promise.all([
-            wzQuery.wzRecordExistsById(wzId),
-            customerQuery.customerRecordExistsById(customerId),
-            taskQuery.taskRecordExistsById(taskId),
+        const [
+            wzRecord, 
+            customerRecord, 
+            taskRecord
+        ] = await Promise.all([
+            wzRecordExistsById(wzId),
+            customerRecordExistsById(customerId),
+            taskRecordExistsById(taskId),
         ]);
 
         const { id } = await requestWzQuery.requestWzRecordInsert(wzRecord.id, customerRecord.id, taskRecord.id);
@@ -21,10 +26,10 @@ export async function createRequestWz(wzId, customerId, taskId) {
     }
 }
 
-export async function consultRequestWz(idWzRecord) {
+// Funcion para consultar un registro en la tabla solicitud_wz por id (zh_id)
+export async function consultRequestWz(reqWzId) {
     try {
-        const response = await requestWzQuery.requestWzRecordExistsById(idWzRecord);
-        return response;
+        return await requestWzRecordExistsById(reqWzId);
 
     } catch (error) {
         console.error('Error al obtener solicitud_wz por el id:', error);
