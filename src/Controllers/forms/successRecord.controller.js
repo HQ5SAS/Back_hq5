@@ -20,11 +20,15 @@ async function processForm(req, res) {
         // Validar el tipo de formulario (Orden ingreso)
         if(data.orden_ingreso)
         {
+            console.log("oden ingreso");
+            console.log(data.orden_ingreso.campos);
             const { campos } = data.orden_ingreso;
             await updateContactAndConfirmation(campos);
             await addLegalTransportSubsidy(campos);
             const response = await setFieldsValue(campos);
+            console.log(response);
             const responseZoho = await processZohoResponse(campos, response);;
+            console.log(responseZoho);
             return logAndRespond(res, response.message, response.status, responseZoho);
         }
 
