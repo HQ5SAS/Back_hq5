@@ -24,10 +24,9 @@ function respondWithFieldsValues(res, fieldsValues) {
 // Funcion para procesar el load form del frontend (Send data)
 async function processForm(req, res) {
     try {
-
         const { requestId, taskId, recordId } = req.decoded;
 
-        if (requestId !== null && recordId !== undefined) {
+        if (requestId === null || recordId === undefined) {
             const { nombre: taskName } = await consultTask(taskId);
 
             if (taskName === entryOrder) {
