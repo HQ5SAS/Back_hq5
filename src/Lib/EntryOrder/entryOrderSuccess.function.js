@@ -12,6 +12,7 @@ export async function updateContactAndConfirmation(campos) {
     campos.contacto_id = recordContact[0].id;
     campos.contacto = `57${recordContact[0].celular}`;
     campos.tipo_confirmacion = "Confirmacion por Whatsapp";
+    campos.estado = "Notificado edicion";
 }
 
 // Funcion para actualizar el subsidio de transporte legal en ordenes de ingreso masivas (subform_beneficios_contrato)

@@ -19,6 +19,7 @@ export async function transformJson(obj) {
         "tipo_jornada": "tipo_jornada_lp_agr_tip_jorn",
         "observaciones": "observaciones",
         "contacto_id":"contacto_lp",
+        "estado":"estado_ord_ing_mas",
         "contacto": "celular",
         "tipo_confirmacion": "tipo_confirmacion",
         "naturaleza_cc": "natural_cen_cos_lp_nat_cen_cos",
