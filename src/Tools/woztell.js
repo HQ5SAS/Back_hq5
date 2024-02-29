@@ -46,6 +46,7 @@ export const redirectMemberToNode = async (node, memberId = null, recipientId = 
 
     try {
         const resultado = await requestPost(WZ_REDIRECT_MEMBER_TO_NODE, WZ_ACCESS_TOKEN, data);
+        return resultado;
         
     } catch (error) {
         console.error('Error:', error.message);
