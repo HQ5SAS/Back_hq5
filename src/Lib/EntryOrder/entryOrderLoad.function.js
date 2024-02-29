@@ -264,33 +264,31 @@ const processRequisitionDataCreate = async (responseData, baseValues, options = 
 const processRequisitionDataEdit = async (responseData, baseValues, options = {}) => {
     const reqObj = {};
 
-    for (const element of responseData) {
-        const { nombre: reqName, id_postulado: applyCallId, id_profile: profileId, id_cliente: customerId, id_ciudad: cityId, id: entryOrderMid } = element;
+    const { nombre: reqName, id_postulado: applyCallId, id_profile: profileId, id_cliente: customerId, id_ciudad: cityId, id: entryOrderMid } = responseData;
 
-        const [ 
-                responseApplyCalls, 
-                responseProfile,
-                responseCostCenter,
-                responseContractBenefit
-            ] = await Promise.all([
-            entryOrder.consultApplyCallById(applyCallId),
-            entryOrder.consultProfile(profileId),
-            entryOrder.consultCostCenter(customerId, cityId),
-            entryOrder.consultContractBenefitByIdEntryOrderM(entryOrderMid)
-        ]);
-    
-        const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};    
-        const profileObj = responseProfile && responseProfile.length > 0 ? buildInnerProfileObject(responseProfile) : {};
-        const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : {};
-        const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : {};
+    const [ 
+            responseApplyCalls, 
+            responseProfile,
+            responseCostCenter,
+            responseContractBenefit
+        ] = await Promise.all([
+        entryOrder.consultApplyCallById(applyCallId),
+        entryOrder.consultProfile(profileId),
+        entryOrder.consultCostCenter(customerId, cityId),
+        entryOrder.consultContractBenefitByIdEntryOrderM(entryOrderMid)
+    ]);
 
-        const applyCallObjLength = Object.keys(applyCallObj).length;
-        const innerObj = applyCallObjLength > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
-      
-        if (innerObj) {
-          reqObj[reqName] = innerObj;
-        }
-      }
+    const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};    
+    const profileObj = responseProfile && responseProfile.length > 0 ? buildInnerProfileObject(responseProfile) : {};
+    const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : {};
+    const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : {};
+
+    const applyCallObjLength = Object.keys(applyCallObj).length;
+    const innerObj = applyCallObjLength > 0 ? buildInnerReqObj(responseData, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
+  
+    if (innerObj) {
+      reqObj[reqName] = innerObj;
+    }
 
     return reqObj;
 };
@@ -388,7 +386,7 @@ export const getFieldValueEdit = async (entryOrderMId) => {
             entryOrder.consultBaseValues()
         ]);
 
-        if (responseEntryOrderM && responseEntryOrderM.length > 0) {
+        if (responseEntryOrderM) {
 
             const {
                 id,
@@ -408,7 +406,7 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 centro_costo,
                 id_postulado,
                 id_contacto
-            } = responseEntryOrderM[0];
+            } = responseEntryOrderM;
 
             const entryDate = new Date(fecha_ingreso);
             const optionDate = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -433,14 +431,14 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 id_postulado
             };
 
-            const responseReq = await entryOrder.consultRequisitionId(responseEntryOrderM[0].id_requisicion);
+            const responseReq = await entryOrder.consultRequisitionId(responseEntryOrderM.id_requisicion);
 
             if (responseReq && responseReq.length > 0) {
 
-                responseEntryOrderM[0].tipo_jornada = responseReq[0].tipo_jornada;
-                responseEntryOrderM[0].tipo_contrato = responseReq[0].tipo_contrato;
-                responseEntryOrderM[0].id_profile = responseReq[0].id_profile;
-                responseEntryOrderM[0].nombre = responseReq[0].nombre;
+                responseEntryOrderM.tipo_jornada = responseReq[0].tipo_jornada;
+                responseEntryOrderM.tipo_contrato = responseReq[0].tipo_contrato;
+                responseEntryOrderM.id_profile = responseReq[0].id_profile;
+                responseEntryOrderM.nombre = responseReq[0].nombre;
 
                 const [
                     dataObj, 
