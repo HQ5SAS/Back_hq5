@@ -22,7 +22,7 @@ export async function transformJson(obj) {
         "contacto_id": "contacto_lp",
         "celular": "celular",
         "naturaleza_cc": "natural_cen_cos_lp_nat_cen_cos",
-        "proyecto_cc": "proyecto_lp_proy",
+        "proyecto_cc": "Proyecto_CU",
         "sub_centro_cc": "sub_centro_costo_lp_cen_cos",
         "linea_negocio_cc": "linea_neg_lp_lin_neg",
         "area_cc": "area_lp_area",
