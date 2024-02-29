@@ -244,10 +244,10 @@ const processRequisitionDataCreate = async (responseData, baseValues, options = 
             entryOrder.consultContractBenefit(reqId)
         ]);
       
-        const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};
+        const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : [];
         const profileObj = responseProfile && responseProfile.length > 0 ? buildInnerProfileObject(responseProfile) : {};
-        const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : {};
-        const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : {};
+        const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : [];
+        const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : [];
 
         const applyCallObjLength = Object.keys(applyCallObj).length;
         const innerObj = applyCallObjLength > 0 ? buildInnerReqObj(element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
@@ -278,10 +278,10 @@ const processRequisitionDataEdit = async (responseData, baseValues, options = {}
         entryOrder.consultContractBenefitByIdEntryOrderM(entryOrderMid)
     ]);
 
-    const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : {};    
+    const applyCallObj = responseApplyCalls && responseApplyCalls.length > 0 ? buildInnerApplyCallsObject(responseApplyCalls) : [];    
     const profileObj = responseProfile && responseProfile.length > 0 ? buildInnerProfileObject(responseProfile) : {};
-    const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : {};
-    const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : {};
+    const centerCostObj = responseCostCenter && responseCostCenter.length > 0 ? buildInnerCenterCostObject(responseCostCenter) : [];
+    const contractBenefitObj = responseContractBenefit && responseContractBenefit.length > 0 ? buildInnerContractBenefitObject(responseContractBenefit) : [];
 
     const applyCallObjLength = Object.keys(applyCallObj).length;
     const innerObj = applyCallObjLength > 0 ? buildInnerReqObj(responseData, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) : null;
