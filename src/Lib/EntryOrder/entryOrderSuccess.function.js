@@ -8,11 +8,14 @@ import { postZohoCreator, patchZohoCreator } from '../../Tools/zoho.js';
 // Funcion para actualizar el objeto de la orden de ingreso (contacto y tipo confirmacion)
 export async function updateContactAndConfirmation(campos) {
     const { contacto } = campos;
-    const recordContact = await consultContactById(contacto);
-    campos.contacto_id = recordContact[0].id;
-    campos.contacto = `57${recordContact[0].celular}`;
-    campos.tipo_confirmacion = "Confirmacion por Whatsapp";
-    campos.estado = "Notificado edicion";
+    const [recordContact] = await consultContactById(contacto);
+
+    if (recordContact) {
+        campos.contacto_id = recordContact.id;
+        campos.celular = `57${recordContact.celular}`;
+        campos.tipo_confirmacion = "Confirmacion por Whatsapp";
+        campos.estado = "Notificado edicion";
+    }
 }
 
 // Funcion para actualizar el subsidio de transporte legal en ordenes de ingreso masivas (subform_beneficios_contrato)
@@ -31,13 +34,31 @@ export async function addLegalTransportSubsidy(campos) {
     }
 }
 
-// Funcion para process las respuestas de Zoho Creator de orden de ingreso masivo
-export async function processZohoResponse(campos, response) {
+// Función para eliminar campos nulos o undefined por lo general lookup's de Zoho Creator
+function removeUndefinedAndNullFields(data) {
+    const fieldsToRemove = [
+        'centro_costo_lp_cent_cost',
+        'contacto_lp',
+        'natural_cen_cos_lp_nat_cen_cos',
+        'proyecto_lp_proy',
+        'sub_centro_costo_lp_cen_cos',
+        'linea_neg_lp_lin_neg',
+        'area_lp_area'
+    ];
 
+    fieldsToRemove.forEach(field => {
+        if (data[field] === undefined || data[field] === null) {
+            delete data[field];
+        }
+    });
+}
+
+// Función para procesar las respuestas de Zoho Creator de orden de ingreso masivo
+export async function processZohoResponse(campos, response) {
     if (campos.id !== null) {
         console.log('Proceso de edicion');
         
-        const { 
+        const {
             id_req_lp_gen_req, 
             postulaciones_lp_apli_conv, 
             nivel_de_riesgo, 
@@ -49,30 +70,22 @@ export async function processZohoResponse(campos, response) {
             ...editableData 
         } = response.data.data;
 
-        if(editableData.area_lp_area === undefined || editableData.area_lp_area === null){
-            delete editableData.area_lp_area;
-        }
+        removeUndefinedAndNullFields(editableData);
 
-        if(editableData.sub_centro_costo_lp_cen_cos === undefined || editableData.sub_centro_costo_lp_cen_cos === null){
-            delete editableData.sub_centro_costo_lp_cen_cos;
-        }
+        const data = { "data": editableData };
 
-        const data = {"data":editableData};
-
-        console.log(editableData);
         // Llamar la funcion de modificacion de registros
-        const edit = await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, data);
-        console.log(edit);
-        return edit;
-        // return {};
+        const responseZoho = await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, data);
+        console.log(responseZoho);
+        return responseZoho;
         
     } else {
         console.log('Proceso de creacion');
+        
         // Llamar la funcion de insercion de registros
-        const create = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
-        console.log(response.data);
-        return create;
-        // return {};
+        const responseZoho = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
+        console.log(responseZoho);
+        return responseZoho;
     }
 }
 
@@ -82,9 +95,7 @@ export async function setFieldsValue(data) {
         const validationResult = await validateJson(data);
 
         if (validationResult.valid) {
-            console.log(data.beneficios_contrato);
             data.beneficios_contrato = await Promise.all(data.beneficios_contrato.map(async beneficio => await transformJson(await createNewBenObject(beneficio))));
-            console.log(data.beneficios_contrato);
             const combinedObject = await transformJson(await createNewReqObject(data));
 
             return {

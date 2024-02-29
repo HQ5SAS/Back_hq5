@@ -16,15 +16,15 @@ export async function createNewReqObject(data) {
             tipo_jornada,
             observaciones,
             tipo_confirmacion,
-            contacto,
             contacto_id,
-            estado,
+            celular,
             naturaleza_cc,
             proyecto_cc,
+            sub_centro_cc,
             linea_negocio_cc,
             area_cc,
-            sub_centro_cc,
-            beneficios_contrato
+            beneficios_contrato,
+            estado
         } = data;
 
         // Formatear la fecha
@@ -33,7 +33,7 @@ export async function createNewReqObject(data) {
         const formattedDate = entryDate.toLocaleDateString('en-GB', optionDate).replace(/ /g, '-').toString();
         
         // Formatear el celular
-        let cel = contacto.startsWith('+') ? contacto : `+${contacto}`;
+        let cel = celular.startsWith('+') ? celular : `+${celular}`;
 
         // Crear el nuevo objeto de requisición
         const newObject = {
@@ -54,14 +54,14 @@ export async function createNewReqObject(data) {
             observaciones,
             tipo_confirmacion,
             contacto_id,
-            estado,
-            contacto: cel,
+            celular: cel,
             naturaleza_cc: naturaleza_cc.id,
             proyecto_cc: proyecto_cc.id,
+            sub_centro_cc: sub_centro_cc.id,
             linea_negocio_cc: linea_negocio_cc.id,
             area_cc: area_cc.id,
-            sub_centro_cc: sub_centro_cc.id,
-            beneficios_contrato
+            beneficios_contrato,
+            estado
         };
 
         return { "data": newObject };

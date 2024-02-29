@@ -105,7 +105,7 @@ export const patchZohoCreator = async (report, recordId, data) => {
         if (response.ok) {
             return await response.json();
         } else {
-            console.error('Error en la solicitud:', response.statusText);
+            console.error('Error en la solicitud:', response);
             return null;
         }
 

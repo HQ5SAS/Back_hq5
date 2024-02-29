@@ -102,7 +102,6 @@ export const generateToken = (requestId = null, recordId = null, taskId = null) 
     };
 
     const token = jwt.sign(tokenData, SECRET_KEY, { algorithm: 'HS256' });
-    console.log(token);
     return token;
 };
 
@@ -136,6 +135,7 @@ export const validateToken = async (token) => {
 export const verifyTokenMiddleware = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
+        
         if (!token) {
             const response = createErrorResponse('Token no proporcionado', 401);
             return res.status(401).json(response);

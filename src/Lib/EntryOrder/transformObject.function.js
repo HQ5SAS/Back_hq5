@@ -18,20 +18,20 @@ export async function transformJson(obj) {
         "tipo_contrato": "tipo_contrato_lp_agr_tip_cont",
         "tipo_jornada": "tipo_jornada_lp_agr_tip_jorn",
         "observaciones": "observaciones",
-        "contacto_id":"contacto_lp",
-        "estado":"estado_ord_ing_mas",
-        "contacto": "celular",
         "tipo_confirmacion": "tipo_confirmacion",
+        "contacto_id": "contacto_lp",
+        "celular": "celular",
         "naturaleza_cc": "natural_cen_cos_lp_nat_cen_cos",
         "proyecto_cc": "proyecto_lp_proy",
+        "sub_centro_cc": "sub_centro_costo_lp_cen_cos",
         "linea_negocio_cc": "linea_neg_lp_lin_neg",
         "area_cc": "area_lp_area",
-        "sub_centro_cc": "sub_centro_costo_lp_cen_cos",
         "beneficios_contrato": "subform_beneficios_contrato",
         "grupo": "grupo",
         "concepto": "concepto",
         "valor": "valor",
-        "metodologia_pago": "metodologia_de_pago"
+        "metodologia_pago": "metodologia_de_pago",
+        "estado": "estado_ord_ing_mas"
     };
 
     // Función recursiva para transformar un objeto anidado

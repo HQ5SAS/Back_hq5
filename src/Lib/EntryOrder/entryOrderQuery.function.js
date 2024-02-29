@@ -108,11 +108,21 @@ export async function consultContractBenefitByIdEntryOrderM(entryOrderMId) {
 
 // Funcion para consultar orden de ingreso masiva por entryOrderMId
 export async function consultEntryOrderM(entryOrderMId) {
+
     const responseEOM = await consultRecord(entryOrderMRecordExistsById, 'la orden de ingreso masiva', entryOrderMId);
-    const responseEO = await consultRecord(entryOrderRecordExistsByIdMas, 'la orden de ingreso', responseEOM[0].id);
-    responseEOM[0].id_requisicion = responseEO[0].id_requisicion;
-    responseEOM[0].id_cliente = responseEO[0].id_cliente;
-    responseEOM[0].id_ciudad = responseEO[0].id_ciudad;
-    responseEOM[0].id_postulado = responseEO.map(item => item.id_postulado);
-    return responseEOM;
+    const entryOrderEOMId = responseEOM[0]?.id;
+
+    if (!entryOrderEOMId) {
+        return null;
+    }
+
+    const responseEO = await consultRecord(entryOrderRecordExistsByIdMas, 'la orden de ingreso', entryOrderEOMId);
+
+    return {
+        id_requisicion: responseEO[0]?.id_requisicion,
+        id_cliente: responseEO[0]?.id_cliente,
+        id_ciudad: responseEO[0]?.id_ciudad,
+        id_postulado: responseEO.map(item => item.id_postulado),
+        ...responseEOM[0]
+    };
 }

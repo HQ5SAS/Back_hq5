@@ -24,7 +24,7 @@ export async function validateJson(data) {
         "tipo_jornada",
         "observaciones",
         "tipo_confirmacion",
-        "contacto",
+        "celular",
         "naturaleza_cc",
         "proyecto_cc",
         "sub_centro_cc",
