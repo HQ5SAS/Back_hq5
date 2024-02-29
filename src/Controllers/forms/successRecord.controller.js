@@ -27,7 +27,13 @@ async function processForm(req, res) {
             const response = await setFieldsValue(campos);
             const responseZoho = await processZohoResponse(campos, response);;
             console.log(responseZoho);
-            console.log(responseZoho.error[0].alert_message);
+
+            if (responseZoho.error && responseZoho.error[0] && responseZoho.error[0].alert_message) {
+                console.log(responseZoho.error[0].alert_message);
+            } else {
+                console.log('No se encontró un mensaje de error');
+            }
+            
             return logAndRespond(res, response.message, response.status, responseZoho);
         }
 
