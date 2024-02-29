@@ -27,6 +27,7 @@ async function processForm(req, res) {
             const response = await setFieldsValue(campos);
             const responseZoho = await processZohoResponse(campos, response);;
             console.log(responseZoho);
+            console.log(responseZoho.error[0].alert_message);
             return logAndRespond(res, response.message, response.status, responseZoho);
         }
 
