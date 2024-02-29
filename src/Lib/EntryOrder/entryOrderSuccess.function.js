@@ -75,17 +75,13 @@ export async function processZohoResponse(campos, response) {
         const data = { "data": editableData };
 
         // Llamar la funcion de modificacion de registros
-        const responseZoho = await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, data);
-        console.log(responseZoho);
-        return responseZoho;
+        return await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, data);
         
     } else {
         console.log('Proceso de creacion');
         
         // Llamar la funcion de insercion de registros
-        const responseZoho = await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
-        console.log(responseZoho);
-        return responseZoho;
+        return await postZohoCreator('Ordenes_Contrataci_n_Masivo', response.data);
     }
 }
 

@@ -24,26 +24,24 @@ function respondWithFieldsValues(res, fieldsValues) {
 // Funcion para procesar el load form del frontend (Send data)
 async function processForm(req, res) {
     try {
+
         const { requestId, taskId, recordId } = req.decoded;
 
-        console.log(requestId, taskId, recordId);
-
-        if (requestId === null || requestId === undefined) {
+        if (!requestId) {
             const { nombre: taskName } = await consultTask(taskId);
-            
+
             if (taskName === entryOrder) {
                 const fieldsValues = await getFieldValueEdit(recordId);
                 return respondWithFieldsValues(res, fieldsValues);
             }
-        }
 
-        else{
+        } else {
             const requestRecord = await consultRequestWz(requestId);
             const wzRecord = await consultRecordWzById(requestRecord.wz_id);
             const contact = await consultContactByCel(parseInt(wzRecord.externalId.substring(2)));
 
             const { nombre: taskName } = await consultTask(requestRecord.tarea_id);
-    
+
             if (taskName === entryOrder) {
                 const fieldsValues = await getFieldValueCreate(requestRecord.cliente_id, contact[0].id);
                 return respondWithFieldsValues(res, fieldsValues);

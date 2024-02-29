@@ -1,7 +1,9 @@
 import { createRequestWz, consultRequestWz } from '../../Lib/task.function.js';
 import { consultRecordWz } from '../../Lib/wz.function.js';
+import { consultTask } from '../../Lib/form.function.js';
 import { createErrorResponse, createCustomersResponse, createURLWithToken, generateToken } from '../../Tools/utils.js';
 import { redirectMemberToNode } from '../../Tools/woztell.js';
+import { entryOrder } from '../../Tools/taskName.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
@@ -31,8 +33,14 @@ async function responseRequest(req, res) {
         const createRequestWzRecord = await createRequestWz(wz_id.id, customer, task);
         const requestWzRecord = await consultRequestWz(createRequestWzRecord);
         const token = generateToken(requestWzRecord.id, null, null);
-        const path = `orden-ingreso${createURLWithToken(token)}`;
         const message = "";
+
+        // Identificar que tarea es la solicitada a traves de whatsapp
+        const { nombre: taskName } = await consultTask(task);
+        let path = ``;
+        if (taskName === entryOrder) {
+            path = `orden-ingreso${createURLWithToken(token)}`;
+        }
 
         // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
         redirectMemberToNode(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, null, {
