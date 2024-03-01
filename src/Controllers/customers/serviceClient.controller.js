@@ -28,7 +28,7 @@ async function consultServiceClient(req, res) {
         // Formar objeto de data global en los nodos de whatsapp
         const permissionRecord = permission[0];
         const initObject = {
-            nameContact: permissionRecord.nombre,
+            nameContact: permissionRecord.nombre_contacto,
             operationManager: "hq5 \n 123" // falta consultarlo en tabla y formar variable
         };
 
