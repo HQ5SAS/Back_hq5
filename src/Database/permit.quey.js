@@ -18,7 +18,7 @@ export const permitRecordExistsByContact = async (contactId) => {
             JOIN 
                 proceso_ov ON permiso_bot.zh_proceso_ov = proceso_ov.zh_id
             JOIN 
-                tarea_bot ON tarea_bot.zh_proceso_ov = proceso_ov.zh_id
+                tarea_bot ON tarea_bot.zh_proceso = proceso_ov.zh_id
             WHERE 
                 permiso_bot.zh_contacto = ?;
         `, [contactId]);
@@ -50,7 +50,7 @@ export const permitRecordExistsByClient = async (cel, customerId) => {
             JOIN 
                 proceso_ov ON permiso_bot.zh_proceso_ov = proceso_ov.zh_id
             JOIN 
-                tarea_bot ON tarea_bot.zh_proceso_ov = proceso_ov.zh_id
+                tarea_bot ON tarea_bot.zh_proceso = proceso_ov.zh_id
             JOIN 
                 contacto ON contacto.zh_id = permiso_bot.zh_contacto
             WHERE 
