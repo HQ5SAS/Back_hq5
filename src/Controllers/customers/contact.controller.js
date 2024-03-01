@@ -79,7 +79,7 @@ async function validateContact(req, res) {
         const mapData = Object.fromEntries([...optionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
         const message = [...optionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
         return redirectWoztellByMemberId(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, {
-            customer: contactRecord.zh_id_cliente,
+            customer: contactRecord.id_cliente,
             task: { ...mapData },
             message: message,
             ...initObject
