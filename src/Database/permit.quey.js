@@ -43,8 +43,7 @@ export const permitRecordExistsByClient = async (cel, customerId) => {
                 proceso_ov.nombre AS nombre_proceso,
                 tarea_bot.id AS tarea_bot_id2,
                 CAST(tarea_bot.zh_id AS CHAR) AS tarea_bot_id,
-                tarea_bot.nombre AS nombre_tarea_bot,
-                contacto.nombre AS nombre_contacto
+                tarea_bot.nombre AS nombre_tarea_bot
             FROM 
                 permiso_bot
             JOIN 

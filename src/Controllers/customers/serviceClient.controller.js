@@ -1,4 +1,5 @@
 import { consultRecordWz } from '../../Lib/wz.function.js';
+import { consultContact } from '../../Lib/contact.function.js';
 import { consultPermissionClient } from '../../Lib/permit.function.js';
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
 import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
@@ -20,15 +21,16 @@ async function consultServiceClient(req, res) {
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
 
         // Consultar los permisos por cliente
-        const { _id: id, externalId, app } = member;
-        const wz_id = await consultRecordWz(id, externalId, app);
+        const { _id: memberId, externalId, app } = member;
+        const wz_id = await consultRecordWz(memberId, externalId, app);
         const cel = parseInt(wz_id.externalId.substring(2));
+        const contact = await consultContact(cel, wz_id.id);
         const permission = await consultPermissionClient(cel, customer);
 
         // Formar objeto de data global en los nodos de whatsapp
-        const permissionRecord = permission[0];
+        const contactRecord = contact[0];
         const initObject = {
-            nameContact: permissionRecord.nombre_contacto,
+            nameContact: contactRecord.nombre,
             operationManager: "hq5 \n 123" // falta consultarlo en tabla y formar variable
         };
 
