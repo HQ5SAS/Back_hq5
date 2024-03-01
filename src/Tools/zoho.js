@@ -92,6 +92,11 @@ export const patchZohoCreator = async (report, recordId, data) => {
     const url = `https://creator.zoho.com/api/v2.1/hq5colombia/hq5/report/${report}/${recordId}`;
     const token = await getAccessToken();
 
+    if (!token) {
+        console.log('No se pudo obtener el Access Token');
+        return null;
+    }
+
     try {
         const response = await fetch(url, {
             method: 'PATCH',
@@ -102,14 +107,15 @@ export const patchZohoCreator = async (report, recordId, data) => {
             body: JSON.stringify(data)
         });
 
-        if (response.ok) {
-            return await response.json();
-        } else {
+        if (!response.ok) {
             console.error('Error en la solicitud:', response);
             return null;
         }
 
+        return await response.json();
+
     } catch (error) {
         console.error('Error al actualizar registro en Zoho Creator:', error.message);
+        return null;
     }
 };
