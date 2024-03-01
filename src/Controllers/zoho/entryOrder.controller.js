@@ -17,8 +17,17 @@ async function notifyEntryOrderCustomer(req, res, node) {
             
         const { id: taskId } = await consultTask(entryOrder);
         const token = generateToken(null, data.id, taskId);
-        req.body.data.path = `orden-ingreso${createURLWithToken(token)}`;
-        const response = await redirectWoztellByRecipientId(node, data.recipientId, req.body);
+        const path = `orden-ingreso${createURLWithToken(token)}`; 
+        
+        const dataSend = {
+            id: data.id,
+            recipientId: data.recipientId,
+            url: data.url,
+            message: data.message,    
+            path: path,
+        }
+        
+        const response = await redirectWoztellByRecipientId(node, dataSend.recipientId, dataSend);
         await consultRecordWz(response.member, data.recipientId, process.env.WZ_APP);
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
 
