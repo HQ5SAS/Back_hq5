@@ -1,12 +1,5 @@
-import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
+import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
 import { updateContactAndConfirmation, addLegalTransportSubsidy, setFieldsValue, processZohoResponse } from '../../Lib/EntryOrder/entryOrderSuccess.function.js';
-
-// Funcion para acceder al metodo de respuesta estandar en utils.js
-async function logAndRespond(res, message, statusCode, data = null) {
-    const response = createCustomersResponse(message, statusCode, data);
-    res.status(statusCode).json(response);
-    return response;
-}
 
 // Funcion para procesar el succes del formulario del frontend
 async function processForm(req, res) {

@@ -1,17 +1,10 @@
-import { createErrorResponse, createCustomersResponse } from '../../Tools/utils.js';
+import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
 import { entryOrder } from '../../Tools/taskName.js';
 import { consultTask } from '../../Lib/task.function.js';
 import { consultRequestWz } from '../../Lib/requestWz.function.js';
 import { consultRecordWzById } from '../../Lib/wz.function.js';
 import { consultContactByCel } from '../../Lib/contact.function.js';
 import { getFieldValueCreate, getFieldValueEdit } from '../../Lib/EntryOrder/entryOrderLoad.function.js';
-
-// Funcion para acceder al metodo de respuesta estandar en utils.js
-async function logAndRespond(res, message, statusCode, data = null) {
-    const response = createCustomersResponse(message, statusCode, data);
-    res.status(statusCode).json(response);
-    return response;
-}
 
 // Funcion para responder la solicitud con los valores del formulario
 function respondWithFieldsValues(res, fieldsValues) {
