@@ -1,4 +1,3 @@
-import { permitRecordExistsByContact } from '../Database/permit.quey.js';
 import { contactRecordExistsByCel, updateContactWzIdById, contactRecordExistsById } from '../Database/contact.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
@@ -16,17 +15,6 @@ export async function consultContact(cel, wzId) {
     } catch (error) {
         console.error('Error al obtener contacto por número de celular y woztell id:', error);
         throw createErrorResponse('Error al obtener contacto por número de celular y woztell id', 400);
-    }
-}
-
-// Funcion para consultar registros en la tabla permiso por su contactId (zh_contacto)
-export async function consultPermission(contactId) {
-    try {
-        return await permitRecordExistsByContact(contactId);
-        
-    } catch (error) {
-        console.error('Error al obtener permisos por contacto:', error);
-        throw createErrorResponse('Error al obtener permisos por contacto', 400);
     }
 }
 

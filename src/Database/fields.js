@@ -1,6 +1,6 @@
 // Estados del campo estado en la tabla contacto
-export const CONT_STATE_ACT = "activo"
-export const CONT_STATE_INACT = "inactivo"
+export const CONT_STATE_ACT = 1
+export const CONT_STATE_INACT = 0
 // Estados del campo estado en la tabla permiso
 export const PERM_STATE_ACT = "activo"
 export const PERM_STATE_INACT = "inactivo"

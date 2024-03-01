@@ -24,6 +24,13 @@ export const createCustomersResponse = (message, statusCode = 200, data = null) 
     };
 };
 
+// Funcion para acceder al metodo de respuesta estandar createCustomersResponse
+export async function logAndRespond(res, message, statusCode, data = null) {
+    const response = createCustomersResponse(message, statusCode, data);
+    res.status(statusCode).json(response);
+    return response;
+}
+
 // Funcion para realizar solicitudes post con 3 argumento (url, accesstoken, datos o body)
 export const requestPost = async (url, accessToken, data) => {
     try {

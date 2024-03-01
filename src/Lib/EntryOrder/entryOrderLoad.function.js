@@ -81,7 +81,7 @@ const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerC
     const salaryMax = 50000000;
 
     const salaryBasic = {
-        min: salaryMin,
+        min: salary,
         valor: salary,
         max: salaryMax,
         salario_minimo: parseInt(salaryBase),

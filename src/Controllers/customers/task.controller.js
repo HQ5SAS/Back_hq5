@@ -1,19 +1,12 @@
-import { createRequestWz, consultRequestWz } from '../../Lib/task.function.js';
 import { consultRecordWz } from '../../Lib/wz.function.js';
-import { consultTask } from '../../Lib/form.function.js';
-import { createErrorResponse, createCustomersResponse, createURLWithToken, generateToken } from '../../Tools/utils.js';
-import { redirectMemberToNode } from '../../Tools/woztell.js';
+import { createRequestWz, consultRequestWz } from '../../Lib/requestWz.function.js';
+import { consultTask } from '../../Lib/task.function.js';
+import { createErrorResponse, logAndRespond, createURLWithToken, generateToken } from '../../Tools/utils.js';
+import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
 import { entryOrder } from '../../Tools/taskName.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
-
-// Funcion para acceder al metodo de respuesta estandar en utils.js
-async function logAndRespond(res, message, statusCode, data = null) {
-    const response = createCustomersResponse(message, statusCode, data);
-    res.status(statusCode).json(response);
-    return response;
-}
 
 // Funcion para crear el path de la tarea que solicito el cliente a traves de whatsapp
 async function responseRequest(req, res) {
@@ -33,27 +26,24 @@ async function responseRequest(req, res) {
         const createRequestWzRecord = await createRequestWz(wz_id.id, customer, task);
         const requestWzRecord = await consultRequestWz(createRequestWzRecord);
         const token = generateToken(requestWzRecord.id, null, null);
-        const message = "";
 
         // Identificar que tarea es la solicitada a traves de whatsapp
         const { nombre: taskName } = await consultTask(task);
         let path = ``;
+
+        // Identificar el tipo de tarea que fue solicitada a traves de whatsapp
         if (taskName === entryOrder) {
             path = `orden-ingreso${createURLWithToken(token)}`;
         }
 
         // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
-        redirectMemberToNode(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, null, {
-            customer: customer,
-            task: task,
+        return redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
             request: requestWzRecord.id,
-            url: "",
-            path: path,
-            message: message
+            path: path
         });
 
     } catch (error) {
-        console.error('Error en la consulta de la tarea de orden de ingreso:', error);
+        console.error('Error en la consulta de la tarea del bot:', error);
         const errorResponse = createErrorResponse('Error interno del servidor', 500);
         res.status(errorResponse.statusCode).json(errorResponse);
     }

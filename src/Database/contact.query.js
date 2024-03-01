@@ -20,7 +20,7 @@ export const contactRecordExistsByCel = async (cel) => {
                 cliente ON contacto.zh_cliente = cliente.zh_id
             WHERE 
                 contacto.celular = ? 
-                AND cliente.estado = ?;
+                AND cliente.estado = COALESCE(?, 1);
         `, [cel, CLI_STATE_ACT]);
 
         return results;
@@ -69,7 +69,7 @@ export const contactRecordExistsById = async (Id) => {
                 zh_id = ?
             LIMIT 
                 1;
-        `, [Id, CLI_STATE_ACT]);
+        `, [Id]);
 
         return results;
 

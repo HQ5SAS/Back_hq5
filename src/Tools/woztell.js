@@ -52,3 +52,13 @@ export const redirectMemberToNode = async (node, memberId = null, recipientId = 
         console.error('Error:', error.message);
     }
 };
+
+// Función para redirigir en Woztell según el nodo y los datos proporcionados por memberId
+export function redirectWoztellByMemberId(node, memberId, additionalData = {}) {
+    redirectMemberToNode(node, memberId, null, additionalData);
+}
+
+// Función para redirigir en Woztell según el nodo y los datos proporcionados por recipientId
+export async function redirectWoztellByRecipientId(node, recipientId, additionalData = {}) {
+    redirectMemberToNode(node, null, recipientId, additionalData);
+}

@@ -1,19 +1,12 @@
-import { createErrorResponse, createCustomersResponse, generateToken, createURLWithToken, consultTask } from '../../Tools/utils.js';
+import { createErrorResponse, logAndRespond, generateToken, createURLWithToken, consultTask } from '../../Tools/utils.js';
 import { entryOrder } from '../../Tools/taskName.js';
-import { redirectMemberToNode } from '../../Tools/woztell.js';
+import { redirectWoztellByRecipientId } from '../../Tools/woztell.js';
 import { consultRecordWz } from '../../Lib/wz.function.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
 
-// Funcion para acceder al metodo de respuesta estandar en utils.js
-async function logAndRespond(res, message, statusCode, data = null) {
-    const response = createCustomersResponse(message, statusCode, data);
-    res.status(statusCode).json(response);
-    return response;
-}
-
-// Funcion recursiva para notificacion de ordenes de ingreso masivas al cliente por Whatsapp
+// Funcion recursiva para notificacion de ordenes de ingreso masivas al cliente por Whatsapp ejecutadas desde Zoho
 async function notifyEntryOrderCustomer(req, res, node) {
     try {
         const { data } = req.body;
@@ -25,7 +18,7 @@ async function notifyEntryOrderCustomer(req, res, node) {
         const { id: taskId } = await consultTask(entryOrder);
         const token = generateToken(null, data.id, taskId);
         req.body.data.path = `orden-ingreso${createURLWithToken(token)}`;
-        const response = await redirectMemberToNode(node, null, data.recipientId, req.body);
+        const response = await redirectWoztellByRecipientId(node, data.recipientId, req.body);
         await consultRecordWz(response.member, data.recipientId, process.env.WZ_APP);
         logAndRespond(res, 'Solicitud procesada correctamente', 200);
 
