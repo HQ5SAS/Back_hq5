@@ -20,8 +20,8 @@ export const contactRecordExistsByCel = async (cel) => {
                 cliente ON contacto.zh_cliente = cliente.zh_id
             WHERE 
                 contacto.celular = ? 
-                AND contacto.estado = COALESCE(?, 1); 
-                AND cliente.estado = COALESCE(?, 1);
+                AND contacto.estado = COALESCE(?, 1)
+                AND cliente.estado = ?;
         `, [cel, CONT_STATE_ACT, CLI_STATE_ACT]);
 
         return results;
