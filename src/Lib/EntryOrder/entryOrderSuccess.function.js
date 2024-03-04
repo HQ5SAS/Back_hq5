@@ -5,6 +5,12 @@ import { consultContactById } from '../contact.function.js';
 import { getLegalTransportSubsidy } from './contractBenefit.function.js';
 import { postZohoCreator, patchZohoCreator } from '../../Tools/zoho.js';
 
+// Funcion para actualizar el objeto de la orden de ingreso (estado)
+export async function updateStatus(campos) {
+    const approve = campos.aprobar !== undefined && campos.aprobar !== null ? campos.aprobar : false;
+    campos.estado = approve ? "Confirmado cliente" : "Notificado edicion";
+}
+
 // Funcion para actualizar el objeto de la orden de ingreso (contacto y tipo confirmacion)
 export async function updateContactAndConfirmation(campos) {
     const { contacto } = campos;
@@ -14,7 +20,6 @@ export async function updateContactAndConfirmation(campos) {
         campos.contacto_id = recordContact.id;
         campos.celular = `57${recordContact.celular}`;
         campos.tipo_confirmacion = "Confirmacion por Whatsapp";
-        campos.estado = "Notificado edicion";
     }
 }
 

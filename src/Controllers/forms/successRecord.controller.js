@@ -1,5 +1,5 @@
 import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
-import { updateContactAndConfirmation, addLegalTransportSubsidy, setFieldsValue, processZohoResponse } from '../../Lib/EntryOrder/entryOrderSuccess.function.js';
+import { updateStatus, updateContactAndConfirmation, addLegalTransportSubsidy, setFieldsValue, processZohoResponse } from '../../Lib/EntryOrder/entryOrderSuccess.function.js';
 
 // Funcion para procesar el succes del formulario del frontend
 async function processForm(req, res) {
@@ -15,6 +15,7 @@ async function processForm(req, res) {
         {
             console.log("Orden ingreso");
             const { campos } = data.orden_ingreso;
+            await updateStatus(campos);
             await updateContactAndConfirmation(campos);
             await addLegalTransportSubsidy(campos);
             const response = await setFieldsValue(campos);
