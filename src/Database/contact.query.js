@@ -1,5 +1,5 @@
 import { dbConnection } from './connection.js';
-import { CLI_STATE_ACT } from './fields.js';
+import { CONT_STATE_ACT, CLI_STATE_ACT } from './fields.js';
 
 // Función que realiza la consulta del contacto por cel (contacto.celular)
 export const contactRecordExistsByCel = async (cel) => {
@@ -20,8 +20,9 @@ export const contactRecordExistsByCel = async (cel) => {
                 cliente ON contacto.zh_cliente = cliente.zh_id
             WHERE 
                 contacto.celular = ? 
+                AND contacto.estado = COALESCE(?, 1); 
                 AND cliente.estado = COALESCE(?, 1);
-        `, [cel, CLI_STATE_ACT]);
+        `, [cel, CONT_STATE_ACT, CLI_STATE_ACT]);
 
         return results;
         
