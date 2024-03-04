@@ -4,7 +4,7 @@ import { createRequestWz, consultRequestWz } from '../../Lib/requestWz.function.
 import { consultTask } from '../../Lib/task.function.js';
 import { createErrorResponse, logAndRespond, createURLWithToken, generateToken } from '../../Tools/utils.js';
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
-import { entryOrder } from '../../Tools/taskName.js';
+import { entryOrder, employeeWithdrawalMarking } from '../../Tools/taskName.js';
 import { logWhatsAppCustomerMessages } from '../../Tools/zoho.js';
 import dotenv from 'dotenv';
 
@@ -33,12 +33,14 @@ async function responseRequest(req, res) {
 
         // Identificar que tarea es la solicitada a traves de whatsapp
         const { nombre: taskName } = await consultTask(task);
-        let path = ``;
 
         // Identificar el tipo de tarea que fue solicitada a traves de whatsapp
-        if (taskName === entryOrder) {
-            path = `orden-ingreso${createURLWithToken(token)}`;
-        }
+        const taskPaths = {
+            [entryOrder]: 'orden-ingreso',
+            [employeeWithdrawalMarking]: 'marcacion-retiro'
+        };
+
+        const path = taskPaths[taskName] ? `${taskPaths[taskName]}${createURLWithToken(token)}` : '';
 
         // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
         const response = await redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
