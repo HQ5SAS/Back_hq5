@@ -14,11 +14,20 @@ export const requisitionRecordExistsByIdCustomer = async (customerId) => {
                 CAST(requisicion.zh_tipo_contrato AS CHAR) AS tipo_contrato,
                 CAST(requisicion.zh_ciudad AS CHAR) AS id_ciudad,
                 CAST(perfil.zh_id AS CHAR) AS id_profile,
-                perfil.nombre AS nombre
+                perfil.nombre AS nombre,
+                proveedor_servicio.nombre AS nombre_proveedor,
+                cliente.cliente AS nombre_cliente,
+                ciudad.nombre AS nombre_ciudad
             FROM
                 requisicion
             JOIN
                 perfil ON requisicion.zh_perfil = perfil.zh_id
+            JOIN
+                proveedor_servicio ON requisicion.zh_proveedor_servicio = proveedor_servicio.zh_id
+            JOIN
+                cliente ON requisicion.zh_cliente = cliente.zh_id
+            JOIN
+                ciudad ON requisicion.zh_ciudad = ciudad.zh_id
             WHERE
                 requisicion.zh_cliente = ? 
                 AND requisicion.estado = 'ACEPTADA'
@@ -55,11 +64,20 @@ export const requisitionRecordExistsById = async (requisitionId) => {
                 CAST(requisicion.zh_tipo_contrato AS CHAR) AS tipo_contrato,
                 CAST(requisicion.zh_ciudad AS CHAR) AS id_ciudad,
                 CAST(perfil.zh_id AS CHAR) AS id_profile,
-                perfil.nombre AS nombre
+                perfil.nombre AS nombre,
+                proveedor_servicio.nombre AS nombre_proveedor,
+                cliente.cliente AS nombre_cliente,
+                ciudad.nombre AS nombre_ciudad
             FROM
                 requisicion
             JOIN
                 perfil ON requisicion.zh_perfil = perfil.zh_id
+            JOIN
+                proveedor_servicio ON requisicion.zh_proveedor_servicio = proveedor_servicio.zh_id
+            JOIN
+                cliente ON requisicion.zh_cliente = cliente.zh_id
+            JOIN
+                ciudad ON requisicion.zh_ciudad = ciudad.zh_id
             WHERE
                 requisicion.zh_id = ? 
             LIMIT

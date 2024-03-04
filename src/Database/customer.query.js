@@ -7,7 +7,8 @@ export const customerRecordExistsById = async (customerId) => {
             SELECT 
                 id AS id2, 
                 CAST(zh_id AS CHAR) AS id, 
-                cliente AS cliente
+                cliente AS cliente,
+                CAST(zh_empl_gest_ops AS CHAR) AS gestor_id
             FROM 
                 cliente 
             WHERE 
@@ -21,7 +22,8 @@ export const customerRecordExistsById = async (customerId) => {
         return {
             exists: results.length > 0,
             id: record?.id || null,
-            customer: record?.cliente || null
+            customer: record?.cliente || null,
+            managerId: record?.gestor_id || null
         };
 
     } catch (error) {

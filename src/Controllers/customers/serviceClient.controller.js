@@ -1,6 +1,7 @@
 import { consultRecordWz } from '../../Lib/wz.function.js';
 import { consultContact } from '../../Lib/contact.function.js';
 import { consultPermissionClient } from '../../Lib/permit.function.js';
+import { getOperationManager } from '../../Lib/EntryOrder/operationManager.function.js';
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
 import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
 import { PERM_STATE_ACT, PERM_STATE_INACT } from '../../Database/fields.js';
@@ -29,10 +30,7 @@ async function consultServiceClient(req, res) {
 
         // Formar objeto de data global en los nodos de whatsapp
         const contactRecord = contact[0];
-        const initObject = {
-            nameContact: contactRecord.nombre,
-            operationManager: "hq5 \n 123" // falta consultarlo en tabla y formar variable
-        };
+        const initObject = await getOperationManager(contactRecord);
 
         // Si el contacto no tiene permisos, redireccionarlo en Woztell
         if (!permission || permission.length === 0) {

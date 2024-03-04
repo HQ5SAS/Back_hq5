@@ -72,7 +72,7 @@ const buildInnerContractBenefitObject = (data) => {
 // Funcion para generar objeto de requisicion
 const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerCostObj, contractBenefitObj, options) => {
 
-    const { id: id, salario: salary, tipo_contrato: typeContract, tipo_jornada: typeWorkDay } = element;
+    const { id: id, salario: salary, tipo_contrato: typeContract, tipo_jornada: typeWorkDay, nombre_proveedor: serviceProviderName, nombre_cliente: customerName, nombre_ciudad: cityName } = element;
     const { salario: salaryBase, subsidio_transporte: subsidyTransport} = baseValues[0];
 
     const isTypeWorkDayMatching = (typeWorkDay === WORK_DAY_COM || typeWorkDay === WORK_DAY_DEST || typeWorkDay === WORK_DAY_DAYS);
@@ -93,6 +93,9 @@ const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerC
     if (Object.keys(options).length === 0) {
         return {
             id: id,
+            proveedor: serviceProviderName,
+            cliente: customerName,
+            ciudad: cityName,
             postulados: applyCallObj,
             nivel_riesgo: profileObj,
             salario_basico: salaryBasic,
@@ -135,6 +138,9 @@ const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerC
 
     return {
         id: id,
+        proveedor: serviceProviderName,
+        cliente: customerName,
+        ciudad: cityName,
         select: true,
         postulados: applyCallObj,
         nivel_riesgo: profileObj,
@@ -439,6 +445,9 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 responseEntryOrderM.tipo_contrato = responseReq[0].tipo_contrato;
                 responseEntryOrderM.id_profile = responseReq[0].id_profile;
                 responseEntryOrderM.nombre = responseReq[0].nombre;
+                responseEntryOrderM.nombre_proveedor = responseReq[0].nombre_proveedor;
+                responseEntryOrderM.nombre_cliente = responseReq[0].nombre_cliente;
+                responseEntryOrderM.nombre_ciudad = responseReq[0].nombre_ciudad;
 
                 const [
                     dataObj, 

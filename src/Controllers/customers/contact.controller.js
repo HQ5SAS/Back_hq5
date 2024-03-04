@@ -1,6 +1,7 @@
 import { consultRecordWz } from '../../Lib/wz.function.js';
 import { consultContact } from '../../Lib/contact.function.js';
 import { consultPermission } from '../../Lib/permit.function.js';
+import { getOperationManager } from '../../Lib/EntryOrder/operationManager.function.js';
 import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
 import { CONT_STATE_ACT, PERM_STATE_ACT, PERM_STATE_INACT } from '../../Database/fields.js';
@@ -33,10 +34,7 @@ async function validateContact(req, res) {
 
         // Formar objeto de data global en los nodos de whatsapp
         const contactRecord = contact[0];
-        const initObject = {
-            nameContact: contactRecord.nombre,
-            operationManager: "hq5 \n 123" // falta consultarlo en tabla y formar variable
-        };
+        const initObject = await getOperationManager(contactRecord);
 
         // Si existe más de un cliente el contacto, redireccionarlo en Woztell
         if (contact.length > 1) {
