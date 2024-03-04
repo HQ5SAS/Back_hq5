@@ -54,8 +54,8 @@ export const redirectMemberToNode = async (node, memberId = null, recipientId = 
 };
 
 // Función para redirigir en Woztell según el nodo y los datos proporcionados por memberId
-export function redirectWoztellByMemberId(node, memberId, additionalData = {}) {
-    redirectMemberToNode(node, memberId, null, additionalData);
+export async function redirectWoztellByMemberId(node, memberId, additionalData = {}) {
+    return await redirectMemberToNode(node, memberId, null, additionalData);
 }
 
 // Función para redirigir en Woztell según el nodo y los datos proporcionados por recipientId

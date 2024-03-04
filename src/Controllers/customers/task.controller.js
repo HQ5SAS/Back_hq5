@@ -1,9 +1,11 @@
 import { consultRecordWz } from '../../Lib/wz.function.js';
+import { consultContactByCelAndCustomer } from '../../Lib/contact.function.js';
 import { createRequestWz, consultRequestWz } from '../../Lib/requestWz.function.js';
 import { consultTask } from '../../Lib/task.function.js';
 import { createErrorResponse, logAndRespond, createURLWithToken, generateToken } from '../../Tools/utils.js';
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
 import { entryOrder } from '../../Tools/taskName.js';
+import { logWhatsAppCustomerMessages } from '../../Tools/zoho.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
@@ -23,7 +25,9 @@ async function responseRequest(req, res) {
         // Procesar data y generar path de URL
         const { _id: memberId, externalId, app } = member;
         const wz_id = await consultRecordWz(memberId, externalId, app);
-        const createRequestWzRecord = await createRequestWz(wz_id.id, customer, task);
+        const cel = parseInt(wz_id.externalId.substring(2));
+        const { id: contact } = await consultContactByCelAndCustomer(cel, customer);
+        const createRequestWzRecord = await createRequestWz(wz_id.id, customer, task, contact);
         const requestWzRecord = await consultRequestWz(createRequestWzRecord);
         const token = generateToken(requestWzRecord.id, null, null);
 
@@ -37,10 +41,25 @@ async function responseRequest(req, res) {
         }
 
         // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
-        return redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
+        const response = await redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
             request: requestWzRecord.id,
             path: path
         });
+
+        // Registrar la solicitud en el reporte de actividades de WhatsApp en Zoho Creator
+        if(response)
+        {
+            const messageData = {
+                contactId: requestWzRecord.contacto_id,
+                request: taskName,
+                type: 'Entrada',
+                description: `El cliente solicito ${taskName} a traves de whatsapp`,
+                whatsappMemberId: response.member,
+                requestStatus: '1'
+            };
+    
+            await logWhatsAppCustomerMessages(messageData);
+        }
 
     } catch (error) {
         console.error('Error en la consulta de la tarea del bot:', error);

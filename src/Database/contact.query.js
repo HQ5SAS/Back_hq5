@@ -78,3 +78,34 @@ export const contactRecordExistsById = async (Id) => {
         throw error;
     }
 };
+
+// Función que realiza la consulta de contacto por cel (celular) y customerId (zh_cliente)
+export const contactRecordExistsByIdAndCustomer = async (cel, customerId) => {
+    try {
+        const { results } = await dbConnection.query(`
+            SELECT 
+                id AS id2,
+                CAST(zh_id AS CHAR) AS id,
+                nombre AS nombre,
+                celular AS celular,
+                estado AS estado
+            FROM 
+                contacto
+            WHERE 
+                celular = ?
+                AND zh_cliente = ?
+            LIMIT 
+                1;
+        `, [cel, customerId]);
+
+        if (results) {
+            return results.length > 0 ? results[0] : null;
+        } else {
+            throw new Error('Error en la consulta de: contactRecordExistsByIdAndCustomer');
+        }
+
+    } catch (error) {
+        console.error('Error en la consulta de: contactRecordExistsByIdAndCustomer', error);
+        throw error;
+    }
+};

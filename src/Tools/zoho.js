@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
 
 // Obtener access token para tener acceso a creator con multiples scopes
-export const getAccessToken = async () => {
+const getAccessToken = async () => {
 
     const url = process.env.ZH_URL_TOKEN;
     const data = {
@@ -117,5 +117,33 @@ export const patchZohoCreator = async (report, recordId, data) => {
     } catch (error) {
         console.error('Error al actualizar registro en Zoho Creator:', error.message);
         return null;
+    }
+};
+
+// Función para registrar un informe de mensajes de WhatsApp del cliente en Zoho Creator
+export const logWhatsAppCustomerMessages = async (messageData) => {
+    const keyMappings = {
+        contactId: 'contacto_whats_lp_cont',
+        request: 'solicitud_whats',
+        type: 'tipo_whats',
+        description: 'Descripcion',
+        whatsappMemberId: 'member_id_whats',
+        requestStatus: 'estado_solicitud_whats'
+    };
+
+    const requiredKeys = Object.keys(keyMappings);
+    
+    if (requiredKeys.every(key => messageData.hasOwnProperty(key))) {
+        const transformedMessageData = Object.fromEntries(
+            Object.entries(messageData)
+                .filter(([key]) => requiredKeys.includes(key))
+                .map(([key, value]) => [keyMappings[key], value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()])
+        );
+
+        const response = await postZohoCreator('Whatsapp', { data: transformedMessageData})
+        console.log(response);
+
+    } else {
+        console.error('Error: The object does not contain all the required keys.');
     }
 };

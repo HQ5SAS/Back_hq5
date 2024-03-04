@@ -1,14 +1,14 @@
 import { dbConnection } from './connection.js';
 
-// Función para realizar la inserción de registros en la tabla solicitud_wz por (fk_wz_id, zh_cliente, zh_tarea_bot)
-export const requestWzRecordInsert = async (wzId, customerId, taskId) => {
+// Función para realizar la inserción de registros en la tabla solicitud_wz por (fk_wz_id, zh_cliente, zh_tarea_bot, zh_contacto)
+export const requestWzRecordInsert = async (wzId, customerId, taskId, contactId) => {
     try {
         const result = await dbConnection.query(`
             INSERT INTO 
-                solicitud_wz (fk_wz_id, zh_cliente, zh_tarea_bot) 
+                solicitud_wz (fk_wz_id, zh_cliente, zh_tarea_bot, zh_contacto) 
             VALUES 
-                (?, ?, ?)
-        `, [wzId, customerId, taskId]);
+                (?, ?, ?, ?)
+        `, [wzId, customerId, taskId, contactId]);
 
         const insertId = result.results.insertId;
 
@@ -36,6 +36,7 @@ export const requestWzRecordExistsById = async (id) => {
                 CONVERT(solicitud_wz.fk_wz_id, CHAR) AS wz_id, 
                 CONVERT(solicitud_wz.zh_cliente, CHAR) AS cliente_id, 
                 CONVERT(solicitud_wz.zh_tarea_bot, CHAR) AS tarea_id,
+                CONVERT(solicitud_wz.zh_contacto, CHAR) AS contacto_id,
                 cliente.cliente AS cliente_nombre, 
                 tarea_bot.nombre AS tarea_nombre
             FROM 
@@ -56,6 +57,7 @@ export const requestWzRecordExistsById = async (id) => {
             id: record?.id || null,
             cliente_id: record?.cliente_id || null,
             tarea_id: record?.tarea_id || null,
+            contacto_id: record?.contacto_id || null,
             cliente_nombre: record?.cliente_nombre || null,
             tarea_nombre: record?.tarea_nombre || null,
             wz_id: record?.wz_id || null

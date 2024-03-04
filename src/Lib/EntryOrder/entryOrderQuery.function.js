@@ -126,3 +126,8 @@ export async function consultEntryOrderM(entryOrderMId) {
         ...responseEOM[0]
     };
 }
+
+// Funcion para consultar orden de ingreso masiva por entryOrderMId (zh_id)
+export async function consultEntryOrderMById(entryOrderMId) {
+    return consultRecord(entryOrderMRecordExistsById, 'la orden de ingreso masiva', entryOrderMId);
+}

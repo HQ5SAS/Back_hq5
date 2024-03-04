@@ -1,23 +1,26 @@
 import { wzRecordExistsById } from '../Database/wz.query.js';
 import { customerRecordExistsById } from '../Database/customer.query.js';
 import { taskRecordExistsById } from '../Database/task.query.js';
+import { contactRecordExistsById } from '../Database/contact.query.js';
 import { requestWzRecordExistsById, requestWzRecordInsert } from '../Database/requestWz.query.js';
 import { createErrorResponse } from '../Tools/utils.js';
 
 // Funcion para crear las solicitudes woztell (solicitud_wz) por wz_id, cleinte_id, tarea_bot_id
-export async function createRequestWz(wzId, customerId, taskId) {
+export async function createRequestWz(wzId, customerId, taskId, contactId) {
     try {
         const [
             wzRecord, 
             customerRecord, 
-            taskRecord
+            taskRecord,
+            contactRecord
         ] = await Promise.all([
             wzRecordExistsById(wzId),
             customerRecordExistsById(customerId),
             taskRecordExistsById(taskId),
+            contactRecordExistsById(contactId)
         ]);
 
-        const { id } = await requestWzRecordInsert(wzRecord.id, customerRecord.id, taskRecord.id);
+        const { id } = await requestWzRecordInsert(wzRecord.id, customerRecord.id, taskRecord.id, contactRecord[0].id);
         return id;
 
     } catch (error) {

@@ -1,5 +1,7 @@
 import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
-import { patchZohoCreator } from '../../Tools/zoho.js';
+import { patchZohoCreator, logWhatsAppCustomerMessages } from '../../Tools/zoho.js';
+import { entryOrder } from '../../Tools/taskName.js';
+import { consultEntryOrderMById } from './../../Lib/EntryOrder/entryOrderQuery.function.js';
 
 // Función común para actualizar el estado en Zoho
 async function updateZohoStatus(req, res, status, actionDescription) {
@@ -12,6 +14,22 @@ async function updateZohoStatus(req, res, status, actionDescription) {
 
         // Actualizar Zoho y desde Zoho se actualiza las tablas de la db
         await patchZohoCreator(`Orden_de_ingreso_Masivo`, `${data.id}`, { data: { estado_ord_ing_mas: status } });
+
+        // Registrar la solicitud en el reporte de actividades de WhatsApp en Zoho Creator
+        const entryOrderMRecord = await consultEntryOrderMById(data.id);
+        if(entryOrderMRecord)
+        {
+            const messageData = {
+                contactId: entryOrderMRecord.id_contacto,
+                request: entryOrder,
+                type: 'Entrada',
+                description: `El cliente realizo la ${actionDescription} para la ${entryOrder} a traves de whatsapp`,
+                whatsappMemberId: req.body.member._id,
+                requestStatus: '1'
+            };
+        
+            await logWhatsAppCustomerMessages(messageData);
+        }
 
         return logAndRespond(res, `Solicitud de ${actionDescription} procesada correctamente`, 200);
 
