@@ -1,6 +1,7 @@
 import * as entryOrder from './entryOrderQuery.function.js';
 import { contactRecordExistsById } from '../../Database/contact.query.js';
 import { WORK_DAY_COM, WORK_DAY_DEST, WORK_DAY_DAYS } from '../../Database/fields.js';
+import { formatDate } from '../../Tools/date.js';
 
 // Funcion para generar objeto de aplicar convocatorias
 const buildInnerApplyCallsObject = (data) => {
@@ -372,7 +373,7 @@ export const getFieldValueCreate = async (customerId, contact) => {
 
         } else {
             console.error('Tabla requision vacia');
-            return null;
+            return {};
         }
 
     } catch (error) {
@@ -413,10 +414,8 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 id_postulado,
                 id_contacto
             } = responseEntryOrderM;
-
-            const entryDate = new Date(fecha_ingreso);
-            const optionDate = { day: '2-digit', month: 'short', year: 'numeric' };
-            const formattedDate = entryDate.toLocaleDateString('en-GB', optionDate).replace(/ /g, '-');
+            
+            const formattedDate = formatDate(fecha_ingreso);
 
             const options = { 
                 id,

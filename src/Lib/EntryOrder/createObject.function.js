@@ -1,3 +1,5 @@
+import { formatDate } from '../../Tools/date.js';
+
 // Crea un nuevo objeto para representar una requisición
 export async function createNewReqObject(data) {
     try {
@@ -28,9 +30,7 @@ export async function createNewReqObject(data) {
         } = data;
 
         // Formatear la fecha
-        let entryDate = new Date(fecha_ingreso);
-        const optionDate = { day: '2-digit', month: '2-digit', year: 'numeric' };
-        const formattedDate = entryDate.toLocaleDateString('en-GB', optionDate).replace(/ /g, '-').toString();
+        const formattedDate = formatDate(fecha_ingreso);
         
         // Formatear el celular
         let cel = celular.startsWith('+') ? celular : `+${celular}`;

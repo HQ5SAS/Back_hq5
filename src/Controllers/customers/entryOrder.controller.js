@@ -1,6 +1,6 @@
 import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
 import { patchZohoCreator, logWhatsAppCustomerMessages } from '../../Tools/zoho.js';
-import { entryOrder } from '../../Tools/taskName.js';
+import { nameEntryOrder } from '../../Tools/taskName.js';
 import { consultEntryOrderMById } from './../../Lib/EntryOrder/entryOrderQuery.function.js';
 
 // Función común para actualizar el estado en Zoho
@@ -21,9 +21,9 @@ async function updateZohoStatus(req, res, status, actionDescription) {
         {
             const messageData = {
                 contactId: entryOrderMRecord.id_contacto,
-                request: entryOrder,
+                request: nameEntryOrder,
                 type: 'Entrada',
-                description: `El cliente realizo la ${actionDescription} para la ${entryOrder} a traves de whatsapp`,
+                description: `El cliente realizo la ${actionDescription} para la ${nameEntryOrder} a traves de whatsapp`,
                 whatsappMemberId: req.body.member._id,
                 requestStatus: '1'
             };

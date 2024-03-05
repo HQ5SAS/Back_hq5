@@ -1,5 +1,5 @@
 import { createErrorResponse, logAndRespond, generateToken, createURLWithToken, consultTask } from '../../Tools/utils.js';
-import { entryOrder } from '../../Tools/taskName.js';
+import { nameEntryOrder } from '../../Tools/taskName.js';
 import { redirectWoztellByRecipientId } from '../../Tools/woztell.js';
 import { consultRecordWz } from '../../Lib/wz.function.js';
 import dotenv from 'dotenv';
@@ -15,7 +15,7 @@ async function notifyEntryOrderCustomer(req, res, node) {
             return logAndRespond(res, 'Las claves (message), (id) o (recipientId) no se encontraron en el cuerpo de la solicitud', 400);
         }
             
-        const { id: taskId } = await consultTask(entryOrder);
+        const { id: taskId } = await consultTask(nameEntryOrder);
         const token = generateToken(null, data.id, taskId);
         const path = `orden-ingreso${createURLWithToken(token)}`; 
         
