@@ -137,9 +137,11 @@ export const logWhatsAppCustomerMessages = async (messageData) => {
         const transformedMessageData = Object.fromEntries(
             Object.entries(messageData)
                 .filter(([key]) => requiredKeys.includes(key))
-                .map(([key, value]) => [keyMappings[key], value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()])
+                .map(([key, value]) => [
+                    keyMappings[key], 
+                    value ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase() : value
+                ])
         );
-
         const response = await postZohoCreator('Whatsapp', { data: transformedMessageData})
         console.log(response);
 
