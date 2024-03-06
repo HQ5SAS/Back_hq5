@@ -55,7 +55,7 @@ async function responseRequest(req, res) {
         else
         {
             // Redireccionar al cliente al nodo donde describe que el servicio aun no se encuentra disponible
-            response = await redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
+            response = await redirectWoztellByMemberId(process.env.WZ_NODE_SERV_NOT_AVAILABLE, wz_id.memberId, {
                 request: requestWzRecord.id
             });
         }
