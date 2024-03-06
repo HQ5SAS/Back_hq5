@@ -42,11 +42,23 @@ async function responseRequest(req, res) {
 
         const path = taskPaths[taskName] ? `${taskPaths[taskName]}${createURLWithToken(token)}` : '';
 
-        // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
-        const response = await redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
-            request: requestWzRecord.id,
-            path: path
-        });
+        let response = '';
+
+        if(path !== '')
+        {
+            // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
+            response = await redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
+                request: requestWzRecord.id,
+                path: path
+            });
+        }
+        else
+        {
+            // Redireccionar al cliente al nodo donde describe que el servicio aun no se encuentra disponible
+            response = await redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
+                request: requestWzRecord.id
+            });
+        }
 
         // Registrar la solicitud en el reporte de actividades de WhatsApp en Zoho Creator
         if(response)
