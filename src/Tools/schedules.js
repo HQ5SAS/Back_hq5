@@ -36,7 +36,7 @@ export const notificationWithdrawall = async () => {
     }
 };
 
-cron.schedule('* 8 * * 1-5', notificationWithdrawall);
+cron.schedule('0 8 * * 1-5', notificationWithdrawall);
 
 /*
 Minuto (0-59): El primer asterisco representa los minutos.
