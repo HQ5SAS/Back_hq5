@@ -12,8 +12,10 @@ async function updateZohoStatus(req, res, dataFields, actionDescription) {
             return logAndRespond(res, `Clave (data) no encontrada en el cuerpo de la solicitud para ${actionDescription}`, 400);
         }
 
+        console.log(data.id);
+        console.log(dataFields);
         // Actualizar Zoho y desde Zoho se actualiza las tablas de la db
-        await patchZohoCreator(`Orden_de_ingreso_Masivo`, `${data.id}`, dataFields);
+        // await patchZohoCreator(`Orden_de_ingreso_Masivo`, `${data.id}`, dataFields);
 
         // Registrar la solicitud en el reporte de actividades de WhatsApp en Zoho Creator
         const entryOrderMRecord = await consultEntryOrderMById(data.id);
