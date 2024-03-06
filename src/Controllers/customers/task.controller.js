@@ -4,7 +4,7 @@ import { createRequestWz, consultRequestWz } from '../../Lib/requestWz.function.
 import { consultTask } from '../../Lib/task.function.js';
 import { createErrorResponse, logAndRespond, createURLWithToken, generateToken } from '../../Tools/utils.js';
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
-import { nameEntryOrder, nameWithdrawall } from '../../Tools/taskName.js';
+import { nameEntryOrder, nameWithdrawall, namePayrollDateChange } from '../../Tools/taskName.js';
 import { logWhatsAppCustomerMessages } from '../../Tools/zoho.js';
 import dotenv from 'dotenv';
 
@@ -35,30 +35,21 @@ async function responseRequest(req, res) {
         const { nombre: taskName } = await consultTask(task);
 
         // Identificar el tipo de tarea que fue solicitada a traves de whatsapp
-        const taskPaths = {
-            [nameEntryOrder]: 'orden-ingreso',
-            [nameWithdrawall]: 'marcacion-retiro'
+        const taskMappings = {
+            [nameEntryOrder]: { type: 'orden-ingreso', node: process.env.WZ_NODE_RESPONSE_TASK },
+            [nameWithdrawall]: { type: 'marcacion-retiro', node: process.env.WZ_NODE_RESPONSE_TASK },
+            [namePayrollDateChange]: { type: '', node: process.env.WZ_NODE_SERV_PAYROLL_DATE_CHAN }
         };
 
-        const path = taskPaths[taskName] ? `${taskPaths[taskName]}${createURLWithToken(token)}` : '';
+        const { type, node } = taskMappings[taskName] || { type: '', node: process.env.WZ_NODE_SERV_NOT_AVAILABLE };
 
-        let response = '';
+        const path = type !== '' ? `${type}${createURLWithToken(token)}` : '';
 
-        if(path !== '')
-        {
-            // Redireccionar al cliente al nodo donde se envia el path de la url para gestionar la solicitud
-            response = await redirectWoztellByMemberId(process.env.WZ_NODE_RESPONSE_TASK, wz_id.memberId, {
-                request: requestWzRecord.id,
-                path: path
-            });
-        }
-        else
-        {
-            // Redireccionar al cliente al nodo donde describe que el servicio aun no se encuentra disponible
-            response = await redirectWoztellByMemberId(process.env.WZ_NODE_SERV_NOT_AVAILABLE, wz_id.memberId, {
-                request: requestWzRecord.id
-            });
-        }
+        // Redireccionar al cliente al nodo para gestionar la solicitud
+        const response = await redirectWoztellByMemberId(node, wz_id.memberId, {
+            request: requestWzRecord.id,
+            path: path || undefined
+        });
 
         // Registrar la solicitud en el reporte de actividades de WhatsApp en Zoho Creator
         if(response)
