@@ -31,7 +31,8 @@ export async function transformJson(obj) {
         "concepto": "concepto",
         "valor": "valor",
         "metodologia_pago": "metodologia_de_pago",
-        "estado": "estado_ord_ing_mas"
+        "estado": "estado_ord_ing_mas",
+        "creacion": "creacion_ord_ing"
     };
 
     // Función recursiva para transformar un objeto anidado

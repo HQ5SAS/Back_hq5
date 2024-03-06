@@ -26,7 +26,8 @@ export async function createNewReqObject(data) {
             linea_negocio_cc,
             area_cc,
             beneficios_contrato,
-            estado
+            estado,
+            creacion
         } = data;
 
         // Formatear la fecha
@@ -61,7 +62,8 @@ export async function createNewReqObject(data) {
             linea_negocio_cc: linea_negocio_cc.id,
             area_cc: area_cc.id,
             beneficios_contrato,
-            estado
+            estado,
+            creacion
         };
 
         return { "data": newObject };

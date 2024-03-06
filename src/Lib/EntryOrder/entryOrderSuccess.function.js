@@ -9,6 +9,7 @@ import { postZohoCreator, patchZohoCreator } from '../../Tools/zoho.js';
 export async function updateStatus(campos) {
     const approve = campos.aprobar !== undefined && campos.aprobar !== null ? campos.aprobar : false;
     campos.estado = approve ? "Confirmado cliente" : "Notificado edicion";
+    campos.creacion = "Cliente";
 }
 
 // Funcion para actualizar el objeto de la orden de ingreso (contacto y tipo confirmacion)
@@ -71,7 +72,8 @@ export async function processZohoResponse(campos, response) {
             tipo_contrato_lp_agr_tip_cont, 
             tipo_jornada_lp_agr_tip_jorn, 
             tipo_confirmacion, 
-            celular, 
+            celular,
+            creacion,
             ...editableData 
         } = response.data.data;
 
