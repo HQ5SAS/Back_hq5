@@ -81,6 +81,8 @@ export async function processZohoResponse(campos, response) {
 
         const data = { "data": editableData };
 
+        console.log(data);
+
         // Llamar la funcion de modificacion de registros
         return await patchZohoCreator('Orden_de_ingreso_Masivo', campos.id, data);
         

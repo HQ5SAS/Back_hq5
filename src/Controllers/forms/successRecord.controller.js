@@ -6,6 +6,8 @@ async function processForm(req, res) {
     try {
         const data = req.body.data;
 
+        console.log(data);
+
         if (!data) {
             return logAndRespond(res, "El formato de la solicitud no es válido", 400);
         }
