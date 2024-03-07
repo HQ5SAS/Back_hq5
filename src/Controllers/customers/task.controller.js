@@ -45,7 +45,17 @@ async function responseRequest(req, res) {
         const { type, node, processFunction } = taskMappings[taskName] || { type: '', node: process.env.WZ_NODE_SERV_NOT_AVAILABLE, processFunction: null };
 
         const path = type !== '' ? `${type}${createURLWithToken(token)}` : '';
-        const payrollDateChange = processFunction ? await processFunction(requestWzRecord.cliente_id) : '';
+
+        // Procesar la funcion antes de redireccionar al cliente en caso de que este definida
+        let payrollDateChange = '';
+        try {
+            if (processFunction) {
+                payrollDateChange = await processFunction(requestWzRecord.cliente_id);
+            }
+
+        } catch (error) {
+            console.error(`Error executing processFunction: ${error}`);
+        }
 
         // Redireccionar al cliente al nodo para gestionar la solicitud
         const response = await redirectWoztellByMemberId(node, wz_id.memberId, {
