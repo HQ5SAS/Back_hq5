@@ -25,8 +25,8 @@ const getNextPaymentDate = async (payDays, periodicity) => {
     // Procesamiento de las fechas de pago Quincenal
     } else if (periodicity === "QUINCENAL") {
         const daysToMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-        const daysToAdd = (currentDate.getDate() < pay1) ? pay1 - currentDate.getDate() :
-                        (pay2 && currentDate.getDate() < pay2) ? pay2 - currentDate.getDate() :
+        const daysToAdd = (currentDate.getDate() <= pay1) ? pay1 - currentDate.getDate() :
+                        (pay2 && currentDate.getDate() <= pay2) ? pay2 - currentDate.getDate() :
                         pay1 - currentDate.getDate() + daysToMonth;
         futurePaymentDate = new Date(currentDate);
         futurePaymentDate.setDate(currentDate.getDate() + daysToAdd);
