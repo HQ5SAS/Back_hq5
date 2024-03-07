@@ -13,3 +13,5 @@ export const EMP_STATE_ACT = "ACTIVO"
 export const WORK_DAY_COM = "3960020000005447523"
 export const WORK_DAY_DEST = "3960020000048562415"
 export const WORK_DAY_DAYS = "3960020000005447555"
+// Estados del campo estado en la tabla orden ingreso masivo
+export const M_ENT_ORD_STATE_CONF = "Confirmado cliente"

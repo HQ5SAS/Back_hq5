@@ -5,6 +5,8 @@ import { getOperationManager } from '../../Lib/EntryOrder/operationManager.funct
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
 import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
 import { PERM_STATE_ACT, PERM_STATE_INACT } from '../../Database/fields.js';
+import { nameServiceProd } from '../../Tools/taskName.js';
+import { devContact } from '../../Tools/devContact.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
@@ -48,10 +50,11 @@ async function consultServiceClient(req, res) {
         }
 
         // Si el contacto tiene permisos activos, redireccionarlo en Woztell
-        const permissionActive = permission.filter(permit => permit.estado === PERM_STATE_ACT);
-        const optionsMap = new Map(permissionActive.map(permit => [permit.tarea_bot_id, permit.nombre_tarea_bot]));
-        const mapData = Object.fromEntries([...optionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
-        const message = [...optionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
+        const activePermissions = permission.filter(permit => permit.estado === PERM_STATE_ACT);
+        const optionsMap = new Map(activePermissions.map(permit => [permit.tarea_bot_id, permit.nombre_tarea_bot]));
+        const filteredOptionsMap = devContact.includes(cel) ? optionsMap : new Map([...optionsMap].filter(([key, value]) => nameServiceProd.includes(value)));
+        const mapData = Object.fromEntries([...filteredOptionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
+        const message = [...filteredOptionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
         return redirectWoztellByMemberId(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, {
             customer: customer,
             task: { ...mapData },

@@ -1,6 +1,6 @@
 import * as entryOrder from './entryOrderQuery.function.js';
 import { contactRecordExistsById } from '../../Database/contact.query.js';
-import { WORK_DAY_COM, WORK_DAY_DEST, WORK_DAY_DAYS } from '../../Database/fields.js';
+import { WORK_DAY_COM, WORK_DAY_DEST, WORK_DAY_DAYS, M_ENT_ORD_STATE_CONF } from '../../Database/fields.js';
 import { formatDate } from '../../Tools/date.js';
 
 // Funcion para generar objeto de aplicar convocatorias
@@ -412,9 +412,14 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 salario,
                 centro_costo,
                 id_postulado,
-                id_contacto
+                id_contacto,
+                estado_oim
             } = responseEntryOrderM;
             
+            if( estado_oim === M_ENT_ORD_STATE_CONF ){
+                return 'Acceso denegado';
+            }
+
             const formattedDate = formatDate(fecha_ingreso);
 
             const options = { 

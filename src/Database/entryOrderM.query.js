@@ -22,7 +22,8 @@ export const entryOrderMRecordExistsById = async (entryOrderMId) => {
                 salario_base AS salario,
                 CAST(zh_centro_costo AS CHAR) AS centro_costo,
                 CAST(zh_requisicion AS CHAR) AS id_requisicion,
-                CAST(zh_contacto AS CHAR) AS id_contacto
+                CAST(zh_contacto AS CHAR) AS id_contacto,
+                estado AS estado_oim
             FROM
                 orden_ingreso_masivo 
             WHERE 

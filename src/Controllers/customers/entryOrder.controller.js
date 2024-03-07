@@ -4,7 +4,7 @@ import { nameEntryOrder } from '../../Tools/taskName.js';
 import { consultEntryOrderMById } from './../../Lib/EntryOrder/entryOrderQuery.function.js';
 
 // Función común para actualizar el estado en Zoho
-async function updateZohoStatus(req, res, dataFields, actionDescription) {
+async function updateZohoStatus(req, res, dataFields, actionType, actionDescription) {
     try {
         const { data } = req.body;
 
@@ -24,7 +24,7 @@ async function updateZohoStatus(req, res, dataFields, actionDescription) {
         {
             const messageData = {
                 contactId: entryOrderMRecord.id_contacto,
-                request: nameEntryOrder,
+                request: actionType,
                 type: 'Entrada',
                 description: `El cliente realizo la ${actionDescription} para la ${nameEntryOrder} a traves de whatsapp`,
                 whatsappMemberId: req.body.member._id,
@@ -46,13 +46,13 @@ async function updateZohoStatus(req, res, dataFields, actionDescription) {
 // Funcion para confirmar ordenes de ingreso a traves del bot de Whatsapp
 async function confirmEntryOrderCustomer(req, res) {
     const dataFields = { data: { estado_ord_ing_mas: 'Confirmado cliente' } };
-    await updateZohoStatus(req, res, dataFields, 'confirmación');
+    await updateZohoStatus(req, res, dataFields, 'Confirmacion orden ingreso', 'confirmacion');
 }
 
 // Funcion para notificar que el cliente requiere soporte en las ordenes de ingreso masivas a traves de whatsapp
 async function supportEntryOrderCustomer(req, res) {
     const dataFields = { data: { estado_ord_ing_mas: 'Contactar asesor' } };
-    await updateZohoStatus(req, res,  dataFields, 'solicitud de asesoría');
+    await updateZohoStatus(req, res,  dataFields, 'Asesoria orden ingreso', 'solicitud de asesoria');
 }
 
 // Controlador para solicitud de confirmacion y soporte de ordenes de ingreso masivas

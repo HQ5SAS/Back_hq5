@@ -1,4 +1,4 @@
-import { createErrorResponse, logAndRespond } from '../../Tools/utils.js';
+import { createErrorResponse, logAndRespond, AccessDenied } from '../../Tools/utils.js';
 import { nameEntryOrder, nameWithdrawall } from '../../Tools/taskName.js';
 import { consultTask } from '../../Lib/task.function.js';
 import { consultRequestWz } from '../../Lib/requestWz.function.js';
@@ -17,7 +17,6 @@ function respondWithFieldsValues(res, fieldsValues) {
 // Funcion para procesar el load form del frontend (Send data)
 async function processForm(req, res) {
     try {
-
         const { requestId, taskId, recordId } = req.decoded;
 
         if (!requestId) {
@@ -25,6 +24,11 @@ async function processForm(req, res) {
 
             if (taskName === nameEntryOrder) {
                 const fieldsValues = await entryOrderLoad.getFieldValueEdit(recordId);
+
+                if(fieldsValues === 'Acceso denegado'){
+                    return AccessDenied(res);
+                }
+                
                 return respondWithFieldsValues(res, fieldsValues);
             }
 

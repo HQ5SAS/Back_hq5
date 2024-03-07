@@ -31,6 +31,13 @@ export async function logAndRespond(res, message, statusCode, data = null) {
     return response;
 }
 
+// Funcion para acceder al metodo de respuesta estandar createErrorResponse con acceso denegado
+export async function AccessDenied(res, message = 'Token expirado', statusCode = 401, data = null) {
+    const response = createErrorResponse(message, statusCode, data);    
+    res.status(statusCode).json(response);
+    return response;
+}
+
 // Funcion para realizar solicitudes post con 3 argumento (url, accesstoken, datos o body)
 export const requestPost = async (url, accessToken, data) => {
     try {

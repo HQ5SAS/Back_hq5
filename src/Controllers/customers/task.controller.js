@@ -6,6 +6,7 @@ import { createErrorResponse, logAndRespond, createURLWithToken, generateToken }
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
 import { nameEntryOrder, nameWithdrawall, namePayrollDateChange } from '../../Tools/taskName.js';
 import { logWhatsAppCustomerMessages } from '../../Tools/zoho.js';
+import { processPayrollDateChange } from '../../Lib/Task/payrollDateChange.function.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
@@ -34,21 +35,23 @@ async function responseRequest(req, res) {
         // Identificar que tarea es la solicitada a traves de whatsapp
         const { nombre: taskName } = await consultTask(task);
 
-        // Identificar el tipo de tarea que fue solicitada a traves de whatsapp
+        // Identificar el tipo de tarea que fue solicitada a través de WhatsApp
         const taskMappings = {
-            [nameEntryOrder]: { type: 'orden-ingreso', node: process.env.WZ_NODE_RESPONSE_TASK },
-            [nameWithdrawall]: { type: 'marcacion-retiro', node: process.env.WZ_NODE_RESPONSE_TASK },
-            [namePayrollDateChange]: { type: '', node: process.env.WZ_NODE_SERV_PAYROLL_DATE_CHAN }
+            [nameEntryOrder]: { type: 'orden-ingreso', node: process.env.WZ_NODE_RESPONSE_TASK, processFunction: null },
+            [nameWithdrawall]: { type: 'marcacion-retiro', node: process.env.WZ_NODE_RESPONSE_TASK, processFunction: null },
+            [namePayrollDateChange]: { type: '', node: process.env.WZ_NODE_SERV_PAYROLL_DATE_CHAN, processFunction: processPayrollDateChange }
         };
 
-        const { type, node } = taskMappings[taskName] || { type: '', node: process.env.WZ_NODE_SERV_NOT_AVAILABLE };
+        const { type, node, processFunction } = taskMappings[taskName] || { type: '', node: process.env.WZ_NODE_SERV_NOT_AVAILABLE, processFunction: null };
 
         const path = type !== '' ? `${type}${createURLWithToken(token)}` : '';
+        const payrollDateChange = processFunction ? await processFunction(requestWzRecord.cliente_id) : '';
 
         // Redireccionar al cliente al nodo para gestionar la solicitud
         const response = await redirectWoztellByMemberId(node, wz_id.memberId, {
             request: requestWzRecord.id,
-            path: path || undefined
+            path: path || undefined,
+            payrollDateChange: payrollDateChange || undefined
         });
 
         // Registrar la solicitud en el reporte de actividades de WhatsApp en Zoho Creator
