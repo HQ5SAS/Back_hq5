@@ -6,7 +6,7 @@ import { createErrorResponse, logAndRespond, createURLWithToken, generateToken }
 import { redirectWoztellByMemberId } from '../../Tools/woztell.js';
 import { nameEntryOrder, nameWithdrawall, namePayrollDateChange } from '../../Tools/taskName.js';
 import { logWhatsAppCustomerMessages } from '../../Tools/zoho.js';
-import { processPayrollDateChange } from '../../Lib/Task/payrollDateChange.function.js';
+import { processPayrollDate } from '../../Lib/Task/payrollDateChange.function.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env' });
@@ -39,7 +39,7 @@ async function responseRequest(req, res) {
         const taskMappings = {
             [nameEntryOrder]: { type: 'orden-ingreso', node: process.env.WZ_NODE_RESPONSE_TASK, processFunction: null },
             [nameWithdrawall]: { type: 'marcacion-retiro', node: process.env.WZ_NODE_RESPONSE_TASK, processFunction: null },
-            [namePayrollDateChange]: { type: '', node: process.env.WZ_NODE_SERV_PAYROLL_DATE_CHAN, processFunction: processPayrollDateChange }
+            [namePayrollDateChange]: { type: '', node: process.env.WZ_NODE_SERV_PAYROLL_DATE_CHAN, processFunction: processPayrollDate }
         };
 
         const { type, node, processFunction } = taskMappings[taskName] || { type: '', node: process.env.WZ_NODE_SERV_NOT_AVAILABLE, processFunction: null };
@@ -47,10 +47,10 @@ async function responseRequest(req, res) {
         const path = type !== '' ? `${type}${createURLWithToken(token)}` : '';
 
         // Procesar la funcion antes de redireccionar al cliente en caso de que este definida
-        let payrollDateChange = '';
+        let payrollDate = '';
         try {
             if (processFunction) {
-                payrollDateChange = await processFunction(requestWzRecord.cliente_id);
+                payrollDate = await processFunction(requestWzRecord.cliente_id);
             }
 
         } catch (error) {
@@ -61,7 +61,7 @@ async function responseRequest(req, res) {
         const response = await redirectWoztellByMemberId(node, wz_id.memberId, {
             request: requestWzRecord.id,
             path: path || undefined,
-            payrollDateChange: payrollDateChange || undefined
+            payrollDate: payrollDate || undefined
         });
 
         // Registrar la solicitud en el reporte de actividades de WhatsApp en Zoho Creator
