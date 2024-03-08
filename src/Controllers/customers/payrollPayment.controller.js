@@ -9,15 +9,14 @@ dotenv.config({ path: '.env' });
 // Funcion para verificar el adelanto del pago de nomina solicitado a traves del bot de whatsapp
 async function verifyPayrollPayment(req, res) {
     try {
-        const { data } = req.body;
+        const { member, payrollDate, customer } = req.body;
         
         console.log("Verificacion pago fecha nomina");
         console.log(req.body);
 
-        // Verificar la existencia de 'data' y 'payrollDate'
-        if (!data || !data.payrollDate) {
-            const missingKey = !data ? 'data' : 'payrollDate';
-            return logAndRespond(res, `Clave (${missingKey}) no encontrada en el cuerpo de la solicitud`, 400);
+        // Verificar la existencia de 'member', 'payrollDate', 'customer'
+        if (!member || !payrollDate || !customer) {
+            return logAndRespond(res, 'Clave (member), (payrollDate) o (customer) no encontrada en el cuerpo de la solicitud', 400);
         }
 
         // Realizar respuesta a la solicitud
@@ -25,9 +24,9 @@ async function verifyPayrollPayment(req, res) {
 
         // Crear objeto fechas y procesar los dias de diferencia entre ellos
         const currentDate = new Date();
-        const [day, month, year] = data.payrollDate.split('/').map(Number);
-        const payrollDate = new Date(year, month - 1, day);
-        const businessDaysDifference = calculateBusinessDays(currentDate, payrollDate);
+        const [day, month, year] = payrollDate.split('/').map(Number);
+        const payrollDatePay = new Date(year, month - 1, day);
+        const businessDaysDifference = calculateBusinessDays(currentDate, payrollDatePay);
 
         // Redireccionar al cliente al nodo para informar que no es posible modificar el pago de nomina
         if(businessDaysDifference < 5){
@@ -37,7 +36,7 @@ async function verifyPayrollPayment(req, res) {
         }
 
         // Procesar la data
-        const dateData = createIncrementableDateMap(payrollDate, 5);
+        const dateData = createIncrementableDateMap(payrollDatePay, 5);
         const dateMap = Object.fromEntries([...dateData.entries()]);
         const message = [...dateData.entries()].map(([id, date], index) => `${index + 1}️⃣  ${date}`).join('\n');
         
