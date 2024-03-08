@@ -58,24 +58,23 @@ async function verifyPayrollPayment(req, res) {
 // Funcion para adelantar el pago de nomina solicitado a traves del bot de whatsapp
 async function advancePayrollPayment(req, res) {
     try {
-        const { data } = req.body;
+        const { member, payrollDateChange, customer } = req.body;
 
         console.log("Adelanto pago fecha nomina");
         console.log(req.body);
 
-        // Verificar la existencia de 'data' y 'payrollDateChange'
-        if (!data || !data.payrollDateChange) {
-            const missingKey = !data ? 'data' : 'payrollDateChange';
-            return logAndRespond(res, `Clave (${missingKey}) no encontrada en el cuerpo de la solicitud`, 400);
+        // Verificar la existencia de 'member', 'payrollDateChange' y 'customer'
+        if (!member || !payrollDateChange || !customer) {
+            return logAndRespond(res, 'Clave (member), (payrollDateChange) o (customer) no encontrada en el cuerpo de la solicitud', 400);
         }
 
         // Realizar respuesta a la solicitud
         logAndRespond(res, `Solicitud procesada correctamente`, 200);
 
         // Procesar la fecha recibida
-        const [day, month, year] = data.payrollDateChange.split('/').map(Number);
+        const [day, month, year] = payrollDateChange.split('/').map(Number);
         const payrollDate = new Date(year, month - 1, day);
-        const payrollDateChange = formatDate(payrollDate);
+        const getPayrollDateChange = formatDate(payrollDate);
 
         // Ticket a compensacion para notificar el adelanto de pago de nomina del cliente al crear registro en el reporte de whatsapp
         
