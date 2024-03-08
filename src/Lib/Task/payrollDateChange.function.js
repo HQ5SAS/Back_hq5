@@ -79,7 +79,25 @@ export const calculateBusinessDays = (startDate, endDate) => {
     return businessDays;
 }
 
+// Función para filtrar los días hábiles en un objeto de fechas ascendentes
+export const filterBusinessDaysObject = (dateObject) => {
+    const weekdays = [1, 2, 3, 4, 5]; // De lunes a viernes
+
+    const filteredDates = [...dateObject].filter(([key, value]) => {
+        const [day, month, year] = value.split('/').map(Number);
+        const date = new Date(year, month - 1, day);
+        return weekdays.includes(date.getDay());
+    });
+
+    return new Map(Array.from(filteredDates).map(([key, value], index) => [String(index + 1), value]));
+};
+
 // Funcion para generar un mapa con las fechas de pago que es posible adelantar
-export const createIncrementableDateMap = (startDate, days) => {
+export const createDescendingDateMap = (startDate, days) => {
     return new Map([...Array(days)].map((_, i) => [String(i + 1), formatDate(new Date(startDate - i * 24 * 60 * 60 * 1000))]));
+}
+
+// Funcion para generar un mapa con las fechas de pago que es posible retrasar
+export const createAscendantDateObject = (startDate, days) => {
+    return new Map([...Array(days)].map((_, i) => [String(i + 1), formatDate(new Date(startDate.getTime() + ((i + 1) * 24 * 60 * 60 * 1000)))]));
 }

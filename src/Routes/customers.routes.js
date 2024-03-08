@@ -29,4 +29,7 @@ router.post('/verifyPayrollPayment', validateToken, payrollPaymentController.ver
 // Adelantar el pago de nomina (Cambio fecha pago nomina) (Customers - Whatsapp)
 router.post('/advancePayrollPayment', validateToken, payrollPaymentController.advancePayrollPayment);
 
+// Verificar el retraso del pago de nomina (Cambio fecha pago nomina) (Customers - Whatsapp)
+router.post('/verifyPayrollDelay', validateToken, payrollPaymentController.verifyPayrollDelay);
+
 export default router;
