@@ -1,0 +1,26 @@
+// Objeto global para almacenar información sobre meses y días festivos
+var holidaysColombian = {
+    2024: {
+        1: [1, 8],
+        3: [25, 28, 29],
+        5: [1, 13],
+        6: [3, 10],
+        7: [1, 20],
+        8: [7, 19],
+        10: [14],
+        11: [4, 11],
+        12: [25]
+    },
+};
+
+// Función para verificar si una fecha es festiva
+function isHoliday(year, month, day) {
+    var year = holidaysColombian[year];
+    if (year) {
+        var days = year[month];
+        if (days && days.includes(parseInt(day, 10))) {
+            return true;
+        }
+    }
+    return false;
+}

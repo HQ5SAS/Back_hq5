@@ -50,11 +50,13 @@ async function consultServiceClient(req, res) {
         }
 
         // Si el contacto tiene permisos activos, redireccionarlo en Woztell
+        
         const activePermissions = permission.filter(permit => permit.estado === PERM_STATE_ACT);
         const optionsMap = new Map(activePermissions.map(permit => [permit.tarea_bot_id, permit.nombre_tarea_bot]));
-        const filteredOptionsMap = devContact.includes(cel) ? optionsMap : new Map([...optionsMap].filter(([key, value]) => nameServiceProd.includes(value)));
+        const filteredOptionsMap = devContact.includes(cel.toString()) ? optionsMap : new Map([...optionsMap].filter(([key, value]) => nameServiceProd.includes(value)));
         const mapData = Object.fromEntries([...filteredOptionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
         const message = [...filteredOptionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
+
         return redirectWoztellByMemberId(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, {
             customer: customer,
             task: { ...mapData },
