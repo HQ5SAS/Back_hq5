@@ -74,11 +74,38 @@ async function validateContact(req, res) {
         }
 
         // Si el contacto tiene permisos activos, redireccionarlo en Woztell
+        //const activePermissions = permission.filter(permit => permit.estado === PERM_STATE_ACT);
+        //const optionsMap = new Map(activePermissions.map(permit => [permit.tarea_bot_id, permit.nombre_tarea_bot]));
+        //const filteredOptionsMap = devContact.includes(cel.toString()) ? optionsMap : new Map([...optionsMap].filter(([key, value]) => nameServiceProd.includes(value)));
+        //const mapData = Object.fromEntries([...filteredOptionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
+        //const message = [...filteredOptionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
+
+        // Si el contacto tiene permisos activos, redireccionarlo en Woztell
         const activePermissions = permission.filter(permit => permit.estado === PERM_STATE_ACT);
-        const optionsMap = new Map(activePermissions.map(permit => [permit.tarea_bot_id, permit.nombre_tarea_bot]));
-        const filteredOptionsMap = devContact.includes(cel.toString()) ? optionsMap : new Map([...optionsMap].filter(([key, value]) => nameServiceProd.includes(value)));
-        const mapData = Object.fromEntries([...filteredOptionsMap.entries()].map(([id, nombre], index) => [index + 1, `${id}`]));
-        const message = [...filteredOptionsMap.entries()].map(([id, nombre], index) => `${index + 1}️⃣  ${nombre}`).join('\n');
+        const filteredPermissions = devContact.includes(cel.toString()) ? activePermissions : activePermissions.filter(permit => nameServiceProd.includes(permit.nombre_tarea_bot));
+
+        // Agrupar los datos por nombre_proceso
+        const groupedData = filteredPermissions.reduce((objf, obj) => {
+            const { nombre_proceso, tarea_bot_id, nombre_tarea_bot } = obj;
+            objf[nombre_proceso] = objf[nombre_proceso] || [];
+            objf[nombre_proceso].push({ tarea_bot_id, nombre_tarea_bot });
+            return objf;
+        }, {});
+
+        // Convertir los grupos en mapData
+        let taskIndex = 1;
+        const mapData = Object.fromEntries(
+            Object.values(groupedData).flatMap(
+                tasks => tasks.map(task => [taskIndex++, task.tarea_bot_id])
+            )
+        );
+                
+        // Convertir los grupos en message
+        taskIndex = 1;
+        const message = Object.entries(groupedData).map(([proceso, tasks]) => {
+            const taskList = tasks.map(({ tarea_bot_id, nombre_tarea_bot }) => `${taskIndex++}️⃣  ${nombre_tarea_bot}`).join('\n');
+            return `*${proceso}*:\n${taskList}`;
+        }).join('\n');
 
         return redirectWoztellByMemberId(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, {
             customer: contactRecord.id_cliente,
