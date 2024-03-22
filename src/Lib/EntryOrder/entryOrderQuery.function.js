@@ -3,6 +3,8 @@ import { projectRecordExistsByIdCustomer } from '../../Database/project.query.js
 import { businessLineRecordExistsByIdCustomer } from '../../Database/businessLine.quey.js';
 import { areaRecordExistsByIdCustomer } from '../../Database/area.query.js';
 import { subCostCenterRecordExistsByIdCustomer } from '../../Database/subCostCenter.query.js';
+import { immediateBossRecordExistsByIdCustomer } from '../../Database/immediateBoss.js';
+import { associatedCompanyRecordExistsByIdCustomer } from '../../Database/associatedCompany.query.js';
 import { requisitionRecordExistsById, requisitionRecordExistsByIdCustomer } from '../../Database/requisition.query.js';
 import { costCenterRecordExistsByIdCustomerIdCity } from '../../Database/costCenter.query.js';
 import { groupRecordExistsByGroup } from '../../Database/group.query.js';
@@ -49,6 +51,16 @@ export async function consultArea(customerId) {
 // Funcion para consultar subcentros de costo por customerId
 export async function consultSubCenterCost(customerId) {
     return consultRecord(subCostCenterRecordExistsByIdCustomer, 'el sub centro de costo', customerId);
+}
+
+// Funcion para consultar immediateBoss por customerId
+export async function consultImmediateBoss(customerId) {
+    return consultRecord(immediateBossRecordExistsByIdCustomer, 'el jefe inmediato', customerId);
+}
+
+// Funcion para consultar associatedCompany por customerId
+export async function consultAssociatedCompany(customerId) {
+    return consultRecord(associatedCompanyRecordExistsByIdCustomer, 'la empresa asociada', customerId);
 }
 
 // Funcion para consultar requisiciones por customerId

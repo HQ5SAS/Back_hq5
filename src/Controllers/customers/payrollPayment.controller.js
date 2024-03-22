@@ -33,8 +33,9 @@ async function verifyPayroll(req, res, type) {
         const currentDate = new Date();
         const [day, month, year] = payrollDate.split('/').map(Number);
         const payrollDatePay = new Date(year, month - 1, day);
-        const dateData = type === 'adelanto' ? createDescendingDateMap(payrollDatePay, 5) : createAscendantDateObject(payrollDatePay, 5);
         const businessDaysDifference = calculateBusinessDays(currentDate, payrollDatePay);
+        const countDays = businessDaysDifference > 5 ? 5 : businessDaysDifference;
+        const dateData = type === 'adelanto' ? createDescendingDateMap(payrollDatePay, countDays) : createAscendantDateObject(payrollDatePay, 5);
 
         // Redireccionar al cliente al nodo para informar que no es posible modificar el pago de nomina para adelantarlo
         if (type === 'adelanto' && businessDaysDifference < 5) {
@@ -45,7 +46,8 @@ async function verifyPayroll(req, res, type) {
 
         // Redireccionar al cliente al nodo correspondiente
         const node = type === 'adelanto' ? process.env.WZ_NODE_ADV_PAY_PAYMENT : process.env.WZ_NODE_DEL_PAY_PAYMENT;
-        const dateDataObj = type === 'adelanto' ? dateData : filterBusinessDaysObject(dateData);      
+        const dateDataObj = type === 'adelanto' ? dateData : dateData;      
+        // const dateDataObj = type === 'adelanto' ? dateData : filterBusinessDaysObject(dateData);      
         const dateMap = Object.fromEntries([...dateDataObj.entries()]);
         const message = [...dateDataObj.entries()].map(([id, date], index) => `${index + 1}️⃣  ${date}`).join('\n');
 

@@ -11,10 +11,34 @@ var holidaysColombian = {
         11: [4, 11],
         12: [25]
     },
+    2025: {
+        1: [1, 6],
+        3: [24],
+        4: [17, 18],
+        5: [1],
+        6: [2, 23, 30],
+        7: [20],
+        8: [7, 18],
+        10: [13],
+        11: [3, 17],
+        12: [8, 25]
+    },
+    2026: {
+        1: [1, 12],
+        3: [23],
+        4: [2, 3],
+        5: [1, 18],
+        6: [8, 15, 29],
+        7: [20],
+        8: [7, 17],
+        10: [12],
+        11: [2, 16],
+        12: [8, 25]
+    },
 };
 
 // Función para verificar si una fecha es festiva
-function isHoliday(year, month, day) {
+export const isHoliday = (year, month, day) => {
     var year = holidaysColombian[year];
     if (year) {
         var days = year[month];

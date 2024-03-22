@@ -1,5 +1,6 @@
 import { costCenterRecordExistsByIdCustomer } from '../../Database/costCenter.query.js';
 import { formatDate } from '../../Tools/date.js';
+import { isHoliday } from '../../Tools/holidays.js';
 
 // Funcion para calcular la proxima fecha de pago, parametros (dias de pago, periodicidad)
 const getNextPaymentDate = async (payDays, periodicity) => {
@@ -59,20 +60,25 @@ export const processPayrollDate = async (customerId) => {
 
 // Funcion para calcular los dias habiles entre dos fechas como parametro (habiles: Lunes a Viernes)
 export const calculateBusinessDays = (startDate, endDate) => {
-
-    const weekdays = [1, 2, 3, 4, 5]; // De lunes a viernes
+    const weekdays = [1, 2, 3, 4, 5];
     
     // Ajustar las fechas al inicio y fin del día
     const startDateCopy = new Date(startDate);
     startDateCopy.setHours(0, 0, 0, 0);
 
     const endDateCopy = new Date(endDate);
-    endDateCopy.setHours(23, 59, 59, 999);
+    endDateCopy.setUTCHours(23, 59, 59, 999);
+    
+    // Ajustar la fecha de inicio y fin
+    startDateCopy.setDate(startDateCopy.getDate() + 1);
+    endDateCopy.setDate(endDateCopy.getDate() - 1);
 
     let businessDays = 0;
-
+    
     while (startDateCopy <= endDateCopy) {
-        businessDays += weekdays.includes(startDateCopy.getDay()) ? 1 : 0;
+        if (weekdays.includes(startDateCopy.getDay()) && !isHoliday(startDateCopy.getFullYear(), startDateCopy.getMonth() + 1, startDateCopy.getDate())) {
+            businessDays += 1;
+        }
         startDateCopy.setDate(startDateCopy.getDate() + 1);
     }
 
@@ -81,7 +87,7 @@ export const calculateBusinessDays = (startDate, endDate) => {
 
 // Función para filtrar los días hábiles en un objeto de fechas ascendentes
 export const filterBusinessDaysObject = (dateObject) => {
-    const weekdays = [1, 2, 3, 4, 5]; // De lunes a viernes
+    const weekdays = [1, 2, 3, 4, 5];
 
     const filteredDates = [...dateObject].filter(([key, value]) => {
         const [day, month, year] = value.split('/').map(Number);
@@ -94,10 +100,41 @@ export const filterBusinessDaysObject = (dateObject) => {
 
 // Funcion para generar un mapa con las fechas de pago que es posible adelantar
 export const createDescendingDateMap = (startDate, days) => {
-    return new Map([...Array(days)].map((_, i) => [String(i + 1), formatDate(new Date(startDate - i * 24 * 60 * 60 * 1000))]));
+    const weekdays = [1, 2, 3, 4, 5];
+    const descendingDates = [];
+    let currentDate = new Date(startDate);
+    currentDate.setDate(currentDate.getDate() + 1);
+    
+    for (let i = 0; i < days; i++) {
+        currentDate.setDate(currentDate.getDate() - 1);
+        while (!weekdays.includes(currentDate.getDay()) || isHoliday(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate())) {
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+        descendingDates.push(formatDate(currentDate));
+    }
+
+    const descendingDateMap = new Map(descendingDates.map((date, index) => [String(index + 1), date]));
+    return descendingDateMap;
+
+    // return new Map([...Array(days)].map((_, i) => [String(i + 1), formatDate(new Date(startDate - i * 24 * 60 * 60 * 1000))]));
 }
 
 // Funcion para generar un mapa con las fechas de pago que es posible retrasar
 export const createAscendantDateObject = (startDate, days) => {
-    return new Map([...Array(days)].map((_, i) => [String(i + 1), formatDate(new Date(startDate.getTime() + ((i + 1) * 24 * 60 * 60 * 1000)))]));
+    const weekdays = [1, 2, 3, 4, 5];
+    const ascendantDates = [];
+    let currentDate = new Date(startDate);
+    
+    for (let i = 0; i < days; i++) {
+        currentDate.setDate(currentDate.getDate() + 1);
+        while (!weekdays.includes(currentDate.getDay()) || isHoliday(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate())) {
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        ascendantDates.push(formatDate(currentDate));
+    }
+
+    const ascendantDateMap = new Map(ascendantDates.map((date, index) => [String(index + 1), date]));
+    return ascendantDateMap;
+    
+    // return new Map([...Array(days)].map((_, i) => [String(i + 1), formatDate(new Date(startDate.getTime() + ((i + 1) * 24 * 60 * 60 * 1000)))]));
 }

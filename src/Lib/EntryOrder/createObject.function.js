@@ -25,6 +25,8 @@ export async function createNewReqObject(data) {
             sub_centro_cc,
             linea_negocio_cc,
             area_cc,
+            jefe_inmediato_cc,
+            empresa_asociada_cc,
             beneficios_contrato,
             estado,
             creacion
@@ -61,6 +63,8 @@ export async function createNewReqObject(data) {
             sub_centro_cc: sub_centro_cc.id,
             linea_negocio_cc: linea_negocio_cc.id,
             area_cc: area_cc.id,
+            jefe_inmediato_cc: jefe_inmediato_cc.id,
+            empresa_asociada_cc: empresa_asociada_cc.id,
             beneficios_contrato,
             estado,
             creacion

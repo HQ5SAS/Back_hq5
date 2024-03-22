@@ -44,6 +44,16 @@ const buildInnerSubCenterObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id } }), {});
 };
 
+// Funcion para generar objeto de jefe inmediato
+const buildInnerImmediateBossObject = (data) => {
+    return data.reduce((obj, { id, nombre, documento }) => ({ ...obj, [nombre]: { id, documento } }), {});
+};
+
+// Funcion para generar objeto de empresa asociada
+const buildInnerAssociatedCompanyObject = (data) => {
+    return data.reduce((obj, { id, empresa, clase }) => ({ ...obj, [empresa]: { id, clase } }), {});
+};
+
 // Funcion para generar objeto de grupo de concepto
 const buildInnerGroupConceptObject = (data) => {
     return data.reduce((obj, { id, nombre }) => ({ ...obj, [nombre]: { id, nombre } }), {});
@@ -154,7 +164,7 @@ const buildInnerReqObj = (element, baseValues, applyCallObj, profileObj, centerC
 };
 
 // Funcion para generar objeto de data global
-const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, groupConceptObj, options) => {
+const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, immediateBossObj, associatedCompanyObj, groupConceptObj, options) => {
 
     // Verificar si el objeto options está vacío
     if (Object.keys(options).length === 0) {
@@ -171,7 +181,9 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
             proyecto_cc: proyectCCObj,
             linea_negocio_cc: businessLineObj,
             area_cc: areaObj,
-            sub_centro_cc: subCenterObj
+            sub_centro_cc: subCenterObj,
+            jefe_inmediato_cc: immediateBossObj,
+            empresa_asociada_cc: associatedCompanyObj
         };
     }
 
@@ -187,7 +199,9 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
         proyecto,
         linea_negocio,
         area,
-        sub_centro_costo
+        sub_centro_costo,
+        jefe_inmediato,
+        empresa_asociada
     } = options;
 
     if (naturaleza_centro_costo !== null) {
@@ -213,7 +227,17 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
     if (sub_centro_costo !== null) {
         const matchingObj = Object.values(subCenterObj).find(obj => obj.id === sub_centro_costo);
         if (matchingObj) { matchingObj.select = true; }
-    }    
+    }  
+    
+    if (jefe_inmediato !== null) {
+        const matchingObj = Object.values(immediateBossObj).find(obj => obj.id === jefe_inmediato);
+        if (matchingObj) { matchingObj.select = true; }
+    }  
+
+    if (empresa_asociada !== null) {
+        const matchingObj = Object.values(associatedCompanyObj).find(obj => obj.id === empresa_asociada);
+        if (matchingObj) { matchingObj.select = true; }
+    }
 
     return {
         id,
@@ -228,7 +252,9 @@ const buildInnerDataObj = (natureCCObj, proyectCCObj, businessLineObj, areaObj, 
         proyecto_cc: proyectCCObj,
         linea_negocio_cc: businessLineObj,
         area_cc: areaObj,
-        sub_centro_cc: subCenterObj
+        sub_centro_cc: subCenterObj,
+        jefe_inmediato_cc: immediateBossObj,
+        empresa_asociada_cc: associatedCompanyObj
     };
 };
 
@@ -304,18 +330,22 @@ const processRequisitionDataEdit = async (responseData, baseValues, options = {}
 const processDataFields = async (element, options = {}) => {
     const { id_cliente: customerId } = element;
 
-    const [ responseNatureCC, 
-            responseProyectoCC, 
-            responseBusinessLine, 
-            responseArea, 
-            responseSubCenter, 
-            responseGroup 
+    const [ responseNatureCC,
+            responseProyectoCC,
+            responseBusinessLine,
+            responseArea,
+            responseSubCenter,
+            responseImmediateBoss,
+            responseAssociatedCompany,
+            responseGroup
         ] = await Promise.all([
         entryOrder.consultNature(customerId),
         entryOrder.consultProject(customerId),
         entryOrder.consultBusinessLine(customerId),
         entryOrder.consultArea(customerId),
         entryOrder.consultSubCenterCost(customerId),
+        entryOrder.consultImmediateBoss(customerId),
+        entryOrder.consultAssociatedCompany(customerId),
         entryOrder.consultGroup()
     ]);
 
@@ -324,6 +354,8 @@ const processDataFields = async (element, options = {}) => {
     const businessLineObj = responseBusinessLine && responseBusinessLine.length > 0 ? buildInnerBusinessLineObject(responseBusinessLine) : {};
     const areaObj = responseArea && responseArea.length > 0 ? buildInnerAreaObject(responseArea) : {};
     const subCenterObj = responseSubCenter && responseSubCenter.length > 0 ? buildInnerSubCenterObject(responseSubCenter) : {};
+    const immediateBossObj = responseImmediateBoss && responseImmediateBoss.length > 0 ? buildInnerImmediateBossObject(responseImmediateBoss) : {};
+    const associatedCompanyObj = responseAssociatedCompany && responseAssociatedCompany.length > 0 ? buildInnerAssociatedCompanyObject(responseAssociatedCompany) : {};
     const GroupObj = responseGroup && responseGroup.length > 0 ? buildInnerGroupConceptObject(responseGroup) : {};
 
     let groupConceptObj = {};
@@ -341,7 +373,7 @@ const processDataFields = async (element, options = {}) => {
     }));
     }
 
-    const dataObj = buildInnerDataObj(natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, groupConceptObj, options);
+    const dataObj = buildInnerDataObj(natureCCObj, proyectCCObj, businessLineObj, areaObj, subCenterObj, immediateBossObj, associatedCompanyObj, groupConceptObj, options);
     return dataObj;
 };
 
@@ -408,6 +440,8 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 linea_negocio, 
                 area, 
                 sub_centro_costo,
+                jefe_inmediato,
+                empresa_asociada,
                 nivel_riesgo,
                 salario,
                 centro_costo,
@@ -435,6 +469,8 @@ export const getFieldValueEdit = async (entryOrderMId) => {
                 linea_negocio, 
                 area, 
                 sub_centro_costo,
+                jefe_inmediato,
+                empresa_asociada,
                 nivel_riesgo,
                 salario,
                 centro_costo,

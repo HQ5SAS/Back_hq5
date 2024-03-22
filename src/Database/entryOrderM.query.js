@@ -18,6 +18,8 @@ export const entryOrderMRecordExistsById = async (entryOrderMId) => {
                 CAST(zh_linea_negocio AS CHAR) AS linea_negocio,
                 CAST(zh_area AS CHAR) AS area,
                 CAST(zh_subcentro_costo AS CHAR) AS sub_centro_costo,
+                CAST(zh_jefe_inmediato AS CHAR) AS jefe_inmediato,
+                CAST(zh_empresa_asociada AS CHAR) AS empresa_asociada,
                 nivel_riesto AS nivel_riesgo,
                 salario_base AS salario,
                 CAST(zh_centro_costo AS CHAR) AS centro_costo,

@@ -30,6 +30,8 @@ export async function validateJson(data) {
         "sub_centro_cc",
         "linea_negocio_cc",
         "area_cc",
+        "jefe_inmediato_cc",
+        "empresa_asociada_cc",
         "beneficios_contrato"
     ];
 
