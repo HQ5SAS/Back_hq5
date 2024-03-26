@@ -58,7 +58,9 @@ async function consultServiceClient(req, res) {
 
         // Si el contacto tiene permisos activos, redireccionarlo en Woztell
         const activePermissions = permission.filter(permit => permit.estado === PERM_STATE_ACT);
+        console.log(activePermissions);
         const filteredPermissions = devContact.includes(cel.toString()) ? activePermissions : activePermissions.filter(permit => nameServiceProd.includes(permit.nombre_tarea_bot));
+        console.log(filteredPermissions);
 
         // Agrupar los datos por nombre_proceso
         const groupedData = filteredPermissions.reduce((objf, obj) => {
@@ -67,6 +69,7 @@ async function consultServiceClient(req, res) {
             objf[nombre_proceso].push({ tarea_bot_id, nombre_tarea_bot });
             return objf;
         }, {});
+        console.log(groupedData);
 
         // Convertir los grupos en mapData
         let taskIndex = 1;
@@ -75,6 +78,7 @@ async function consultServiceClient(req, res) {
                 tasks => tasks.map(task => [taskIndex++, task.tarea_bot_id])
             )
         );
+        console.log(mapData);
                 
         // Convertir los grupos en message
         taskIndex = 1;
@@ -82,6 +86,7 @@ async function consultServiceClient(req, res) {
             const taskList = tasks.map(({ tarea_bot_id, nombre_tarea_bot }) => `${taskIndex++}️⃣  ${nombre_tarea_bot}`).join('\n');
             return `*${proceso}*:\n${taskList}`;
         }).join('\n');
+        console.log(message);
 
         return redirectWoztellByMemberId(process.env.WZ_NODE_OPTION_TASK, wz_id.memberId, {
             customer: customer,
