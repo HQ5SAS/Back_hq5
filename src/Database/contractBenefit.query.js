@@ -70,3 +70,6 @@ export const contractBenefitRecordExistsByIdEntryOrderM = async (entryOrderMId) 
         throw error;
     }
 };
+
+// Función para obtener los beneficios del contrato para marcaciones de retiro
+
