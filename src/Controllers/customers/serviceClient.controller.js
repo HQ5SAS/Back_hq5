@@ -86,9 +86,9 @@ async function consultServiceClient(req, res) {
         */
         const message = Object.entries(groupedData).map(([proceso, tasks]) => {
             const taskList = tasks.map(({ tarea_bot_id, nombre_tarea_bot }) => {
-                const indexString = taskIndex < 10 ? String(taskIndex) : String(taskIndex).padStart(2, '0');
+                const indexEmoji = taskIndex < 10 ? `${taskIndex}️⃣` : `${String(taskIndex)[0]}️⃣${String(taskIndex)[1]}️⃣`;
                 taskIndex++;
-                return `${indexString}️⃣  ${nombre_tarea_bot}`;
+                return `${indexEmoji}  ${nombre_tarea_bot}`;
             }).join('\n');
             return `*${proceso}*:\n${taskList}`;
         }).join('\n');
