@@ -110,7 +110,7 @@ async function validateContact(req, res) {
         */
         const message = Object.entries(groupedData).map(([proceso, tasks]) => {
             const taskList = tasks.map(({ tarea_bot_id, nombre_tarea_bot }) => {
-                const indexEmoji = taskIndex < 10 ? `${taskIndex}️⃣` : `${String(taskIndex)[0]}️⃣ ${String(taskIndex)[1]}️⃣`;
+                const indexEmoji = taskIndex < 10 ? `${taskIndex}️⃣` : `${String(taskIndex)[0]}️⃣${String(taskIndex)[1]}️⃣`;
                 taskIndex++;
                 return `${indexEmoji}  ${nombre_tarea_bot}`;
             }).join('\n');
