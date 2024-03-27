@@ -111,7 +111,7 @@ async function responseRequest(req, res) {
             request: requestWzRecord.id,
             path: path || undefined,
             payrollDate: payrollDate || undefined,
-            messasgeInvoiceReq: message || undefined,
+            messageInvoiceReq: message || undefined,
             mapInvoiceReq: { ...mapData },
         });
 
