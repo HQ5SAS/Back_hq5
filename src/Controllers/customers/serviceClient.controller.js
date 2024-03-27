@@ -78,8 +78,18 @@ async function consultServiceClient(req, res) {
                 
         // Convertir los grupos en message
         taskIndex = 1;
+        /*
         const message = Object.entries(groupedData).map(([proceso, tasks]) => {
             const taskList = tasks.map(({ tarea_bot_id, nombre_tarea_bot }) => `${taskIndex++}️⃣  ${nombre_tarea_bot}`).join('\n');
+            return `*${proceso}*:\n${taskList}`;
+        }).join('\n');
+        */
+        const message = Object.entries(groupedData).map(([proceso, tasks]) => {
+            const taskList = tasks.map(({ tarea_bot_id, nombre_tarea_bot }) => {
+                const indexString = taskIndex < 10 ? String(taskIndex) : String(taskIndex).padStart(2, '0');
+                taskIndex++;
+                return `${indexString}️⃣  ${nombre_tarea_bot}`;
+            }).join('\n');
             return `*${proceso}*:\n${taskList}`;
         }).join('\n');
 
