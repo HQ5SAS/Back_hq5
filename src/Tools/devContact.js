@@ -1,3 +1,3 @@
 export const devContact = [
-    '3115095277'
+    '3115095276'
 ]

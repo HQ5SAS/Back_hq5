@@ -1,5 +1,6 @@
 import { consultEmployeeByCustomerAndState } from '../employee.function.js';
 import { formatDate } from '../../Tools/date.js';
+import { groupRecordExistsByGroup2 } from '../../Database/group.query.js';
 
 // Funcion para generar objeto de empleado
 const buildInnerEmployeeObject = (data) => {
@@ -14,6 +15,9 @@ const buildInnerEmployeeObject = (data) => {
 // Funcion para procesar las consultas globales de los campos
 const processDataFields = async (data) => {
     const empObj = buildInnerEmployeeObject(data);
+    const responseGroup = await groupRecordExistsByGroup2('B', 'D', 'F', 'H');
+    console.log(responseGroup);
+
     return {
         empleados: empObj,
         fecha_retiro: null,

@@ -22,3 +22,5 @@ export const conceptRecordExistsByIdGroup = async (groupId) => {
         throw error;
     }
 };
+
+// Función para verificar si existe un concepto en la tabla concepto por 
