@@ -111,8 +111,8 @@ async function responseRequest(req, res) {
             request: requestWzRecord.id,
             path: path || undefined,
             payrollDate: payrollDate || undefined,
-            invoiceReqMessage: message || undefined,
-            invoiceReqMap: { ...mapData },
+            messasgeInvoiceReq: message || undefined,
+            mapInvoiceReq: { ...mapData },
         });
 
         // Registrar la solicitud en el reporte de actividades de WhatsApp en Zoho Creator
